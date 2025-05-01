@@ -6,7 +6,7 @@
 #    By: afogonca <afogonca@student.42porto.com>    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/01/22 08:54:03 by afogonca          #+#    #+#              #
-#    Updated: 2025/04/25 17:05:35 by afogonca         ###   ########.pt        #
+#    Updated: 2025/05/01 16:27:34 by afogonca         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -17,13 +17,23 @@ CC = cc
 RM = rm -f
 
 OBJS = $(SRCS:.c=.o)
-SRCS = srcs/main.c srcs/ft_init.c
-LIBS = ./libs/mlx/libmlx.a
 
-all: mlx $(NAME)
+RENDER_SRCS = srcs/render/ft_frame_render.c \
+			  srcs/render/ft_cast.c
+
+SRCS = srcs/main.c srcs/ft_init.c \
+	   $(RENDER_SRCS)
+LIBS = ./libs/mlx/libmlx.a ./libs/libft/libft.a
+
+all: deps $(NAME)
+
+deps: mlx libft
+
+libft:
+	$(MAKE) -C ./libs/libft/
 
 mlx:
-	@$(MAKE) -C ./libs/mlx/
+	$(MAKE) -C ./libs/mlx/
 
 $(NAME): $(OBJS)
 	$(CC) $(CFLAGS) $(MLXFLAGS) $(OBJS) $(LIBS) -o $(NAME)

@@ -23,6 +23,7 @@
 # include "../libs/mlx/mlx.h"
 # include <math.h>
 # include <stdbool.h>
+# include <sys/time.h>
 
 # define WIN_WIDTH 1280
 # define WIN_HEIGHT 720
@@ -107,6 +108,7 @@ typedef struct s_data
 	int			win_width;
 	int			hex_ceiling;
 	int			hex_floor;
+	double		time_frame;
 } t_data;
 
 t_data	*ft_data_init(void);
@@ -116,5 +118,6 @@ int	ft_frame_render(t_data *data);
 void	ft_set_bg(t_data *data);
 int	get_wall_dir(int side, int stepX, int stepY);
 int	key_hook_press(int key, t_data *data);
+double ft_get_time_in_ms();
 
 #endif

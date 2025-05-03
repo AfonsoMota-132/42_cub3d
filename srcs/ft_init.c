@@ -12,6 +12,13 @@
 
 #include "../incs/cub3d.h"
 
+double ft_get_time_in_ms()
+{
+    struct timeval tv;
+    gettimeofday(&tv, NULL);
+    return (tv.tv_sec * 1000.0) + (tv.tv_usec / 1000.0);
+}
+
 t_data	*ft_data_init(void)
 {
 	t_data *data;
@@ -52,7 +59,8 @@ t_data	*ft_data_init(void)
 	data->player->y_look = cos(data->player->angle * M_PI / 180.0);
 	data->player->x_look = sin(data->player->angle * M_PI / 180.0);
 	// printf("x_look %f\ty_look %f\n", data->player->x_look, data->player->y_look);
-
+	data->time_frame = ft_get_time_in_ms();
+	printf("%f\n", data->time_frame);
 	return (data);
 }
 

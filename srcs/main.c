@@ -12,22 +12,70 @@
 
 #include "../incs/cub3d.h"
 
-int	key_hook(int key, void *idk)
+int	get_wall_dir(int side, int stepX, int stepY)
 {
-	if (key == 65307)
-		exit(0);
-	(void) idk;
-	return (0);
+	if (side == 0)
+	{
+		if (stepX > 0)
+			return (0);  // Ray moved right (+X), hit West wall
+		else
+			return (1);  // Ray moved left (-X), hit East wall
+	}
+	else
+	{
+		if (stepY > 0)
+			return (2); // Ray moved down (+Y), hit North wall
+		else
+			return (3); // Ray moved up (-Y), hit South wall
+	}
+}
+void	ft_set_bg(t_data *data)
+{
+	int x;
+	int	y;
+
+	x = -1;
+	while (++x < WIN_WIDTH)
+	{
+		y = -1;
+		while (++y < WIN_HEIGHT)
+		{
+			if (y > WIN_HEIGHT / 2)
+				ft_set_image_pixel(data->img, x, y, data->hex_floor);
+			else
+				ft_set_image_pixel(data->img, x, y, data->hex_ceiling);
+		}
+	}
 }
 
+int	key_hook_relea(int key, t_data *data)
+{
+	if (key == 119)
+		data->mov->mov_f = false;
+	if (key == 97)
+		data->mov->mov_l = false;
+	if (key == 115)
+		data->mov->mov_b = false;
+	if (key == 100)
+		data->mov->mov_l = false;
+	return (0);
+}
 int	main(void)
 {
 	t_data *data;
 
 	data = ft_data_init();
 	data->mlx = mlx_init();
+	data->img = malloc(sizeof(t_img));
+	data->img->img = mlx_new_image(data->mlx, 1280, 720);
+	data->img->addr = (int *)mlx_get_data_addr(data->img->img, &data->img->pixel_bits,
+			&data->img->size_line, &data->img->endian);
 	data->win = mlx_new_window(data->mlx, data->win_width, data->win_height, "cub3d");
-	ft_frame_render(data);
-	mlx_hook(data->win, KeyPress, KeyPressMask, &key_hook, data);
+	printf("%c\n", data->map[(int)data->player->x_pos][(int)data->player->y_pos]);
+	mlx_do_key_autorepeatoff(data->mlx);
+	mlx_hook(data->win, 2, 1L<<0, &key_hook_press, data);
+	mlx_hook(data->win, 3, 1L<<1, &key_hook_relea, data);
+	mlx_loop_hook(data->mlx, &ft_frame_render, data);
 	mlx_loop(data->mlx);
+	// ft_frame_render(data);
 }

@@ -26,6 +26,7 @@
 
 # define WIN_WIDTH 1280
 # define WIN_HEIGHT 720
+# define h 720
 # define PI 3.14159265358979323846264338327950288419716939937510582097494459230781640628620899862803
 # define BLOCK 25
 
@@ -36,10 +37,10 @@
 typedef struct s_img
 {
 	void	*img;
-	char	*addr;
+	int		*addr;
 	int		x;
 	int		y;
-	int		bpp;
+	int		pixel_bits;
 	int		size_line;
 	int		endian;
 
@@ -50,6 +51,7 @@ typedef struct s_player
 	float	y_pos;
 	float	y_look;
 	float	x_look;
+	float	angle;
 } t_player;
 
 typedef struct s_ray
@@ -84,6 +86,15 @@ typedef struct s_ray
 	int		side;
 }	t_ray;
 
+typedef struct s_mov {
+	bool	mov_f;
+	bool	mov_b;
+	bool	mov_l;
+	bool	mov_r;
+	bool	lookl;
+	bool	lookr;
+} t_mov;
+
 typedef struct s_data 
 {
 	t_img		*img;
@@ -91,6 +102,7 @@ typedef struct s_data
 	void		*win;
 	t_player	*player;
 	t_ray		*ray;
+	t_mov		*mov;
 	char		**map;
 	int			**tex_pix;
 	int			txt2a;
@@ -102,7 +114,10 @@ typedef struct s_data
 
 t_data	*ft_data_init(void);
 void	ft_set_img_def(t_img *img);
-void	set_image_pixel(t_img *image, int x, int y, int color);
+void	ft_set_image_pixel(t_img *image, int x, int y, int color);
 int	ft_frame_render(t_data *data);
+void	ft_set_bg(t_data *data);
+int	get_wall_dir(int side, int stepX, int stepY);
+int	key_hook_press(int key, t_data *data);
 
 #endif

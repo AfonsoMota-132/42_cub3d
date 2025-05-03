@@ -11,18 +11,20 @@
 # **************************************************************************** #
 
 NAME = cub3d
-CFLAGS = -Wall -Wextra -Werror -g
+CFLAGS = -g
+#-Wall -Wextra -Werror -g
 MLXFLAGS = -L ./libs/minilibx-linux -lm -Ilmlx -lXext -lX11
 CC = cc
 RM = rm -f
 
 OBJS = $(SRCS:.c=.o)
 
-RENDER_SRCS = srcs/render/ft_frame_render.c \
-			  srcs/render/ft_cast.c
+HOOKS = srcs/hooks/key_hook.c
+
+RENDER_SRCS = srcs/render/ft_frame_render.c
 
 SRCS = srcs/main.c srcs/ft_init.c \
-	   $(RENDER_SRCS)
+	   $(RENDER_SRCS) $(HOOKS)
 LIBS = ./libs/mlx/libmlx.a ./libs/libft/libft.a
 
 all: deps $(NAME)

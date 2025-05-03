@@ -24,23 +24,34 @@ t_data	*ft_data_init(void)
 
 	data->win_height = WIN_HEIGHT;
 	data->win_width = WIN_WIDTH;
-	data->hex_ceiling = 0xFF0000;
-	data->hex_floor = 0x0000FF;
+	data->hex_ceiling = 0x000000;
+	data->hex_floor = 0xFFFFFF;
 	data->mlx = NULL;
 	data->win = NULL;
 
-	data->map = malloc(sizeof(char *) * 5);
+	data->map = malloc(sizeof(char *) * 7);
 	data->map[0] = ft_strdup("1111111");
-	data->map[1] = ft_strdup("10110N1");
+	data->map[1] = ft_strdup("1010101");
 	data->map[2] = ft_strdup("1000001");
-	data->map[3] = ft_strdup("1111111");
-	data->map[4] = NULL;
+	data->map[3] = ft_strdup("1000001");
+	data->map[4] = ft_strdup("100N001");
+	data->map[5] = ft_strdup("1111111");
+	data->map[6] = NULL;
 
+	data->mov = malloc(sizeof(t_mov));
+	data->mov->mov_f = false;
+	data->mov->mov_b = false;
+	data->mov->mov_l = false;
+	data->mov->mov_r = false;
+	data->mov->lookl = false;
+	data->mov->lookr = false;
 	data->player = malloc(sizeof(t_player));
-	data->player->x_pos = 5.5;
-	data->player->y_pos = 1.5;
-	data->player->x_look = 0;
-	data->player->y_look = 0;
+	data->player->x_pos = 4.5;
+	data->player->y_pos = 3.5;
+	data->player->angle = 300;
+	data->player->y_look = cos(data->player->angle * M_PI / 180.0);
+	data->player->x_look = sin(data->player->angle * M_PI / 180.0);
+	printf("x_look %f\ty_look %f\n", data->player->x_look, data->player->y_look);
 
 	return (data);
 }

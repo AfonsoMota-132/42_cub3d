@@ -96,6 +96,7 @@ typedef struct s_mov {
 typedef struct s_data 
 {
 	t_img		*img;
+	t_img		*texture_wall;
 	void		*mlx;
 	void		*win;
 	t_player	*player;

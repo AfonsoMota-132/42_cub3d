@@ -62,8 +62,12 @@ void	ft_player_mov(t_data *data)
 
 }
 
+
 int	ft_frame_render(t_data *data)
 {
+	while (ft_get_time_in_ms() <= data->time_frame)
+		;
+	data->time_frame += 17;
 	ft_player_mov(data);
 	data->ray->dirX = data->player->x_look;
 	data->ray->dirY = data->player->y_look;
@@ -71,10 +75,9 @@ int	ft_frame_render(t_data *data)
 	data->ray->posY = data->player->y_pos;
 	data->ray->planeX = data->ray->dirY * 0.66;
 	data->ray->planeY = -data->ray->dirX * 0.66;
-	ft_set_bg(data);
     for(int x = 0; x < WIN_WIDTH; x += 1)
     {
-		data->ray->cameraX = 2 * x / (double)WIN_WIDTH - 1;
+		data->ray->cameraX = (x << 1) / (double)WIN_WIDTH - 1;
 		data->ray->rayDirX = data->ray->dirX + data->ray->planeX * data->ray->cameraX;
 		data->ray->rayDirY = data->ray->dirY + data->ray->planeY * data->ray->cameraX;
 		data->ray->mapX = (int) data->ray->posX;
@@ -119,41 +122,54 @@ int	ft_frame_render(t_data *data)
 			if(data->map[data->ray->mapX][data->ray->mapY] == '1')
 				data->ray->hit = 1;
 		}
-		// printf("mapY: %d\tmapX: %d\tchar: %c\n", mapY, mapX,data->map[mapX][mapY]);
 		if(data->ray->side == 0) data->ray->perpWallDist = (data->ray->sideDistX - data->ray->deltaDistX);
 		else          data->ray->perpWallDist = (data->ray->sideDistY - data->ray->deltaDistY);
 		data->ray->lineHeight = (int)(WIN_HEIGHT / data->ray->perpWallDist);
-		data->ray->drawStart = -data->ray->lineHeight / 2 + WIN_HEIGHT / 2;
+		data->ray->drawStart = -(data->ray->lineHeight >> 1) + WIN_HEIGHT >> 1;
 		if(data->ray->drawStart < 0)
 			data->ray->drawStart = 0;
-		data->ray->drawEnd = data->ray->lineHeight / 2 + WIN_HEIGHT / 2;
+		data->ray->drawEnd = (data->ray->lineHeight >> 1) + WIN_HEIGHT >> 1;
 		if(data->ray->drawEnd >= WIN_HEIGHT) data->ray->drawEnd = h - 1;
 		data->ray->orien = get_wall_dir(data->ray->side, data->ray->stepX, data->ray->stepY);
-		data->ray->color = 0xFF0000;
-		if (data->ray->orien == 0)       // West wall
-			data->ray->color = 0xFF0000; // Red
-		else if (data->ray->orien == 1)  // East wall
-			data->ray->color = 0x00FF00; // Green
-		else if (data->ray->orien == 2)  // North wall
-			data->ray->color = 0x0000FF; // Blue
-		else                  // South wall
-			data->ray->color = 0xFFFF00; // Yellow
-		while (data->ray->drawStart <= data->ray->drawEnd)
+		double wallX;
+		if (data->ray->side == 0)
+			wallX = data->ray->posY + data->ray->perpWallDist * data->ray->rayDirY;
+		else
+			wallX = data->ray->posX + data->ray->perpWallDist * data->ray->rayDirX;
+		wallX -= floor(wallX);
+
+		int texWidth = data->texture_wall->x;
+		int texHeight = data->texture_wall->y;
+
+		int texX = (int)(wallX * (double)texWidth);
+		if (data->ray->side == 0 && data->ray->rayDirX > 0) texX = texWidth - texX - 1;
+		if (data->ray->side == 1 && data->ray->rayDirY < 0) texX = texWidth - texX - 1;
+
+		double step = 1.0 * texHeight / data->ray->lineHeight;
+		double texPos = (data->ray->drawStart - WIN_HEIGHT / 2 + data->ray->lineHeight / 2) * step;
+
+		// Draw vertical stripe
+		int y = -1;
+		while (++y < data->ray->drawStart)
+			data->img->addr[y * (data->img->size_line >> 2) + x] = data->hex_ceiling;
+
+		while (y <= data->ray->drawEnd)
 		{
-			ft_set_image_pixel(data->img, x, data->ray->drawStart, data->ray->color);
-			data->ray->drawStart++;
+			int texY = (int)texPos & (texHeight - 1);
+			texPos += step;
+			int color = data->texture_wall->addr[texY * (data->texture_wall->size_line >> 2) + texX];
+//			if (data->ray->side == 1)
+//				color = (color >> 1) & 0x7F7F7F;
+
+			data->img->addr[y * (data->img->size_line >> 2) + x] = color;
+			y++;
 		}
+
+		while (y < WIN_HEIGHT)
+			data->img->addr[y++ * (data->img->size_line >> 2) + x] = data->hex_floor;
 	}
 	mlx_put_image_to_window(data->mlx, data->win, data->img->img, 0, 0);
 	return (0);
-}
-
-void	ft_set_image_pixel(t_img *image, int x, int y, int color)
-{
-	int	pixel;
-
-	pixel = y * (image->size_line / 4) + x;
-	image->addr[pixel] = color;
 }
 
 void	init_texture_pixels(t_data *data)
@@ -165,7 +181,7 @@ void	init_texture_pixels(t_data *data)
 	data->tex_pix = ft_calloc(data->win_height + 1,
 			sizeof * data->tex_pix);
 	// 	clean_exit(data, err_msg(NULL, ERR_MALLOC, 1));
-	i = 0;
+	i = -1;
 	while (i < data->win_height)
 	{
 		data->tex_pix[i] = ft_calloc(data->win_width + 1,

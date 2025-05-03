@@ -29,24 +29,6 @@ int	get_wall_dir(int side, int stepX, int stepY)
 			return (3); // Ray moved up (-Y), hit South wall
 	}
 }
-void	ft_set_bg(t_data *data)
-{
-	int x;
-	int	y;
-
-	x = -1;
-	while (++x < WIN_WIDTH)
-	{
-		y = -1;
-		while (++y < WIN_HEIGHT)
-		{
-			if (y > WIN_HEIGHT / 2)
-				ft_set_image_pixel(data->img, x, y, data->hex_floor);
-			else
-				ft_set_image_pixel(data->img, x, y, data->hex_ceiling);
-		}
-	}
-}
 
 int	key_hook_relea(int key, t_data *data)
 {
@@ -67,6 +49,7 @@ int	key_hook_relea(int key, t_data *data)
 int	main(void)
 {
 	t_data *data;
+	int idk = 64;
 
 	data = ft_data_init();
 	data->mlx = mlx_init();
@@ -75,6 +58,9 @@ int	main(void)
 	data->img->addr = (int *)mlx_get_data_addr(data->img->img, &data->img->pixel_bits,
 			&data->img->size_line, &data->img->endian);
 	data->win = mlx_new_window(data->mlx, data->win_width, data->win_height, "cub3d");
+	data->texture_wall = malloc(sizeof(t_img));
+	data->texture_wall->img = mlx_xpm_file_to_image(data->mlx, "mossy.xpm", &data->texture_wall->x, &data->texture_wall->y);
+	data->texture_wall->addr = (int *)mlx_get_data_addr(data->texture_wall->img, &data->texture_wall->pixel_bits, &data->texture_wall->size_line, &data->texture_wall->endian);
 	printf("%c\n", data->map[(int)data->player->x_pos][(int)data->player->y_pos]);
 	mlx_do_key_autorepeatoff(data->mlx);
 	// mlx_do_key_autorepeaton(data->mlx);

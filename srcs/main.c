@@ -57,7 +57,11 @@ int	key_hook_relea(int key, t_data *data)
 	if (key == 115)
 		data->mov->mov_b = false;
 	if (key == 100)
-		data->mov->mov_l = false;
+		data->mov->mov_r = false;
+	if (key == 65361)
+		data->mov->lookl = false;
+	if (key == 65363)
+		data->mov->lookr = false;
 	return (0);
 }
 int	main(void)
@@ -73,6 +77,7 @@ int	main(void)
 	data->win = mlx_new_window(data->mlx, data->win_width, data->win_height, "cub3d");
 	printf("%c\n", data->map[(int)data->player->x_pos][(int)data->player->y_pos]);
 	mlx_do_key_autorepeatoff(data->mlx);
+	// mlx_do_key_autorepeaton(data->mlx);
 	mlx_hook(data->win, 2, 1L<<0, &key_hook_press, data);
 	mlx_hook(data->win, 3, 1L<<1, &key_hook_relea, data);
 	mlx_loop_hook(data->mlx, &ft_frame_render, data);

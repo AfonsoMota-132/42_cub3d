@@ -51,7 +51,7 @@ t_data	*ft_data_init(void)
 	data->player->angle = 300;
 	data->player->y_look = cos(data->player->angle * M_PI / 180.0);
 	data->player->x_look = sin(data->player->angle * M_PI / 180.0);
-	printf("x_look %f\ty_look %f\n", data->player->x_look, data->player->y_look);
+	// printf("x_look %f\ty_look %f\n", data->player->x_look, data->player->y_look);
 
 	return (data);
 }
@@ -65,24 +65,4 @@ void	ft_set_img_def(t_img *img)
 	img->endian = 0;
 }
 
-void	ft_init_ray(t_ray *ray)
-{
-	ray->camera_x = 0;
-	ray->dir_x = 0;
-	ray->dir_y = 0;
-	ray->map_x = 0;
-	ray->map_y = 0;
-	ray->step_x = 0;
-	ray->step_y = 0;
-	ray->sidedist_x = 0;
-	ray->sidedist_y = 0;
-	ray->deltadist_x = 0;
-	ray->deltadist_y = 0;
-	ray->wall_dist = 0;
-	ray->wall_x = 0;
-	ray->side = 0;
-	ray->line_height = 0;
-	ray->draw_start = 0;
-	ray->draw_end = 0;
-}
 

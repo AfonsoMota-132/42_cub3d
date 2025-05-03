@@ -11,91 +11,137 @@
 /* ************************************************************************** */
 
 #include "../../incs/cub3d.h"
+double ft_add_angle(double angle, double delta)
+{
+    angle += delta;
+    if (angle >= 360.0)
+        angle -= 360.0;
+    else if (angle < 0.0)
+        angle += 360.0;
+    return angle;
+}
+
+void	ft_player_rot(t_data *data)
+{
+	if (data->mov->lookl)
+	{
+		data->player->angle = ft_add_angle(data->player->angle, -2.5);
+		data->player->y_look = cos(data->player->angle * M_PI / 180.0);
+		data->player->x_look = sin(data->player->angle * M_PI / 180.0);
+	}
+	if (data->mov->lookr)
+	{
+		data->player->angle = ft_add_angle(data->player->angle, 2.5);
+		data->player->y_look = cos(data->player->angle * M_PI / 180.0);
+		data->player->x_look = sin(data->player->angle * M_PI / 180.0);
+	}
+}
+void	ft_player_mov(t_data *data)
+{
+	ft_player_rot(data);
+	if (data->mov->mov_f)
+	{
+		data->player->x_pos += data->player->x_look * 0.05;
+		data->player->y_pos += data->player->y_look * 0.05;
+	}
+	if (data->mov->mov_b)
+	{
+		data->player->x_pos -= data->player->x_look * 0.05;
+		data->player->y_pos -= data->player->y_look * 0.05;
+	}
+	if (data->mov->mov_l)
+	{
+		data->player->x_pos -= data->player->y_look * 0.05 * 0.66; // change for plane
+		data->player->y_pos += data->player->x_look * 0.05 * 0.66;
+	}
+	if (data->mov->mov_r)
+	{
+		data->player->x_pos += data->player->y_look * 0.05 * 0.66; // change for plane
+		data->player->y_pos -= data->player->x_look * 0.05 * 0.66;
+	}
+
+}
 
 int	ft_frame_render(t_data *data)
 {
-	double dirX = data->player->x_look;
-	double dirY = data->player->y_look;
-	double posX = data->player->x_pos;
-	double posY = data->player->y_pos;
-	double planeX = dirY * 0.66, planeY = -dirX * 0.66;
+	ft_player_mov(data);
+	data->ray->dirX = data->player->x_look;
+	data->ray->dirY = data->player->y_look;
+	data->ray->posX = data->player->x_pos;
+	data->ray->posY = data->player->y_pos;
+	data->ray->planeX = data->ray->dirY * 0.66;
+	data->ray->planeY = -data->ray->dirX * 0.66;
 	ft_set_bg(data);
     for(int x = 0; x < WIN_WIDTH; x += 1)
     {
-		double cameraX = 2 * x / (double)WIN_WIDTH - 1;
-		double rayDirX = dirX + planeX * cameraX;
-		double rayDirY = dirY + planeY * cameraX;
-		int	mapX = (int) posX;
-		int	mapY = (int) posY;
-		double sideDistX;
-		double sideDistY;
-		double perpWallDist;
-		int stepX;
-		int stepY;
-		int hit = 0;
-		int side;
-		double deltaDistX = (rayDirX == 0) ? 1e30 : fabs(1 / rayDirX);
-		double deltaDistY = (rayDirY == 0) ? 1e30 : fabs(1 / rayDirY);
-		if(rayDirX < 0)
+		data->ray->cameraX = 2 * x / (double)WIN_WIDTH - 1;
+		data->ray->rayDirX = data->ray->dirX + data->ray->planeX * data->ray->cameraX;
+		data->ray->rayDirY = data->ray->dirY + data->ray->planeY * data->ray->cameraX;
+		data->ray->mapX = (int) data->ray->posX;
+		data->ray->mapY = (int) data->ray->posY;
+		data->ray->hit = 0;
+		data->ray->deltaDistX = (data->ray->rayDirX == 0) ? 1e30 : fabs(1 / data->ray->rayDirX);
+		data->ray->deltaDistY = (data->ray->rayDirY == 0) ? 1e30 : fabs(1 / data->ray->rayDirY);
+		if(data->ray->rayDirX < 0)
 		{
-			stepX = -1;
-			sideDistX = (posX - mapX) * deltaDistX;
+			data->ray->stepX = -1;
+			data->ray->sideDistX = (data->ray->posX - data->ray->mapX) * data->ray->deltaDistX;
 		}
 		else
 		{
-			stepX = 1;
-			sideDistX = (mapX + 1.0 - posX) * deltaDistX;
+			data->ray->stepX = 1;
+			data->ray->sideDistX = (data->ray->mapX + 1.0 - data->ray->posX) * data->ray->deltaDistX;
 		}
-		if(rayDirY < 0)
+		if(data->ray->rayDirY < 0)
 		{
-			stepY = -1;
-			sideDistY = (posY - mapY) * deltaDistY;
+			data->ray->stepY = -1;
+			data->ray->sideDistY = (data->ray->posY - data->ray->mapY) * data->ray->deltaDistY;
 		}
 		else
 		{
-			stepY = 1;
-			sideDistY = (mapY + 1.0 - posY) * deltaDistY;
+			data->ray->stepY = 1;
+			data->ray->sideDistY = (data->ray->mapY + 1.0 - data->ray->posY) * data->ray->deltaDistY;
 		}
-		while(hit == 0)
+		while(data->ray->hit == 0)
 		{
-			if(sideDistX < sideDistY)
+			if(data->ray->sideDistX < data->ray->sideDistY)
 			{
-				sideDistX += deltaDistX;
-				mapX += stepX;
-				side = 0;
+				data->ray->sideDistX += data->ray->deltaDistX;
+				data->ray->mapX += data->ray->stepX;
+				data->ray->side = 0;
 			}
 			else
 			{
-				sideDistY += deltaDistY;
-				mapY += stepY;
-				side = 1;
+				data->ray->sideDistY += data->ray->deltaDistY;
+				data->ray->mapY += data->ray->stepY;
+				data->ray->side = 1;
 			}
-			if(data->map[mapX][mapY] == '1') hit = 1;
+			if(data->map[data->ray->mapX][data->ray->mapY] == '1')
+				data->ray->hit = 1;
 		}
 		// printf("mapY: %d\tmapX: %d\tchar: %c\n", mapY, mapX,data->map[mapX][mapY]);
-		if(side == 0) perpWallDist = (sideDistX - deltaDistX);
-		else          perpWallDist = (sideDistY - deltaDistY);
-		int lineHeight = (int)(h / perpWallDist);
-		int drawStart = -lineHeight / 2 + WIN_HEIGHT / 2;
-		if(drawStart < 0) drawStart = 0;
-		int drawEnd = lineHeight / 2 + WIN_HEIGHT / 2;
-		if(drawEnd >= h) drawEnd = h - 1;
-		int	color;
-		int	orien;
-		orien = get_wall_dir(side, stepX, stepY);
-		color = 0xFF0000;
-		if (orien == 0)       // West wall
-			color = 0xFF0000; // Red
-		else if (orien == 1)  // East wall
-			color = 0x00FF00; // Green
-		else if (orien == 2)  // North wall
-			color = 0x0000FF; // Blue
+		if(data->ray->side == 0) data->ray->perpWallDist = (data->ray->sideDistX - data->ray->deltaDistX);
+		else          data->ray->perpWallDist = (data->ray->sideDistY - data->ray->deltaDistY);
+		data->ray->lineHeight = (int)(WIN_HEIGHT / data->ray->perpWallDist);
+		data->ray->drawStart = -data->ray->lineHeight / 2 + WIN_HEIGHT / 2;
+		if(data->ray->drawStart < 0)
+			data->ray->drawStart = 0;
+		data->ray->drawEnd = data->ray->lineHeight / 2 + WIN_HEIGHT / 2;
+		if(data->ray->drawEnd >= WIN_HEIGHT) data->ray->drawEnd = h - 1;
+		data->ray->orien = get_wall_dir(data->ray->side, data->ray->stepX, data->ray->stepY);
+		data->ray->color = 0xFF0000;
+		if (data->ray->orien == 0)       // West wall
+			data->ray->color = 0xFF0000; // Red
+		else if (data->ray->orien == 1)  // East wall
+			data->ray->color = 0x00FF00; // Green
+		else if (data->ray->orien == 2)  // North wall
+			data->ray->color = 0x0000FF; // Blue
 		else                  // South wall
-			color = 0xFFFF00; // Yellow
-		while (drawStart <= drawEnd)
+			data->ray->color = 0xFFFF00; // Yellow
+		while (data->ray->drawStart <= data->ray->drawEnd)
 		{
-			ft_set_image_pixel(data->img, x, drawStart, color);
-			drawStart++;
+			ft_set_image_pixel(data->img, x, data->ray->drawStart, data->ray->color);
+			data->ray->drawStart++;
 		}
 	}
 	mlx_put_image_to_window(data->mlx, data->win, data->img->img, 0, 0);

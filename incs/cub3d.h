@@ -56,34 +56,31 @@ typedef struct s_player
 
 typedef struct s_ray
 {
-	int		map_x;
-	int		map_y;
-	float	angle;
-	double	dir_x;
-	double	dir_y;
-	double	camera_x;
-	double	raydir_x;
-	double	raydir_y;
+	double	dirX;
+	double	dirY;
+	double	posX;
+	double	posY;
+	double	planeX;
+	double	planeY;
+	double	cameraX;
+	double	rayDirX;
+	double	rayDirY;
+	int		mapX;
+	int		mapY;
+	double	sideDistX;
+	double	sideDistY;
+	double	deltaDistX;
+	double	deltaDistY;
+	double	perpWallDist;
+	int		stepX;
+	int		stepY;
 	int		hit;
-
-	double	deltadist_x;
-	double	deltadist_y;
-	int		step_x;
-	int		step_y;
-	double	perpwalldist;
-	int		line_height;
-	int		draw_start;
-	int		draw_end;
-	int		tex_x;
-	float	step;
-	float	tex_pos;
-	int		y;
-	
-	double	sidedist_x;
-	double	sidedist_y;
-	double	wall_dist;
-	double	wall_x;
 	int		side;
+	int		lineHeight;
+	int		drawStart;
+	int		drawEnd;
+	int		color;
+	int		orien;
 }	t_ray;
 
 typedef struct s_mov {

@@ -35,10 +35,7 @@ int	key_hook_press(int key, t_data *data)
 	double	next_pos;
 
 	if (key == 65307)
-	{
-		mlx_do_key_autorepeaton(data->mlx);
-		exit(0);
-	}
+		ft_free(0, data);
 	if (key == 119)
 		data->mov->mov_f = true;
 	if (key == 97)

@@ -21,9 +21,11 @@ OBJS = $(SRCS:.c=.o)
 
 HOOKS = srcs/hooks/key_hook.c
 
-RENDER_SRCS = srcs/render/ft_frame_render.c
+RENDER_SRCS =	srcs/render/ft_frame_render.c \
+				srcs/render/ft_render_line.c \
+				srcs/render/ft_render_utils.c
 
-SRCS = srcs/main.c srcs/ft_init.c \
+SRCS = srcs/main.c srcs/ft_init.c srcs/ft_free.c \
 	   $(RENDER_SRCS) $(HOOKS)
 LIBS = ./libs/mlx/libmlx.a ./libs/libft/libft.a
 

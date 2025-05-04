@@ -27,7 +27,6 @@
 
 # define WIN_WIDTH 1280
 # define WIN_HEIGHT 720
-# define h 720
 # define PI 3.14159265358979323846264338327950288419716939937510582097494459230781640628620899862803
 # define BLOCK 25
 
@@ -82,6 +81,9 @@ typedef struct s_ray
 	int		drawEnd;
 	int		color;
 	int		orien;
+	int		texX;
+	double	wallX;
+	double	step;
 }	t_ray;
 
 typedef struct s_mov {
@@ -91,22 +93,39 @@ typedef struct s_mov {
 	bool	mov_r;
 	bool	lookl;
 	bool	lookr;
+	bool	mov;
 } t_mov;
+
+typedef	struct	s_line_improv_render {
+	int		*addr;
+	int		*tex_addr;
+	double	step;
+	double	texPos;
+	int		hex_ceil;
+	int		hex_floor;
+	int		img_sl;
+	int		tex_sl;
+	int		text_y;
+	int		drawEnd;
+	int		drawStart;
+	int		texX;
+	t_img	*tex_wall;
+} t_line_improv_render;
 
 typedef struct s_data 
 {
 	t_img		*img;
-	t_img		*texture_wall;
+	t_img 		*texture_wall;
+	t_img		*tex_north;
+	t_img		*tex_south;
+	t_img		*tex_east;
+	t_img		*tex_west;
 	void		*mlx;
 	void		*win;
 	t_player	*player;
 	t_ray		*ray;
 	t_mov		*mov;
 	char		**map;
-	int			**tex_pix;
-	int			txt2a;
-	int			win_height;
-	int			win_width;
 	int			hex_ceiling;
 	int			hex_floor;
 	double		time_frame;
@@ -115,10 +134,10 @@ typedef struct s_data
 t_data	*ft_data_init(void);
 void	ft_set_img_def(t_img *img);
 void	ft_set_image_pixel(t_img *image, int x, int y, int color);
-int	ft_frame_render(t_data *data);
-void	ft_set_bg(t_data *data);
-int	get_wall_dir(int side, int stepX, int stepY);
-int	key_hook_press(int key, t_data *data);
-double ft_get_time_in_ms();
+int		get_wall_dir(int side, int stepX, int stepY);
+int		key_hook_press(int key, t_data *data);
+double	ft_get_time_in_ms();
+void    ft_free(int exit_flag, t_data *data);
+int		ft_frame_render(t_data *data);
 
 #endif

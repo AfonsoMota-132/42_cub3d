@@ -46,27 +46,14 @@ int	key_hook_relea(int key, t_data *data)
 		data->mov->lookr = false;
 	return (0);
 }
+
 int	main(void)
 {
 	t_data *data;
-	int idk = 64;
 
 	data = ft_data_init();
-	data->mlx = mlx_init();
-	data->img = malloc(sizeof(t_img));
-	data->img->img = mlx_new_image(data->mlx, 1280, 720);
-	data->img->addr = (int *)mlx_get_data_addr(data->img->img, &data->img->pixel_bits,
-			&data->img->size_line, &data->img->endian);
-	data->win = mlx_new_window(data->mlx, data->win_width, data->win_height, "cub3d");
-	data->texture_wall = malloc(sizeof(t_img));
-	data->texture_wall->img = mlx_xpm_file_to_image(data->mlx, "mossy.xpm", &data->texture_wall->x, &data->texture_wall->y);
-	data->texture_wall->addr = (int *)mlx_get_data_addr(data->texture_wall->img, &data->texture_wall->pixel_bits, &data->texture_wall->size_line, &data->texture_wall->endian);
-	printf("%c\n", data->map[(int)data->player->x_pos][(int)data->player->y_pos]);
-	mlx_do_key_autorepeatoff(data->mlx);
-	// mlx_do_key_autorepeaton(data->mlx);
 	mlx_hook(data->win, 2, 1L<<0, &key_hook_press, data);
 	mlx_hook(data->win, 3, 1L<<1, &key_hook_relea, data);
 	mlx_loop_hook(data->mlx, &ft_frame_render, data);
 	mlx_loop(data->mlx);
-	// ft_frame_render(data);
 }

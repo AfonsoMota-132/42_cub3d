@@ -39,7 +39,7 @@ void	ft_free_tex(t_data *data)
 	}
 }
 
-void    ft_free(int exit_flag, t_data *data)
+void	ft_free(int exit_flag, t_data *data)
 {
 	if (data)
 	{
@@ -58,7 +58,7 @@ void    ft_free(int exit_flag, t_data *data)
 			free(data->mov);
 		if (data->map)
 			ft_free_map(data->map);
-		if (data->win)
+		if (data->win && data->mlx)
 			mlx_destroy_window(data->mlx, data->win);
 		if (data->mlx)
 		{
@@ -67,8 +67,9 @@ void    ft_free(int exit_flag, t_data *data)
 		}
 		free(data);
 	}
-	if (exit_flag != -1 && exit_flag >= 0)
+	if (exit_flag != 30 && exit_flag >= 0)
 		exit (exit_flag);
 	ft_printf("Fatal error: failed to malloc\n");
-	exit (1);
+	if (exit_flag != -1)
+		exit (1);
 }

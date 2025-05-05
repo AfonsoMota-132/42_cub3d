@@ -32,6 +32,8 @@ int	get_wall_dir(int side, int stepX, int stepY)
 
 int	key_hook_relea(int key, t_data *data)
 {
+	if (key == 65307)
+		data->mov->exit = true;
 	if (key == 119)
 		data->mov->mov_f = false;
 	if (key == 97)

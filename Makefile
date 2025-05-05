@@ -11,9 +11,8 @@
 # **************************************************************************** #
 
 NAME = cub3d
-CFLAGS = -g
-#-Wall -Wextra -Werror -g
-MLXFLAGS = -L ./libs/minilibx-linux -lm -Ilmlx -lXext -lX11 -lz
+CFLAGS = -g -O3 -Wall -Wextra -Werror
+MLXFLAGS = -L ./libs/minilibx-linux -lm -Ilmlx -lXext -lX11
 CC = cc
 RM = rm -f
 
@@ -40,7 +39,7 @@ mlx:
 	$(MAKE) -C ./libs/mlx/
 
 $(NAME): $(OBJS)
-	$(CC) $(CFLAGS)  $(OBJS) $(LIBS) -o $(NAME) $(MLXFLAGS) -pg
+	$(CC) $(CFLAGS) $(OBJS) $(LIBS) -o $(NAME) $(MLXFLAGS) -g
 
 clean:
 	$(RM) $(OBJS)

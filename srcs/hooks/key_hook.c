@@ -32,10 +32,10 @@ int	verify_outofbounds(t_data *data, double x, double y)
 
 int	key_hook_press(int key, t_data *data)
 {
-	double	next_pos;
 
 	if (key == 65307)
 		ft_free(0, data);
+		// mlx_loop_end(data->mlx);
 	if (key == 119)
 		data->mov->mov_f = true;
 	if (key == 97)

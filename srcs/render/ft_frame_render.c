@@ -21,10 +21,10 @@ void	ft_line_height(t_ray *ray)
 		ray->perpWallDist = (ray->sideDistY
 				- ray->deltaDistY);
 	ray->lineHeight = (int)(WIN_HEIGHT / ray->perpWallDist);
-	ray->drawStart = -(ray->lineHeight >> 1) + WIN_HEIGHT >> 1;
+	ray->drawStart = -(ray->lineHeight >> 1) + (WIN_HEIGHT >> 1);
 	if (ray->drawStart < 0)
 		ray->drawStart = 0;
-	ray->drawEnd = (ray->lineHeight >> 1) + WIN_HEIGHT >> 1;
+	ray->drawEnd = (ray->lineHeight >> 1) + (WIN_HEIGHT >> 1);
 	if (ray->drawEnd >= WIN_HEIGHT)
 		ray->drawEnd = WIN_HEIGHT - 1;
 	ray->orien = get_wall_dir(ray->side, ray->stepX,
@@ -35,6 +35,12 @@ int	ft_frame_render(t_data *data)
 {
 	int	x;
 
+	if (data->mov->exit)
+	{
+		mlx_loop_end(data->mlx);
+		data->mov->exit_main = true;
+		return (1);
+	}
 	ft_pre_render_loop(data, data->ray, data->player);
 	x = -1;
 	while (++x < WIN_WIDTH && data->mov->mov)

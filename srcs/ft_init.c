@@ -35,6 +35,7 @@ t_data	*ft_data_init(void)
 	data->hex_ceiling = 0;
 	data->hex_floor = 0;
 	data->time_frame = 0;
+	data->old_frame = 0;
 
 	data->ray = malloc(sizeof(t_ray));
 	if (!data->ray)
@@ -62,6 +63,8 @@ t_data	*ft_data_init(void)
 	data->mov->lookl = false;
 	data->mov->lookr = false;
 	data->mov->mov = true;
+	data->mov->exit = false;
+	data->mov->exit_main = false;
 	data->player = malloc(sizeof(t_player));
 	if (!data->player)
 		ft_free(-1, data);
@@ -123,7 +126,6 @@ t_data	*ft_data_init(void)
 	if (!data->tex_west->img)
 		ft_free(-1, data);
 	data->tex_west->addr = (int *)mlx_get_data_addr(data->tex_west->img, &data->tex_west->pixel_bits, &data->tex_west->size_line, &data->tex_west->endian);
-	mlx_do_key_autorepeatoff(data->mlx);
 	data->texture_wall = data->tex_north;
 	return (data);
 }

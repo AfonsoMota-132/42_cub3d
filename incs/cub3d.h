@@ -94,6 +94,8 @@ typedef struct s_mov {
 	bool	lookl;
 	bool	lookr;
 	bool	mov;
+	bool	exit;
+	bool	exit_main;
 } t_mov;
 
 typedef	struct	s_line_improv_render {
@@ -129,6 +131,7 @@ typedef struct s_data
 	int			hex_ceiling;
 	int			hex_floor;
 	double		time_frame;
+	double		old_frame;
 } t_data;
 
 t_data	*ft_data_init(void);

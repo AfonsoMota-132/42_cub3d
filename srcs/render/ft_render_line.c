@@ -10,7 +10,7 @@ double	ft_add_angle(double angle, double delta)
 	return (angle);
 }
 
-void	ft_render_line(t_data *data, int x, int y, t_line_improv_render line)
+void	ft_render_line(int x, int y, t_line_improv_render line)
 {
 	while (++y <= WIN_HEIGHT)
 	{
@@ -45,8 +45,7 @@ void	ft_pre_render_line(t_data *data, int x, int y)
 {
 	t_line_improv_render	line;
 
-	if (data->ray->orien == 0)
-		data->texture_wall = data->tex_north;
+	data->texture_wall = data->tex_north;
 	if (data->ray->orien == 1)
 		data->texture_wall = data->tex_south;
 	if (data->ray->orien == 2)
@@ -54,6 +53,7 @@ void	ft_pre_render_line(t_data *data, int x, int y)
 	if (data->ray->orien == 3)
 		data->texture_wall = data->tex_east;
 	ft_ray_render_line(data);
+	line.addr = data->img->addr;
 	line.step = 1.0 * data->texture_wall->y / data->ray->lineHeight;
 	line.texPos = (data->ray->drawStart - (WIN_HEIGHT >> 1)
 			+ (data->ray->lineHeight >> 1)) * line.step;
@@ -62,10 +62,9 @@ void	ft_pre_render_line(t_data *data, int x, int y)
 	line.img_sl = (data->img->size_line >> 2);
 	line.tex_sl = data->texture_wall->size_line >> 2;
 	line.text_y = data->texture_wall->y - 1;
-	line.addr = data->img->addr;
 	line.tex_addr = data->texture_wall->addr;
 	line.drawEnd = data->ray->drawEnd;
 	line.drawStart = data->ray->drawStart;
 	line.texX = data->ray->texX;
-	ft_render_line(data, x, y, line);
+	ft_render_line(x, y, line);
 }

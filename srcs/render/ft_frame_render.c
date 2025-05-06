@@ -43,6 +43,7 @@ int	ft_frame_render(t_data *data)
 	}
 	ft_pre_render_loop(data, data->ray, data->player);
 	x = -1;
+	printf("%f\n", ft_get_time_in_ms());
 	while (++x < WIN_WIDTH && data->mov->mov)
 	{
 		ft_set_ray_loop(data->ray, x);

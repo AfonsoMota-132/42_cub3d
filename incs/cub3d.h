@@ -6,7 +6,7 @@
 /*   By: afogonca <afogonca@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/22 08:50:49 by afogonca          #+#    #+#             */
-/*   Updated: 2025/04/26 09:52:52 by afogonca         ###   ########.pt       */
+/*   Updated: 2025/05/06 09:33:51 by afogonca         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -139,8 +139,13 @@ void	ft_set_img_def(t_img *img);
 void	ft_set_image_pixel(t_img *image, int x, int y, int color);
 int		get_wall_dir(int side, int stepX, int stepY);
 int		key_hook_press(int key, t_data *data);
+int		key_hook_relea(int key, t_data *data);
 double	ft_get_time_in_ms();
 void    ft_free(int exit_flag, t_data *data);
 int		ft_frame_render(t_data *data);
+void	ft_mov_set_def(t_mov *mov);
+void	ft_data_set_def(t_data *data);
+void	ft_win_start(t_data *data);
+void	ft_start_tex(t_data *data, t_img *img, char *file);
 
 #endif

@@ -1,4 +1,34 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   ft_render_utils.c                                  :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: afogonca <afogonca@student.42porto.com>    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/05/06 09:30:03 by afogonca          #+#    #+#             */
+/*   Updated: 2025/05/06 09:32:34 by afogonca         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "ft_render.h"
+
+int	get_wall_dir(int side, int stepX, int stepY)
+{
+	if (side == 0)
+	{
+		if (stepX > 0)
+			return (0);
+		else
+			return (1);
+	}
+	else
+	{
+		if (stepY > 0)
+			return (2);
+		else
+			return (3);
+	}
+}
 
 void	ft_player_rot(t_data *data)
 {
@@ -16,35 +46,6 @@ void	ft_player_rot(t_data *data)
 		data->player->y_look = cos(data->player->angle * M_PI / 180.0);
 		data->player->x_look = sin(data->player->angle * M_PI / 180.0);
 	}
-}
-
-void	ft_player_mov(t_data *data)
-{
-	ft_player_rot(data);
-	if (data->mov->mov_f)
-	{
-		data->mov->mov = true;
-		data->player->x_pos += data->player->x_look * 0.05;
-		data->player->y_pos += data->player->y_look * 0.05;
-	}
-	if (data->mov->mov_b)
-	{
-		data->mov->mov = true;
-		data->player->x_pos -= data->player->x_look * 0.05;
-		data->player->y_pos -= data->player->y_look * 0.05;
-	}
-	if (data->mov->mov_l)
-	{
-		data->mov->mov = true;
-		data->player->x_pos -= data->ray->planeX * 0.05;
-		data->player->y_pos -= data->ray->planeY * 0.05;
-	}
-	if (data->mov->mov_r)
-	{
-		data->mov->mov = true;
-		data->player->x_pos += data->ray->planeX * 0.05;
-		data->player->y_pos += data->ray->planeY * 0.05;
-	}	
 }
 
 void	ft_ray_dir(t_ray *ray)
@@ -77,7 +78,8 @@ void	ft_ray_dir(t_ray *ray)
 
 void	ft_set_ray_loop(t_ray *ray, int x)
 {
-	ray->cameraX = (2 * x / (double)WIN_WIDTH - 1) * ((double)WIN_WIDTH / WIN_HEIGHT);
+	ray->cameraX = (2 * x / (double)WIN_WIDTH - 1)
+		* ((double)WIN_WIDTH / WIN_HEIGHT);
 	ray->rayDirX = ray->dirX + ray->planeX
 		* ray->cameraX;
 	ray->rayDirY = ray->dirY + ray->planeY

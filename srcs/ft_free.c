@@ -1,3 +1,14 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   ft_free.c                                          :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: afogonca <afogonca@student.42porto.com>    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/05/06 09:34:57 by afogonca          #+#    #+#             */
+/*   Updated: 2025/05/06 09:36:36 by afogonca         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
 
 #include "../incs/cub3d.h"
 
@@ -39,37 +50,39 @@ void	ft_free_tex(t_data *data)
 	}
 }
 
+void	ft_free_data(t_data *data)
+{
+	if (data->img)
+	{
+		if (data->img->img)
+			mlx_destroy_image(data->mlx, data->img->img);
+		free(data->img);
+	}
+	ft_free_tex(data);
+	if (data->player)
+		free(data->player);
+	if (data->ray)
+		free(data->ray);
+	if (data->mov)
+		free(data->mov);
+	if (data->map)
+		ft_free_map(data->map);
+	if (data->win && data->mlx)
+		mlx_destroy_window(data->mlx, data->win);
+	if (data->mlx)
+	{
+		mlx_destroy_display(data->mlx);
+		free(data->mlx);
+	}
+	free(data);
+}
+
 void	ft_free(int exit_flag, t_data *data)
 {
 	if (data)
-	{
-		if (data->img)
-		{
-			if (data->img->img)
-				mlx_destroy_image(data->mlx, data->img->img);
-			free(data->img);
-		}
-		ft_free_tex(data);
-		if (data->player)
-			free(data->player);
-		if (data->ray)
-			free(data->ray);
-		if (data->mov)
-			free(data->mov);
-		if (data->map)
-			ft_free_map(data->map);
-		if (data->win && data->mlx)
-			mlx_destroy_window(data->mlx, data->win);
-		if (data->mlx)
-		{
-			mlx_destroy_display(data->mlx);
-			free(data->mlx);
-		}
-		free(data);
-	}
-	if (exit_flag != 30 && exit_flag >= 0)
+		ft_free_data(data);
+	if (exit_flag != -1 && exit_flag >= 0)
 		exit (exit_flag);
 	ft_printf("Fatal error: failed to malloc\n");
-	if (exit_flag != -1)
-		exit (1);
+	exit (1);
 }

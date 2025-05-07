@@ -39,21 +39,21 @@ void	ft_render_line(int x, int y, t_line_improv_render line)
 	}
 }
 
-void	ft_ray_render_line(t_data *data)
+void	ft_ray_render_line(t_ray *ray, t_data *data)
 {
-	data->ray->wallX = (data->ray->posY + data->ray->perpWallDist
-			* data->ray->rayDirY) * (data->ray->side == 0)
-		+ (data->ray->posX + data->ray->perpWallDist * data->ray->rayDirX)
-		* (data->ray->side != 0);
-	data->ray->wallX -= floor(data->ray->wallX);
-	data->ray->texX = (int)(data->ray->wallX * (double)data->texture_wall->x);
-	data->ray->texX = data->ray->texX + ((data->ray->side == 0
-				&& data->ray->rayDirX > 0) || (data->ray->side == 1
-				&& data->ray->rayDirY < 0)) * (data->texture_wall->x
-			- data->ray->texX - data->ray->texX - 1);
+	ray->wallX = (ray->posY + ray->perpWallDist
+		* ray->rayDirY) * (ray->side == 0)
+	+ (ray->posX + ray->perpWallDist * ray->rayDirX)
+	* (ray->side != 0);
+	ray->wallX -= floor(ray->wallX);
+	ray->texX = (int)(ray->wallX * (double)data->texture_wall->x);
+	ray->texX = ray->texX + ((ray->side == 0
+				&& ray->rayDirX > 0) || (ray->side == 1
+				&& ray->rayDirY < 0)) * (data->texture_wall->x
+			- ray->texX - ray->texX - 1);
 }
 
-void	ft_pre_render_line(t_data *data, int x, int y)
+void	ft_pre_render_line(t_data *data, t_ray *ray, int x, int y)
 {
 	t_line_improv_render	line;
 
@@ -64,19 +64,19 @@ void	ft_pre_render_line(t_data *data, int x, int y)
 		data->texture_wall = data->tex_west;
 	if (data->ray->orien == 3)
 		data->texture_wall = data->tex_east;
-	ft_ray_render_line(data);
+	ft_ray_render_line(ray, data);
 	line.addr = data->img->addr;
-	line.step = 1.0 * data->texture_wall->y / data->ray->lineHeight;
-	line.texPos = (data->ray->drawStart - (WIN_HEIGHT >> 1)
-			+ (data->ray->lineHeight >> 1)) * line.step;
+	line.step = 1.0 * data->texture_wall->y / ray->lineHeight;
+	line.texPos = (ray->drawStart - (WIN_HEIGHT >> 1)
+			+ (ray->lineHeight >> 1)) * line.step;
 	line.hex_ceil = data->hex_ceiling;
 	line.hex_floor = data->hex_floor;
 	line.img_sl = (data->img->size_line >> 2);
 	line.tex_sl = data->texture_wall->size_line >> 2;
 	line.text_y = data->texture_wall->y - 1;
 	line.tex_addr = data->texture_wall->addr;
-	line.drawEnd = data->ray->drawEnd;
-	line.drawStart = data->ray->drawStart;
-	line.texX = data->ray->texX;
+	line.drawEnd = ray->drawEnd;
+	line.drawStart = ray->drawStart;
+	line.texX = ray->texX;
 	ft_render_line(x, y, line);
 }

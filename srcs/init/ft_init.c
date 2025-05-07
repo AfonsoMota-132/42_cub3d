@@ -42,14 +42,15 @@ t_data	*ft_data_init(void)
 	if (!data->mov)
 		ft_free(-1, data);
 	ft_mov_set_def(data->mov);
-	data->player = malloc(sizeof(t_player));
-	if (!data->player)
+	data->player1 = malloc(sizeof(t_player));
+	if (!data->player1)
 		ft_free(-1, data);
-	data->player->x_pos = 4.5;
-	data->player->y_pos = 3.5;
-	data->player->angle = 300;
-	data->player->y_look = cos(data->player->angle * M_PI / 180.0);
-	data->player->x_look = sin(data->player->angle * M_PI / 180.0);
+	data->player1->x_pos = 4.5;
+	data->player1->y_pos = 3.5;
+	data->player1->angle = 300;
+	data->player1->y_look = cos(data->player1->angle * M_PI / 180.0);
+	data->player1->x_look = sin(data->player1->angle * M_PI / 180.0);
+	data->player = data->player1;
 	data->time_frame = ft_get_time_in_ms() + 17;
 	ft_win_start(data);
 
@@ -72,6 +73,19 @@ t_data	*ft_data_init(void)
 	if (!data->tex_west)
 		ft_free(-1, data);
 	ft_start_tex(data, data->tex_west, "west.xpm");
+
+
+	data->nbr_threads = 4;
+	data->tdata = malloc(sizeof(t_thread_data) * data->nbr_threads + 1);
+	data->thread = malloc(sizeof(pthread_t) * data->nbr_threads + 1);
+	int	i = -1;
+	while (++i < data->nbr_threads)
+	{
+		data->tdata[i].ray = malloc(sizeof(t_ray));
+    	data->tdata[i].data = data;
+    	data->tdata[i].start_x = i * WIN_WIDTH / data->nbr_threads;
+    	data->tdata[i].end_x = (i + 1) * WIN_WIDTH / data->nbr_threads;
+	}
 	return (data);
 }
 
@@ -109,7 +123,7 @@ void	ft_win_start(t_data *data)
 	if (!data->img)
 		ft_free(-1, data);
 	data->img->img = NULL;
-	data->img->img = mlx_new_image(data->mlx, 1280, 720);
+	data->img->img = mlx_new_image(data->mlx, WIN_WIDTH, WIN_HEIGHT);
 	if (!data->img->img)
 		ft_free(-1, data);
 	data->img->addr = (int *)mlx_get_data_addr(data->img->img, &data->img->pixel_bits,

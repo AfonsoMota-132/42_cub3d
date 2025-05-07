@@ -24,9 +24,10 @@
 # include <math.h>
 # include <stdbool.h>
 # include <sys/time.h>
+# include <pthread.h>
 
-# define WIN_WIDTH 1280
-# define WIN_HEIGHT 720
+# define WIN_WIDTH 3840
+# define WIN_HEIGHT 2160
 # define PI 3.14159265358979323846264338327950288419716939937510582097494459230781640628620899862803
 # define BLOCK 25
 
@@ -34,6 +35,7 @@
 # define SOUTH 2
 # define WEST 3
 # define EAST 4
+
 typedef struct s_img
 {
 	void	*img;
@@ -45,6 +47,7 @@ typedef struct s_img
 	int		endian;
 
 }			t_img;
+
 typedef struct s_player 
 {
 	float	x_pos;
@@ -116,23 +119,36 @@ typedef	struct	s_line_improv_render {
 
 typedef struct s_data 
 {
-	t_img		*img;
-	t_img 		*texture_wall;
-	t_img		*tex_north;
-	t_img		*tex_south;
-	t_img		*tex_east;
-	t_img		*tex_west;
-	void		*mlx;
-	void		*win;
-	t_player	*player;
-	t_ray		*ray;
-	t_mov		*mov;
-	char		**map;
-	int			hex_ceiling;
-	int			hex_floor;
-	double		time_frame;
-	double		old_frame;
+	t_img					*img;
+	t_img 					*texture_wall;
+	t_img					*tex_north;
+	t_img					*tex_south;
+	t_img					*tex_east;
+	t_img					*tex_west;
+	void					*mlx;
+	void					*win;
+	t_player				*player;
+	t_player				*player1;
+	t_ray					*ray;
+	t_mov					*mov;
+	char					**map;
+	int						hex_ceiling;
+	int						hex_floor;
+	double					time_frame;
+	double					old_frame;
+	double					fps;
+	int						nbr_threads;
+	pthread_t				*thread;
+	struct s_thread_data	*tdata;
 } t_data;
+
+typedef struct s_thread_data
+{
+	t_data	*data;
+	t_ray	*ray;
+	int		start_x;
+	int		end_x;
+}   t_thread_data;
 
 t_data	*ft_data_init(void);
 void	ft_set_img_def(t_img *img);

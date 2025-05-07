@@ -12,24 +12,6 @@
 
 #include "ft_render.h"
 
-int	get_wall_dir(int side, int stepX, int stepY)
-{
-	if (side == 0)
-	{
-		if (stepX > 0)
-			return (0);
-		else
-			return (1);
-	}
-	else
-	{
-		if (stepY > 0)
-			return (2);
-		else
-			return (3);
-	}
-}
-
 void	ft_player_rot(t_data *data)
 {
 	if (data->mov->lookl)
@@ -93,12 +75,8 @@ void	ft_set_ray_loop(t_ray *ray, int x)
 				+ (ray->rayDirY == 0) * 1e-30));
 }
 
-void	ft_pre_render_loop(t_data *data, t_ray *ray, t_player *player)
+void	ft_pre_render_loop(t_ray *ray, t_player *player)
 {
-	while (ft_get_time_in_ms() <= data->time_frame)
-		;
-	data->time_frame += 17;
-	ft_player_mov(data);
 	ray->dirX = player->x_look;
 	ray->dirY = player->y_look;
 	ray->posX = player->x_pos;

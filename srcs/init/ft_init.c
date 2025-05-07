@@ -33,7 +33,7 @@ t_data	*ft_data_init(void)
 		ft_free(-1, data);
 	data->map[0] = ft_strdup("1111111");
 	data->map[1] = ft_strdup("1010101");
-	data->map[2] = ft_strdup("1000001");
+	data->map[2] = ft_strdup("100E001");
 	data->map[3] = ft_strdup("1000001");
 	data->map[4] = ft_strdup("100N001");
 	data->map[5] = ft_strdup("1111111");
@@ -74,6 +74,10 @@ t_data	*ft_data_init(void)
 		ft_free(-1, data);
 	ft_start_tex(data, data->tex_west, "west.xpm");
 
+	data->tex_enemy = malloc(sizeof(t_img));
+	if (!data->tex_enemy)
+		ft_free(-1, data);
+	ft_start_tex(data, data->tex_enemy, "enemy.xpm");
 
 	data->nbr_threads = 4;
 	data->tdata = malloc(sizeof(t_thread_data) * data->nbr_threads + 1);

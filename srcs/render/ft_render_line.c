@@ -58,11 +58,11 @@ void	ft_pre_render_line(t_data *data, t_ray *ray, int x, int y)
 	t_line_improv_render	line;
 
 	data->texture_wall = data->tex_north;
-	if (data->ray->orien == 1)
+	if (ray->orien == 1)
 		data->texture_wall = data->tex_south;
-	if (data->ray->orien == 2)
+	if (ray->orien == 2)
 		data->texture_wall = data->tex_west;
-	if (data->ray->orien == 3)
+	if (ray->orien == 3)
 		data->texture_wall = data->tex_east;
 	ft_ray_render_line(ray, data);
 	line.addr = data->img->addr;

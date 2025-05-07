@@ -58,6 +58,7 @@ int	ft_frame_render(t_data *data)
 	data->time_frame = ft_get_time_in_ms() + 16.6;
 	data->fps = 1000 / (ft_get_time_in_ms() - data->old_frame);
 	data->old_frame = ft_get_time_in_ms();
+	ft_pre_render_loop(data->ray, data->player);
 	ft_player_mov(data);
 	i = -1;
 	while (data->mov->mov && ++i < data->nbr_threads)
@@ -68,10 +69,21 @@ int	ft_frame_render(t_data *data)
 	i = -1;
 	while (data->mov->mov && ++i < data->nbr_threads)
 		pthread_join(data->thread[i], NULL);
-	ft_pre_render_loop(data->tdata[1].ray, data->player);
+	
+		//   int x = - 1;
+		//
+		//   while (++x < WIN_WIDTH)
+		//   {
+		//       ft_set_ray_loop(data->ray, x);
+		//       ft_ray_dir(data->ray);
+		//       ft_dda_enemy(data->ray, data);
+		// if (data->ray->hit == 2)
+		// {
+		//       	ft_line_height(data->ray);
+		//       	ft_pre_render_line(data, data->ray, x, -1);
+		// }
+		//   }
 	mlx_put_image_to_window(data->mlx, data->win, data->img->img, 0, 0);
-	char			*str = ft_itoa((int) data->fps);
-	mlx_string_put(data->mlx, data->win, 5, 10, 0xFF00FF, str);
 	return (0);
 }
 

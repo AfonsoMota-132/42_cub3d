@@ -26,8 +26,8 @@
 # include <sys/time.h>
 # include <pthread.h>
 
-# define WIN_WIDTH 3840
-# define WIN_HEIGHT 2160
+# define WIN_WIDTH 960
+# define WIN_HEIGHT 540
 # define PI 3.14159265358979323846264338327950288419716939937510582097494459230781640628620899862803
 # define BLOCK 25
 
@@ -125,6 +125,7 @@ typedef struct s_data
 	t_img					*tex_south;
 	t_img					*tex_east;
 	t_img					*tex_west;
+	t_img					*tex_enemy;
 	void					*mlx;
 	void					*win;
 	t_player				*player;

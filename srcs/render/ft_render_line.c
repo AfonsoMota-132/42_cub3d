@@ -67,7 +67,7 @@ void	ft_pre_render_line(t_data *data, t_ray *ray, int x, int y)
 	ft_ray_render_line(ray, data);
 	line.addr = data->img->addr;
 	line.step = 1.0 * data->texture_wall->y / ray->lineHeight;
-	line.texPos = (ray->drawStart - (WIN_HEIGHT >> 1)
+	line.texPos = (ray->drawStart - data->player->angle_y - (WIN_HEIGHT >> 1)
 			+ (ray->lineHeight >> 1)) * line.step;
 	line.hex_ceil = data->hex_ceiling;
 	line.hex_floor = data->hex_floor;

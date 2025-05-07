@@ -90,6 +90,7 @@ t_data	*ft_data_init(void)
     	data->tdata[i].start_x = i * WIN_WIDTH / data->nbr_threads;
     	data->tdata[i].end_x = (i + 1) * WIN_WIDTH / data->nbr_threads;
 	}
+	data->player->angle_y = -360;
 	return (data);
 }
 
@@ -108,11 +109,17 @@ void	ft_mov_set_def(t_mov *mov)
 	mov->mov_b = false;
 	mov->mov_l = false;
 	mov->mov_r = false;
-	mov->lookl = false;
-	mov->lookr = false;
 	mov->mov = true;
 	mov->exit = false;
 	mov->exit_main = false;
+	mov->lookl = false;
+	mov->lookr = false;
+	mov->looku = false;
+	mov->lookd = false;
+	mov->lookml = 0;
+	mov->lookmr = 0;
+	mov->lookmu = 0;
+	mov->lookmd = 0;
 }
 
 void	ft_win_start(t_data *data)

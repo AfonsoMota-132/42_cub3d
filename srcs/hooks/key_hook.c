@@ -15,7 +15,7 @@
 int	key_hook_press(int key, t_data *data)
 {
 	if (key == 65307)
-		ft_free(0, data);
+		mlx_loop_end(data->mlx);
 	if (key == 119)
 		data->mov->mov_f = true;
 	if (key == 97)
@@ -26,8 +26,12 @@ int	key_hook_press(int key, t_data *data)
 		data->mov->mov_r = true;
 	if (key == 65361)
 		data->mov->lookl = true;
+	if (key == 65362)
+		data->mov->looku = true;
 	if (key == 65363)
 		data->mov->lookr = true;
+	if (key == 65364)
+		data->mov->lookd = true;
 	return (0);
 }
 
@@ -45,7 +49,11 @@ int	key_hook_relea(int key, t_data *data)
 		data->mov->mov_r = false;
 	if (key == 65361)
 		data->mov->lookl = false;
+	if (key == 65362)
+		data->mov->looku = false;
 	if (key == 65363)
 		data->mov->lookr = false;
+	if (key == 65364)
+		data->mov->lookd = false;
 	return (0);
 }

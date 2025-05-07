@@ -12,7 +12,7 @@
 
 #include "ft_render.h"
 
-void	ft_line_height(t_ray *ray)
+void	ft_line_height(t_ray *ray, t_data *data)
 {
 	if (ray->side == 0)
 		ray->perpWallDist = (ray->sideDistX
@@ -21,10 +21,10 @@ void	ft_line_height(t_ray *ray)
 		ray->perpWallDist = (ray->sideDistY
 				- ray->deltaDistY);
 	ray->lineHeight = (int)(WIN_HEIGHT / ray->perpWallDist);
-	ray->drawStart = -(ray->lineHeight >> 1) + (WIN_HEIGHT >> 1);
+	ray->drawStart = -(ray->lineHeight >> 1) + (WIN_HEIGHT >> 1) + data->player->angle_y;
 	if (ray->drawStart < 0)
 		ray->drawStart = 0;
-	ray->drawEnd = (ray->lineHeight >> 1) + (WIN_HEIGHT >> 1);
+	ray->drawEnd = (ray->lineHeight >> 1) + (WIN_HEIGHT >> 1) + data->player->angle_y;
 	if (ray->drawEnd >= WIN_HEIGHT)
 		ray->drawEnd = WIN_HEIGHT - 1;
 	if (ray->side == 0)
@@ -43,7 +43,7 @@ void *thread_render(void *arg)
         ft_set_ray_loop(tdata->ray, x);
         ft_ray_dir(tdata->ray);
         ft_dda(tdata->ray, tdata->data);
-        ft_line_height(tdata->ray);
+        ft_line_height(tdata->ray, tdata->data);
         ft_pre_render_line(tdata->data, tdata->ray, x, -1);
     }
     return (NULL);

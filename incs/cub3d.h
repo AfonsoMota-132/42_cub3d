@@ -25,6 +25,7 @@
 # include <stdbool.h>
 # include <sys/time.h>
 # include <pthread.h>
+// # include "../srcs/render/ft_render.h"
 
 # define WIN_WIDTH 960
 # define WIN_HEIGHT 540
@@ -55,6 +56,7 @@ typedef struct s_player
 	float	y_look;
 	float	x_look;
 	float	angle;
+	int		angle_y;
 } t_player;
 
 typedef struct s_ray
@@ -99,6 +101,12 @@ typedef struct s_mov {
 	bool	mov;
 	bool	exit;
 	bool	exit_main;
+	bool	looku;
+	bool	lookd;
+    int		lookml;
+	int		lookmr;
+	int		lookmu;
+	int		lookmd;
 } t_mov;
 
 typedef	struct	s_line_improv_render {
@@ -164,5 +172,7 @@ void	ft_mov_set_def(t_mov *mov);
 void	ft_data_set_def(t_data *data);
 void	ft_win_start(t_data *data);
 void	ft_start_tex(t_data *data, t_img *img, char *file);
+double	ft_add_angle(double angle, double delta);
+void	ft_player_lookul(t_player *player, int angle);
 
 #endif

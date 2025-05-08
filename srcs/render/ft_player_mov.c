@@ -17,6 +17,20 @@ void	ft_player_mov(t_data *data)
 	ft_player_rot(data);
 	ft_player_mov_fb(data);
 	ft_player_mov_lr(data);
+	if ((data->mov->mov && data->map[(int) data->player->x_pos][ (int) data->player->y_pos] != 'E')
+	|| (data->mov->mov && data->map[(int) data->player->x_pos][ (int) data->player->y_pos] != 'P'))
+	{
+		if (data->mov->mov && data->map[(int) data->player->x_pos][ (int) data->player->y_pos] != 'E')
+			data->map[(int) data->player->x_pos][(int) data->player->y_pos] = 'P';
+		if (data->map[(int) data->player->x_pos + 1][(int) data->player->y_pos] == 'P')
+			data->map[(int) data->player->x_pos + 1][(int) data->player->y_pos] = '0';
+		if (data->map[(int) data->player->x_pos - 1][(int) data->player->y_pos] == 'P')
+			data->map[(int) data->player->x_pos - 1][(int) data->player->y_pos] = '0';	
+		if (data->map[(int) data->player->x_pos][(int) data->player->y_pos + 1] == 'P')
+			data->map[(int) data->player->x_pos][(int) data->player->y_pos + 1] = '0';
+		if (data->map[(int) data->player->x_pos][(int) data->player->y_pos - 1] == 'P')
+			data->map[(int) data->player->x_pos][(int) data->player->y_pos - 1] = '0';
+	}
 }
 
 void	ft_player_mov_fb(t_data *data)

@@ -125,7 +125,14 @@ typedef	struct	s_line_improv_render {
 	t_img	*tex_wall;
 } t_line_improv_render;
 
-typedef struct s_data 
+typedef struct	s_enemy 
+{
+	t_player		*data;
+	char			map;
+	struct s_enemy	*next;
+} t_enemy;
+
+typedef struct	s_data 
 {
 	t_img					*img;
 	t_img 					*texture_wall;
@@ -138,7 +145,8 @@ typedef struct s_data
 	void					*win;
 	t_player				*player;
 	t_player				*player1;
-	t_player				*enemy;
+	t_enemy					*enemy;
+	t_enemy					*enemy_start;
 	t_ray					*ray;
 	t_mov					*mov;
 	char					**map;
@@ -149,6 +157,7 @@ typedef struct s_data
 	double					fps;
 	int						nbr_threads;
 	pthread_t				*thread;
+	double					zbuffer[WIN_WIDTH];
 	struct s_thread_data	*tdata;
 } t_data;
 

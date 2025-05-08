@@ -24,6 +24,8 @@ double	ft_add_angle(double angle, double delta)
 
 void	ft_render_line(int x, int y, t_line_improv_render line)
 {
+	int	color;
+
 	while (++y <= WIN_HEIGHT)
 	{
 		if (y < line.drawStart)
@@ -33,8 +35,10 @@ void	ft_render_line(int x, int y, t_line_improv_render line)
 		else
 		{
 			line.texPos += line.step;
-			line.addr[y * line.img_sl + x] = line.tex_addr[((int)line.texPos
+			color = line.tex_addr[((int)line.texPos
 					& (line.text_y)) * (line.tex_sl) + line.texX];
+			if (color)
+				line.addr[y * line.img_sl + x] = color; 
 		}
 	}
 }

@@ -52,6 +52,14 @@ t_data	*ft_data_init(void)
 	data->player1->x_look = sin(data->player1->angle * M_PI / 180.0);
 	data->player = data->player1;
 	data->time_frame = ft_get_time_in_ms() + 17;
+	data->enemy = malloc(sizeof(t_player));
+	if (!data->enemy)
+		ft_free(-1, data);
+	data->enemy->x_pos = 4.5;
+	data->enemy->y_pos = 3.5;
+	data->enemy->angle = 300;
+	data->enemy->y_look = cos(data->enemy->angle * M_PI / 180.0);
+	data->enemy->x_look = sin(data->enemy->angle * M_PI / 180.0);
 	ft_win_start(data);
 
 	data->tex_north = malloc(sizeof(t_img));
@@ -90,7 +98,7 @@ t_data	*ft_data_init(void)
     	data->tdata[i].start_x = i * WIN_WIDTH / data->nbr_threads;
     	data->tdata[i].end_x = (i + 1) * WIN_WIDTH / data->nbr_threads;
 	}
-	data->player->angle_y = -360;
+	data->player->angle_y = 0;
 	return (data);
 }
 

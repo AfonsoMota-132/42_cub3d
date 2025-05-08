@@ -27,8 +27,8 @@
 # include <pthread.h>
 // # include "../srcs/render/ft_render.h"
 
-# define WIN_WIDTH 960
-# define WIN_HEIGHT 540
+# define WIN_WIDTH 1920
+# define WIN_HEIGHT 1080
 # define PI 3.14159265358979323846264338327950288419716939937510582097494459230781640628620899862803
 # define BLOCK 25
 
@@ -138,6 +138,7 @@ typedef struct s_data
 	void					*win;
 	t_player				*player;
 	t_player				*player1;
+	t_player				*enemy;
 	t_ray					*ray;
 	t_mov					*mov;
 	char					**map;

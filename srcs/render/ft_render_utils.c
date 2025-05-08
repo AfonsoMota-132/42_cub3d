@@ -26,7 +26,7 @@ void	ft_player_rot(t_data *data)
 	if (data->mov->lookl || data->mov->lookml)
 	{
 		data->mov->mov = true;
-		data->player->angle = ft_add_angle(data->player->angle, -2.5);
+		data->player->angle = ft_add_angle(data->player->angle, -1.5);
 		data->player->y_look = cos(data->player->angle * M_PI / 180.0);
 		data->player->x_look = sin(data->player->angle * M_PI / 180.0);
 		if (data->mov->lookml)
@@ -47,7 +47,7 @@ void	ft_player_rot(t_data *data)
 	if (data->mov->lookr || data->mov->lookmr)
 	{
 		data->mov->mov = true;
-		data->player->angle = ft_add_angle(data->player->angle, 2.5);
+		data->player->angle = ft_add_angle(data->player->angle, 1.5);
 		data->player->y_look = cos(data->player->angle * M_PI / 180.0);
 		data->player->x_look = sin(data->player->angle * M_PI / 180.0);
 		if (data->mov->lookmr)

@@ -29,7 +29,8 @@ void	ft_dda_enemy(t_ray *ray, t_data *data)
 			ray->side = 1;
 		}
 		if (data->map[ray->mapX][ray->mapY] == 'E')
-			ray->hit = 2;
+			if (ray->hit == 0)
+				ray->hit = 2;
 		if (data->map[ray->mapX][ray->mapY] == '1')
 			ray->hit = 1;
 	}

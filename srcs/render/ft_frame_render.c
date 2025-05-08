@@ -126,20 +126,18 @@ void	ft_pre_render_line_enemy(t_data *data, t_ray *ray, int x, int y)
 
 void ft_render_enemy_sprite(t_data *data, t_ray *ray, double enemyX, double enemyY)
 {
-
-double dirX = data->player->x_look;
-double dirY = data->player->y_look;
-double planeX = ray->planeX;
-double planeY = ray->planeY;
+	double dirX = data->player->x_look;
+	double dirY = data->player->y_look;
+	double planeX = ray->planeX;
+	double planeY = ray->planeY;
     double spriteX = enemyX - data->ray->posX;
     double spriteY = enemyY - data->ray->posY;
 
-double invDet = 1.0 / (planeX * dirY - dirX * planeY);
-
-// Correct transform
-double transformX = invDet * (dirY * spriteX - dirX * spriteY);
-double transformY = invDet * (-planeY * spriteX + planeX * spriteY);
-// int spriteScreenX = (int)((WIN_WIDTH / 2) * (1 + transformX / transformY));
+	double invDet = 1.0 / (planeX * dirY - dirX * planeY);
+	
+	// Correct transform
+	double transformX = invDet * (dirY * spriteX - dirX * spriteY);
+	double transformY = invDet * (-planeY * spriteX + planeX * spriteY);
 	int spriteScreenX = (int)((WIN_WIDTH / 2) + (transformX / transformY) * (WIN_WIDTH / 4));
     int spriteHeight = abs((int)(WIN_HEIGHT / transformY));
     int drawStartY = -spriteHeight / 2 + WIN_HEIGHT / 2 + data->player->angle_y;
@@ -181,7 +179,7 @@ int	ft_frame_render(t_data *data)
 
 	while (ft_get_time_in_ms() <= data->time_frame)
 		;
-	data->time_frame = ft_get_time_in_ms() + 16.6;
+	data->time_frame = ft_get_time_in_ms() + 0;
 	data->fps = 1000 / (ft_get_time_in_ms() - data->old_frame);
 	data->old_frame = ft_get_time_in_ms();
 	ft_player_mov(data);
@@ -196,21 +194,24 @@ int	ft_frame_render(t_data *data)
 	while (++i < data->nbr_threads)
 		pthread_join(data->thread[i], NULL);
 	
-	int x = - 1;
-	
-	while (++x < WIN_WIDTH)
-	{
-		ft_pre_render_loop(data->ray, data->player);
-		ft_set_ray_loop(data->ray, x);
-		ft_ray_dir(data->ray);
-		ft_dda_enemy(data->ray, data);
-		if (data->ray->hit == 2)
-		{
-			ft_render_enemy_sprite(data, data->ray, 2.5, 3.5);
-			break ;
-		}
-	}
+	// int x = - 1;
+	//
+	// while (++x < WIN_WIDTH)
+	// {
+	// 	ft_pre_render_loop(data->ray, data->player);
+	// 	ft_set_ray_loop(data->ray, x);
+	// 	ft_ray_dir(data->ray);
+	// 	ft_dda_enemy(data->ray, data);
+	// 	if (data->ray->hit == 2)
+	// 	{
+	// 		ft_render_enemy_sprite(data, data->ray, 2.5, 3.5);
+	// 		break ;
+	// 	}
+	// }
 	mlx_put_image_to_window(data->mlx, data->win, data->img->img, 0, 0);
+	char	*str = ft_itoa((int) data->fps);
+	mlx_string_put(data->mlx, data->win, 5, 10, 0xFF00FF, str);
+	free(str);
 	return (0);
 }
 

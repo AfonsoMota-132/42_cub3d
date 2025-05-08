@@ -48,6 +48,12 @@ void	ft_free_tex(t_data *data)
 			mlx_destroy_image(data->mlx, data->tex_west->img);
 		free(data->tex_west);
 	}
+	if (data->tex_enemy)
+	{
+		if (data->tex_enemy->img)
+			mlx_destroy_image(data->mlx, data->tex_enemy->img);
+		free(data->tex_enemy);
+	}
 }
 
 void	ft_free_data(t_data *data)
@@ -74,6 +80,17 @@ void	ft_free_data(t_data *data)
 		mlx_destroy_display(data->mlx);
 		free(data->mlx);
 	}
+	int	i = -1;
+	if (data->tdata)
+	{
+		while(++i < data->nbr_threads)
+			free(data->tdata[i].ray);
+		free(data->tdata);
+	}
+	if (data->enemy)
+		free(data->enemy);
+	if (data->thread)
+		free(data->thread);
 	free(data);
 }
 

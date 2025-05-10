@@ -89,10 +89,14 @@ t_data	*ft_data_init(void)
 		ft_free(-1, data);
 	ft_start_tex(data, data->tex_west, "west.xpm");
 
-	data->tex_enemy = malloc(sizeof(t_img));
+	data->tex_enemy = malloc(sizeof(t_tex_enemy));
 	if (!data->tex_enemy)
 		ft_free(-1, data);
-	ft_start_tex(data, data->tex_enemy, "enemy.xpm");
+	data->tex_enemy->idle1 = malloc(sizeof(t_img));
+	if (!data->tex_enemy->idle1)
+		ft_free(-1, data);
+	ft_start_tex(data, data->tex_enemy->idle1, "enemy.xpm");
+	data->tex_enemy->tex_enemy = data->tex_enemy->idle1;
 
 	data->nbr_threads = 1;
 	data->tdata = malloc(sizeof(t_thread_data) * data->nbr_threads + 1);
@@ -125,16 +129,17 @@ void	ft_mov_set_def(t_mov *mov)
 	mov->mov_l = false;
 	mov->mov_r = false;
 	mov->mov = true;
+	mov->look = true;
 	mov->exit = false;
 	mov->exit_main = false;
 	mov->lookl = false;
 	mov->lookr = false;
-	mov->looku = false;
-	mov->lookd = false;
 	mov->lookml = 0;
 	mov->lookmr = 0;
-	mov->lookmu = 0;
-	mov->lookmd = 0;
+	mov->sound = 0;
+	mov->jump = 0;
+	mov->shoot = 0;
+	mov->time_sound = ft_get_time_in_ms();
 }
 
 void	ft_win_start(t_data *data)

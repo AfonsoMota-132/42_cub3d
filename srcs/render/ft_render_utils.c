@@ -25,28 +25,26 @@ void	ft_player_rot(t_data *data)
 {
 	if (data->mov->lookl || data->mov->lookml)
 	{
-		data->mov->mov = true;
+		data->mov->look = true;
 		data->player->angle = ft_add_angle(data->player->angle, -1.5);
 		data->player->y_look = cos(data->player->angle * M_PI / 180.0);
 		data->player->x_look = sin(data->player->angle * M_PI / 180.0);
 		if (data->mov->lookml)
 			data->mov->lookml -= 1;
 	}
-	if (data->mov->looku || data->mov->lookmu)
+	if (data->mov->jump >= 18)
 	{
-		ft_player_lookul(data->player, 17);
-		if (data->mov->lookmu)
-			data->mov->lookmu -= 1;
+		// ft_player_lookul(data->player, 0.05 * (data->mov->jump * data->mov->jump) - 18);
+			data->mov->jump -= 1;
 	}
-	if (data->mov->lookd || data->mov->lookmd)
+	if (data->mov->jump < 18 && data->mov->jump > 0)
 	{
-		ft_player_lookul(data->player, -17);
-		if (data->mov->lookmd)
-			data->mov->lookmd -= 1;
+		// ft_player_lookul(data->player, -(0.05 * (data->mov->jump * data->mov->jump) + 17));
+			data->mov->jump -= 1;
 	}
 	if (data->mov->lookr || data->mov->lookmr)
 	{
-		data->mov->mov = true;
+		data->mov->look = true;
 		data->player->angle = ft_add_angle(data->player->angle, 1.5);
 		data->player->y_look = cos(data->player->angle * M_PI / 180.0);
 		data->player->x_look = sin(data->player->angle * M_PI / 180.0);

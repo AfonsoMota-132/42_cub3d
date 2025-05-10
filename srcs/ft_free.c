@@ -50,8 +50,12 @@ void	ft_free_tex(t_data *data)
 	}
 	if (data->tex_enemy)
 	{
-		if (data->tex_enemy->img)
-			mlx_destroy_image(data->mlx, data->tex_enemy->img);
+		if (data->tex_enemy->idle1)
+		{
+			if (data->tex_enemy->idle1->img)
+				mlx_destroy_image(data->mlx, data->tex_enemy->idle1->img);
+		free(data->tex_enemy->idle1);
+		}
 		free(data->tex_enemy);
 	}
 }
@@ -96,6 +100,7 @@ void	ft_free_data(t_data *data)
 
 void	ft_free(int exit_flag, t_data *data)
 {
+	system("pkill paplay");
 	if (data)
 		ft_free_data(data);
 	if (exit_flag != -1 && exit_flag >= 0)

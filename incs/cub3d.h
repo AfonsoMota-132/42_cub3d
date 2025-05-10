@@ -98,15 +98,16 @@ typedef struct s_mov {
 	bool	mov_r;
 	bool	lookl;
 	bool	lookr;
-	bool	mov;
-	bool	exit;
-	bool	exit_main;
-	bool	looku;
-	bool	lookd;
     int		lookml;
 	int		lookmr;
-	int		lookmu;
-	int		lookmd;
+	bool	mov;
+	bool	look;
+	bool	exit;
+	bool	exit_main;
+	int		jump;
+	int		sound;
+	double	time_sound;
+	int		shoot;
 } t_mov;
 
 typedef	struct	s_line_improv_render {
@@ -132,6 +133,11 @@ typedef struct	s_enemy
 	struct s_enemy	*next;
 } t_enemy;
 
+typedef	struct s_tex_enemy {
+	t_img					*tex_enemy;
+	t_img					*idle1;
+}	t_tex_enemy;
+
 typedef struct	s_data 
 {
 	t_img					*img;
@@ -140,7 +146,7 @@ typedef struct	s_data
 	t_img					*tex_south;
 	t_img					*tex_east;
 	t_img					*tex_west;
-	t_img					*tex_enemy;
+	t_tex_enemy				*tex_enemy;
 	void					*mlx;
 	void					*win;
 	t_player				*player;
@@ -159,8 +165,14 @@ typedef struct	s_data
 	pthread_t				*thread;
 	double					zbuffer[WIN_WIDTH];
 	struct s_thread_data	*tdata;
+	struct s_thread_enemy	*edata;
 } t_data;
 
+typedef	struct s_thread_enemy {
+	t_data		*data;
+	t_ray		*ray;
+	pthread_t	thread_enemies;
+}	t_thread_enemy;
 typedef struct s_thread_data
 {
 	t_data	*data;

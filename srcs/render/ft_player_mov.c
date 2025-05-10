@@ -31,6 +31,20 @@ void	ft_player_mov(t_data *data)
 		if (data->map[(int) data->player->x_pos][(int) data->player->y_pos - 1] == 'P')
 			data->map[(int) data->player->x_pos][(int) data->player->y_pos - 1] = '0';
 	}
+	if (data->mov->mov && ft_get_time_in_ms() >= data->mov->time_sound)
+	{
+		if (data->mov->sound == 0)
+		{
+			system("paplay sound_effects/Concrete1.wav &");
+			data->mov->sound++;
+		}
+		if (data->mov->sound == 1)
+		{
+			system("paplay sound_effects/Concrete2.wav &");
+			data->mov->sound--;
+		}
+		data->mov->time_sound = ft_get_time_in_ms() + 500;
+	}
 }
 
 void	ft_player_mov_fb(t_data *data)

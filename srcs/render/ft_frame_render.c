@@ -40,7 +40,7 @@ void *thread_render(void *arg)
 
     while (++x < tdata->end_x)
     {
-        ft_set_ray_loop(tdata->ray, x);
+		ft_set_ray_loop(tdata->ray, x);
         ft_ray_dir(tdata->ray);
         ft_dda(tdata->ray, tdata->data);
 		tdata->data->zbuffer[x] = tdata->ray->perpWallDist;
@@ -159,6 +159,7 @@ void ft_render_enemy_sprite(t_data *data, t_ray *ray)
         {
             for (int y = drawStartY; y < drawEndY + 1; y++)
             {
+				data->zbuffer[stripe + 1] = transformY;
                 int d = (y - data->player->angle_y) * 256 - WIN_HEIGHT * 128 + spriteHeight * 128;
                 int texY = ((d * data->tex_enemy->tex_enemy->y) / spriteHeight) / 256;
                 if (texY < 0) texY = 0;
@@ -204,22 +205,24 @@ void	ft_raycasting_enemies(t_data *data, t_enemy *enemy)
 	double dx = enemy->data->x_pos - data->player->x_pos;
 	double dy = enemy->data->y_pos - data->player->y_pos;
 	double	dist_sq = (dx * dx) + (dy * dy);
-		
+	
+	if (enemy->map == '0')
+		return ;
 	while (++x < WIN_WIDTH)
 	{
-		ft_pre_render_loop(data->ray, enemy->data);
-		ft_set_ray_loop(data->ray, x);
-		ft_ray_dir(data->ray);
-		ft_dda_enemies(data->ray, data);
-		if (data->ray->hit == 3 && first_x == -1)
+		ft_pre_render_loop(enemy->ray, enemy->data);
+		ft_set_ray_loop(enemy->ray, x);
+		ft_ray_dir(enemy->ray);
+		ft_dda_enemies(enemy->ray, data);
+		if (enemy->ray->hit == 3 && first_x == -1)
 			first_x = x;
-		else if (data->ray->hit == 1 && first_x != -1)
+		else if (enemy->ray->hit == 1 && first_x != -1)
 			break ;
 	}
 	if (first_x != -1 || data->map[(int) enemy->data->x_pos][(int) enemy->data->y_pos] == 'P')
 	{
-		data->ray->sideDistX = fabs(data->player->y_pos - enemy->data->x_pos);
-		data->ray->sideDistX = fabs(data->player->y_pos - enemy->data->y_pos);
+		enemy->ray->sideDistX = fabs(data->player->y_pos - enemy->data->x_pos);
+		enemy->ray->sideDistX = fabs(data->player->y_pos - enemy->data->y_pos);
 		x = (x + first_x) / 2;
 		if (x > (WIN_WIDTH / 2) && first_x != -1)
 		{
@@ -234,42 +237,65 @@ void	ft_raycasting_enemies(t_data *data, t_enemy *enemy)
 			enemy->data->x_look = sin(enemy->data->angle * M_PI / 180.0);
 		}
 		if ((x < WIN_WIDTH / 2 || x > WIN_WIDTH / 2)
-			|| (data->ray->sideDistX > 1 && data->ray->sideDistY > 1)
+			|| (enemy->ray->sideDistX > 1 && enemy->ray->sideDistY > 1)
 			|| (dist_sq < 1 && dist_sq > 0.5))
 		{
 			tempx = enemy->data->x_pos + enemy->data->x_look * 0.01;
 			tempy = enemy->data->y_pos + enemy->data->y_look * 0.01;
-			if (ft_ver_col(data->map, tempx, enemy->data->y_pos))
+			if (ft_ver_col(data->map, tempx, tempy, enemy->map))
+			{
 				enemy->data->x_pos = tempx;
-			if (ft_ver_col(data->map, enemy->data->x_pos, tempy))
 				enemy->data->y_pos = tempy;
+			}
 		}
-		if ((data->mov->mov && data->map[(int) enemy->data->x_pos][ (int) enemy->data->y_pos] != 'E'))
+		if ((data->map[(int) enemy->data->x_pos][ (int) enemy->data->y_pos] != 'A'))
 		{
-		if (data->mov->mov && data->map[(int) enemy->data->x_pos][ (int) enemy->data->y_pos] != 'P')
-			data->map[(int) enemy->data->x_pos][(int) enemy->data->y_pos] = 'E';
-		if (data->map[(int) enemy->data->x_pos + 1][(int) enemy->data->y_pos] == 'E')
+		if (data->map[(int) enemy->data->x_pos][ (int) enemy->data->y_pos] != 'P')
+			data->map[(int) enemy->data->x_pos][(int) enemy->data->y_pos] = enemy->map;
+		if (data->map[(int) enemy->data->x_pos + 1][(int) enemy->data->y_pos] == enemy->map)
 			data->map[(int) enemy->data->x_pos + 1][(int) enemy->data->y_pos] = '0';
-		if (data->map[(int) enemy->data->x_pos - 1][(int) enemy->data->y_pos] == 'E')
+		if (data->map[(int) enemy->data->x_pos - 1][(int) enemy->data->y_pos] == enemy->map)
 			data->map[(int) enemy->data->x_pos - 1][(int) enemy->data->y_pos] = '0';	
-		if (data->map[(int) enemy->data->x_pos][(int) enemy->data->y_pos + 1] == 'E')
+		if (data->map[(int) enemy->data->x_pos][(int) enemy->data->y_pos + 1] == enemy->map)
 			data->map[(int) enemy->data->x_pos][(int) enemy->data->y_pos + 1] = '0';
-		if (data->map[(int) enemy->data->x_pos][(int) enemy->data->y_pos - 1] == 'E')
+		if (data->map[(int) enemy->data->x_pos][(int) enemy->data->y_pos - 1] == enemy->map)
 			data->map[(int) enemy->data->x_pos][(int) enemy->data->y_pos - 1] = '0';
 		}
 	}
-
 }
 
-float get_jump_offset(int jump)
+void	*ft_enemy_render_threads(void *arg)
 {
-    if (jump < 0 || jump > 36)
-        return 0;
+	t_enemy	*enemy;
+	t_data	*data;
+	int x = - 1;
 
-    float x = jump - 18;
-    float height = 20.0f; // max height in pixels
-
-    return height - (x * x) * (height / (18.0f * 18.0f));
+	enemy = (t_enemy *) arg;
+	data = enemy->rdata;
+	if (enemy->map == '0')
+		return (NULL);
+	while (++x < WIN_WIDTH)
+	{
+		ft_pre_render_loop(enemy->ray, data->player);
+		ft_set_ray_loop(enemy->ray, x);
+		ft_ray_dir(enemy->ray);
+		ft_dda_enemy(enemy->ray, data, enemy->map);
+		if (enemy->ray->hit == 2)
+		{
+			if (x >= (WIN_WIDTH / 2) - 50 && x <= (WIN_WIDTH / 2) + 50
+				&& data->mov->shoot)
+			{
+				printf("wtf\n");
+				enemy->map = '0';
+				data->map[(int) enemy->data->x_pos][(int) enemy->data->y_pos] = '0';
+			}
+			else
+				ft_render_enemy_sprite(data, enemy->ray);
+			break ;
+		}
+	}
+	ft_raycasting_enemies(data, enemy);
+	return (NULL);
 }
 int	ft_frame_render(t_data *data)
 {
@@ -291,26 +317,26 @@ int	ft_frame_render(t_data *data)
 	i = -1;
 	while (++i < data->nbr_threads)
 		pthread_join(data->thread[i], NULL);
+	i = -1;
+	while (data->enemy_arr[++i])
+		pthread_create(&data->enemy_arr[i]->thread, NULL, ft_enemy_render_threads, data->enemy_arr[i]);
+	// ft_enemy_render_threads(data->enemy_arr[i]);
 
-	int x = - 1;
-
-	while (++x < WIN_WIDTH)
-	{
-		ft_pre_render_loop(data->ray, data->player);
-		ft_set_ray_loop(data->ray, x);
-		ft_ray_dir(data->ray);
-		ft_dda_enemy(data->ray, data);
-		if (data->ray->hit == 2)
-		{
-			ft_render_enemy_sprite(data, data->ray);
-			break ;
-		}
-	}
-	ft_raycasting_enemies(data, data->enemy);
+	i = -1;
+	while (data->enemy_arr[++i])
+		pthread_join(data->enemy_arr[i]->thread, NULL);
+		// ft_enemy_render_threads(data->enemy_arr[i]);
+	i = -1;
+	while (data->map[++i])
+		printf("%s\n", data->map[i]);
+	printf("\n");
+	// printf("x %f\ty %f\tchar %c\n", data->enemy_arr[0]->data->x_pos,
+	// 	data->enemy_arr[0]->data->y_pos, data->enemy_arr[0]->map);
 	ft_pre_render_loop(data->ray, data->player);
 	mlx_put_image_to_window(data->mlx, data->win, data->img->img, 0, 0);
 	data->mov->mov = false;
 	data->mov->look = false;
+	data->mov->shoot = false;
 	return (0);
 }
 

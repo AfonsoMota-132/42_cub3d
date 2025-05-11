@@ -29,7 +29,7 @@ int	key_hook_press(int key, t_data *data)
 	if (key == 65363)
 		data->mov->lookr = true;
 	if (key == 32 && !data->mov->shoot)
-		data->mov->jump = 1;
+		data->mov->shoot = true;
 	return (0);
 }
 

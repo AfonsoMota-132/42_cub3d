@@ -12,8 +12,10 @@
 
 #include "../../incs/cub3d.h"
 
-void	ft_dda_enemy(t_ray *ray, t_data *data)
+void	ft_dda_enemy(t_ray *ray, t_data *data, char detect)
 {
+	char	enemy;
+
 	while (ray->hit == 0)
 	{
 		if (ray->sideDistX < ray->sideDistY)
@@ -28,10 +30,15 @@ void	ft_dda_enemy(t_ray *ray, t_data *data)
 			ray->mapY += ray->stepY;
 			ray->side = 1;
 		}
-		if (data->map[ray->mapX][ray->mapY] == 'E')
-			if (ray->hit == 0)
-				ray->hit = 2;
-		if (data->map[ray->mapX][ray->mapY] == '1')
+		enemy = data->map[ray->mapX][ray->mapY];
+		if (enemy == detect)
+			ray->hit = 2;
+		if (enemy == '1')
 			ray->hit = 1;
+	}
+	for (int i = 0; data->enemy_arr[i]; i++)
+	{
+		if (data->enemy_arr[i]->map == enemy)
+			data->enemy = data->enemy_arr[i];
 	}
 }

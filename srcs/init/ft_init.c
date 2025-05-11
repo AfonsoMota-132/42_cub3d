@@ -28,16 +28,19 @@ t_data	*ft_data_init(void)
 	data->ray = malloc(sizeof(t_ray));
 	if (!data->ray)
 		ft_free(-1, data);
-	data->map = malloc(sizeof(char *) * 7);
+	data->map = malloc(sizeof(char *) * 10);
 	if (!data->map)
 		ft_free(-1, data);
-	data->map[0] = ft_strdup("1111111");
-	data->map[1] = ft_strdup("1010101");
-	data->map[2] = ft_strdup("100E001");
-	data->map[3] = ft_strdup("1000001");
-	data->map[4] = ft_strdup("100P001");
-	data->map[5] = ft_strdup("1111111");
-	data->map[6] = NULL; //should put malloc protection here but gonna leave it because its gonna be joanas part
+	data->map[0] = ft_strdup("1111111111");
+	data->map[1] = ft_strdup("1B10100001");
+	data->map[2] = ft_strdup("100A001101");
+	data->map[3] = ft_strdup("1000001101");
+	data->map[4] = ft_strdup("100P000001");
+	data->map[5] = ft_strdup("1001001101");
+	data->map[6] = ft_strdup("1001001101");
+	data->map[7] = ft_strdup("1000001001");
+	data->map[8] = ft_strdup("1111111111");
+	data->map[9] = NULL; //should put malloc protection here but gonna leave it because its gonna be joanas part
 	data->mov = malloc(sizeof(t_mov));
 	if (!data->mov)
 		ft_free(-1, data);
@@ -53,10 +56,21 @@ t_data	*ft_data_init(void)
 	data->player = data->player1;
 	data->time_frame = ft_get_time_in_ms() + 17;
 
+	data->enemy_arr = malloc(sizeof(t_enemy *) * 10);
+	data->enemy_arr[0] = NULL;
+	data->enemy_arr[1] = NULL;
+	data->enemy_arr[2] = NULL;
+	data->enemy_arr[3] = NULL;
+	data->enemy_arr[4] = NULL;
+	data->enemy_arr[5] = NULL;
+	data->enemy_arr[6] = NULL;
+	data->enemy_arr[7] = NULL;
+	data->enemy_arr[8] = NULL;
+	data->enemy_arr[9] = NULL;
+
 	data->enemy = malloc(sizeof(t_enemy));
 	if (!data->enemy)
 		ft_free(-1, data);
-	data->enemy_start = data->enemy;
 	data->enemy->map = 'E';
 	data->enemy->next = NULL;
 	data->enemy->data = malloc(sizeof(t_player));
@@ -64,9 +78,32 @@ t_data	*ft_data_init(void)
 		ft_free(-1, data);
 	data->enemy->data->x_pos = 2.5;
 	data->enemy->data->y_pos = 3.5;
-	data->enemy->data->angle = 300;
+	data->enemy->data->angle = 100;
+	data->enemy->map = 'A';
+	data->enemy->ray = malloc(sizeof(t_ray));
+	data->enemy->rdata = data;
 	data->enemy->data->y_look = cos(data->enemy->data->angle * M_PI / 180.0);
 	data->enemy->data->x_look = sin(data->enemy->data->angle * M_PI / 180.0);
+
+	data->enemy_arr[0] = data->enemy;
+
+
+	data->enemy_arr[1] = malloc(sizeof(t_enemy));
+	if (!data->enemy_arr[1])
+		ft_free(-1, data);
+	data->enemy_arr[1]->map = 'E';
+	data->enemy_arr[1]->next = NULL;
+	data->enemy_arr[1]->data = malloc(sizeof(t_player));
+	if (!data->enemy->data)
+		ft_free(-1, data);
+	data->enemy_arr[1]->data->x_pos = 1.5;
+	data->enemy_arr[1]->data->y_pos = 1.5;
+	data->enemy_arr[1]->data->angle = 100;
+	data->enemy_arr[1]->map = 'B';
+	data->enemy_arr[1]->rdata = data;
+	data->enemy_arr[1]->ray = malloc(sizeof(t_ray));
+	data->enemy_arr[1]->data->y_look = cos(data->enemy_arr[1]->data->angle * M_PI / 180.0);
+	data->enemy_arr[1]->data->x_look = sin(data->enemy_arr[1]->data->angle * M_PI / 180.0);
 	ft_win_start(data);
 
 	data->tex_north = malloc(sizeof(t_img));
@@ -128,7 +165,7 @@ void	ft_mov_set_def(t_mov *mov)
 	mov->mov_b = false;
 	mov->mov_l = false;
 	mov->mov_r = false;
-	mov->mov = true;
+	mov->mov = false;
 	mov->look = true;
 	mov->exit = false;
 	mov->exit_main = false;

@@ -31,20 +31,20 @@ void	ft_player_mov(t_data *data)
 		if (data->map[(int) data->player->x_pos][(int) data->player->y_pos - 1] == 'P')
 			data->map[(int) data->player->x_pos][(int) data->player->y_pos - 1] = '0';
 	}
-	if (data->mov->mov && ft_get_time_in_ms() >= data->mov->time_sound)
-	{
-		if (data->mov->sound == 0)
-		{
-			system("paplay sound_effects/Concrete1.wav &");
-			data->mov->sound++;
-		}
-		if (data->mov->sound == 1)
-		{
-			system("paplay sound_effects/Concrete2.wav &");
-			data->mov->sound--;
-		}
-		data->mov->time_sound = ft_get_time_in_ms() + 500;
-	}
+	// if (data->mov->mov && ft_get_time_in_ms() >= data->mov->time_sound)
+	// {
+	// 	if (data->mov->sound == 0)
+	// 	{
+	// 		system("paplay sound_effects/Concrete1.wav &");
+	// 		data->mov->sound++;
+	// 	}
+	// 	if (data->mov->sound == 1)
+	// 	{
+	// 		system("paplay sound_effects/Concrete2.wav &");
+	// 		data->mov->sound--;
+	// 	}
+	// 	data->mov->time_sound = ft_get_time_in_ms() + 500;
+	// }
 }
 
 void	ft_player_mov_fb(t_data *data)
@@ -57,9 +57,9 @@ void	ft_player_mov_fb(t_data *data)
 		data->mov->mov = true;
 		tempx = data->player->x_pos + data->player->x_look * 0.05;
 		tempy = data->player->y_pos + data->player->y_look * 0.05;
-		if (ft_ver_col(data->map, tempx, data->player->y_pos))
+		if (ft_ver_col(data->map, tempx, data->player->y_pos, 'P'))
 			data->player->x_pos = tempx;
-		if (ft_ver_col(data->map, data->player->x_pos, tempy))
+		if (ft_ver_col(data->map, data->player->x_pos, tempy, 'P'))
 			data->player->y_pos = tempy;
 	}
 	if (data->mov->mov_b && !data->mov->mov_f)
@@ -67,9 +67,9 @@ void	ft_player_mov_fb(t_data *data)
 		data->mov->mov = true;
 		tempx = data->player->x_pos - data->player->x_look * 0.05;
 		tempy = data->player->y_pos - data->player->y_look * 0.05;
-		if (ft_ver_col(data->map, tempx, data->player->y_pos))
+		if (ft_ver_col(data->map, tempx, data->player->y_pos, 'P'))
 			data->player->x_pos = tempx;
-		if (ft_ver_col(data->map, data->player->x_pos, tempy))
+		if (ft_ver_col(data->map, data->player->x_pos, tempy, 'P'))
 			data->player->y_pos = tempy;
 	}
 }
@@ -84,9 +84,9 @@ void	ft_player_mov_lr(t_data *data)
 		data->mov->mov = true;
 		tempx = data->player->x_pos - data->ray->planeX * 0.05;
 		tempy = data->player->y_pos - data->ray->planeY * 0.05;
-		if (ft_ver_col(data->map, tempx, data->player->y_pos))
+		if (ft_ver_col(data->map, tempx, data->player->y_pos, 'P'))
 			data->player->x_pos = tempx;
-		if (ft_ver_col(data->map, data->player->x_pos, tempy))
+		if (ft_ver_col(data->map, data->player->x_pos, tempy, 'P'))
 			data->player->y_pos = tempy;
 	}
 	if (data->mov->mov_r && !data->mov->mov_l)
@@ -94,19 +94,26 @@ void	ft_player_mov_lr(t_data *data)
 		data->mov->mov = true;
 		tempx = data->player->x_pos + data->ray->planeX * 0.05;
 		tempy = data->player->y_pos + data->ray->planeY * 0.05;
-		if (ft_ver_col(data->map, tempx, data->player->y_pos))
+		if (ft_ver_col(data->map, tempx, data->player->y_pos, 'P'))
 			data->player->x_pos = tempx;
-		if (ft_ver_col(data->map, data->player->x_pos, tempy))
+		if (ft_ver_col(data->map, data->player->x_pos, tempy, 'P'))
 			data->player->y_pos = tempy;
 	}
 }
 
-bool	ft_ver_col(char **map, double tempx, double tempy)
+bool	ft_ver_col(char **map, double tempx, double tempy, char except)
 {
-	if (map[(int)(tempx - 0.1)][(int)(tempy - 0.1)] != '1'
+	if ((map[(int)(tempx - 0.1)][(int)(tempy - 0.1)] != '1'
 		&& map[(int)(tempx + 0.1)][(int)(tempy + 0.1)] != '1'
+		&& !(map[(int)(tempx - 0.1)][(int)(tempy - 0.1)] >= 'A'
+			&& map[(int)(tempx - 0.1)][(int)(tempy - 0.1)] <= 'K')
+		&& map[(int)(tempx + 0.1)][(int)(tempy + 0.1)] != '1'
+		&& !(map[(int)(tempx + 0.1)][(int)(tempy + 0.1)] >= 'A'
+			&& map[(int)(tempx + 0.1)][(int)(tempy + 0.1)] <= 'K')
 		&& map[(int)tempx][(int)tempy] != '1'
-		&& map[(int)tempx][(int)tempy] != '1')
+		&& !(map[(int)tempx][(int)tempy] >= 'A' && map[(int)tempx][(int)tempy] <= 'K'))
+		|| map[(int)tempx][(int)tempy] == except
+		|| map[(int)tempx][(int)tempy] == '0')
 		return (true);
 	return (false);
 }

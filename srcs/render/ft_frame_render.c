@@ -269,28 +269,21 @@ void	*ft_enemy_render_threads(void *arg)
 	t_enemy	*enemy;
 	t_data	*data;
 	int x = - 1;
+	int	end_x = -1;
 
 	enemy = (t_enemy *) arg;
 	data = enemy->rdata;
 	if (enemy->map == '0')
 		return (NULL);
+	ft_pre_render_loop(enemy->ray, data->player);
 	while (++x < WIN_WIDTH)
 	{
-		ft_pre_render_loop(enemy->ray, data->player);
 		ft_set_ray_loop(enemy->ray, x);
 		ft_ray_dir(enemy->ray);
 		ft_dda_enemy(enemy->ray, data, enemy->map);
 		if (enemy->ray->hit == 2)
 		{
-			if (x >= (WIN_WIDTH / 2) - 50 && x <= (WIN_WIDTH / 2) + 50
-				&& data->mov->shoot)
-			{
-				printf("wtf\n");
-				enemy->map = '0';
-				data->map[(int) enemy->data->x_pos][(int) enemy->data->y_pos] = '0';
-			}
-			else
-				ft_render_enemy_sprite(data, enemy->ray);
+			ft_render_enemy_sprite(data, enemy->ray);
 			break ;
 		}
 	}
@@ -327,9 +320,9 @@ int	ft_frame_render(t_data *data)
 		pthread_join(data->enemy_arr[i]->thread, NULL);
 		// ft_enemy_render_threads(data->enemy_arr[i]);
 	i = -1;
-	while (data->map[++i])
-		printf("%s\n", data->map[i]);
-	printf("\n");
+	// while (data->map[++i])
+	// 	printf("%s\n", data->map[i]);
+	// printf("\n");
 	// printf("x %f\ty %f\tchar %c\n", data->enemy_arr[0]->data->x_pos,
 	// 	data->enemy_arr[0]->data->y_pos, data->enemy_arr[0]->map);
 	ft_pre_render_loop(data->ray, data->player);

@@ -90,7 +90,7 @@ void	ft_free_data(t_data *data)
 
 void	ft_free(int exit_flag, t_data *data)
 {
-	system("pkill paplay");
+	// system("pkill paplay");
 	if (data)
 		ft_free_data(data);
 	if (exit_flag != -1 && exit_flag >= 0)

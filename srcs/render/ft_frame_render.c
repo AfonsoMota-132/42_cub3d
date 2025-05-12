@@ -416,9 +416,60 @@ void	ft_shoot_raycasting(t_data *data)
 	}
 }
 
-// void	ft_put_fps(t_data *data)
-// {
-// }
+void	ft_render_put_fps(t_img *img, t_img *nbr, int x_offset)
+{
+	int	x;
+	int	y;
+	int	color;
+
+	x = -1;
+	while (++x < nbr->x)
+	{
+		y = -1;
+		while (++y < nbr->y)
+		{
+			color = nbr->addr[y * 32 + x];
+			if (color != 0x000000)
+				img->addr[y * WIN_WIDTH + x + x_offset] = color;
+		}
+	}
+
+}
+
+void	ft_put_fps(t_data *data)
+{
+	char	*str;
+	int		offset;
+	int		i;
+
+	str = ft_itoa((int) data->fps);
+	i = -1;
+	offset = 0;
+	while (str[++i])
+	{
+		if (str[i] == '0')
+			ft_render_put_fps(data->img, data->nbrs->nbr_0, offset);
+		else if (str[i] == '1')
+			ft_render_put_fps(data->img, data->nbrs->nbr_1, offset);
+		else if (str[i] == '2')
+			ft_render_put_fps(data->img, data->nbrs->nbr_2, offset);
+		else if (str[i] == '3')
+			ft_render_put_fps(data->img, data->nbrs->nbr_3, offset);
+		else if (str[i] == '4')
+			ft_render_put_fps(data->img, data->nbrs->nbr_4, offset);
+		else if (str[i] == '5')
+			ft_render_put_fps(data->img, data->nbrs->nbr_5, offset);
+		else if (str[i] == '6')
+			ft_render_put_fps(data->img, data->nbrs->nbr_6, offset);
+		else if (str[i] == '7')
+			ft_render_put_fps(data->img, data->nbrs->nbr_7, offset);
+		else if (str[i] == '8')
+			ft_render_put_fps(data->img, data->nbrs->nbr_8, offset);
+		else if (str[i] == '9')
+			ft_render_put_fps(data->img, data->nbrs->nbr_9, offset);
+		offset += 16;
+	}
+}
 int	ft_frame_render(t_data *data)
 {
 	int	i;
@@ -446,7 +497,7 @@ int	ft_frame_render(t_data *data)
 	while (data->enemy_arr[++i])
 		ft_enemy_render_threads(data->enemy_arr[i]);
 	ft_pre_render_loop(data->ray, data->player);
-	// ft_put_fps(data);
+	ft_put_fps(data);
 	mlx_put_image_to_window(data->mlx, data->win, data->img->img, 0, 0);
 	data->mov->mov = false;
 	data->mov->look = false;

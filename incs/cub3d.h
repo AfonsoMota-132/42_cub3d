@@ -132,13 +132,40 @@ typedef	struct s_tex_enemy {
 	t_img					*idle1;
 }	t_tex_enemy;
 
+typedef	struct s_tex_iddle {
+	t_img	*sprite1;
+	t_img	*sprite2;
+	t_img	*sprite3;
+	t_img	*sprite4;
+	t_img	*sprite5;
+	t_img	*sprite6;
+	t_img	*sprite7;
+	t_img	*sprite8;
+}	t_tex_iddle;
+
+typedef	struct s_tex_nbrs {
+	t_img	*nbr_0;
+	t_img	*nbr_1;
+	t_img	*nbr_2;
+	t_img	*nbr_3;
+	t_img	*nbr_4;
+	t_img	*nbr_5;
+	t_img	*nbr_6;
+	t_img	*nbr_7;
+	t_img	*nbr_8;
+	t_img	*nbr_9;
+}	t_tex_nbrs;
 typedef struct	s_enemy 
 {
 	t_player		*data;
 	char			map;
 	bool			render;
+	bool			visible;
 	t_ray			*ray;
-	pthread_t		thread;
+	t_tex_iddle		*tex_iddle;
+	t_img			*tex;
+	double			next_frame;
+	int				frame;
 	struct s_data	*rdata;
 	struct s_enemy	*next;
 } t_enemy;
@@ -151,7 +178,7 @@ typedef struct s_data
 	t_img					*tex_south;
 	t_img					*tex_east;
 	t_img					*tex_west;
-	t_tex_enemy				*tex_enemy;
+	t_tex_nbrs				*nbrs;
 	void					*mlx;
 	void					*win;
 	t_player				*player;

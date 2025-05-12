@@ -48,16 +48,6 @@ void	ft_free_tex(t_data *data)
 			mlx_destroy_image(data->mlx, data->tex_west->img);
 		free(data->tex_west);
 	}
-	if (data->tex_enemy)
-	{
-		if (data->tex_enemy->idle1)
-		{
-			if (data->tex_enemy->idle1->img)
-				mlx_destroy_image(data->mlx, data->tex_enemy->idle1->img);
-		free(data->tex_enemy->idle1);
-		}
-		free(data->tex_enemy);
-	}
 }
 
 void	ft_free_data(t_data *data)

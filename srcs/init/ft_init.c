@@ -68,6 +68,7 @@ t_data	*ft_data_init(void)
 	data->enemy_arr[8] = NULL;
 	data->enemy_arr[9] = NULL;
 
+	ft_win_start(data);
 	data->enemy = malloc(sizeof(t_enemy));
 	if (!data->enemy)
 		ft_free(-1, data);
@@ -82,12 +83,43 @@ t_data	*ft_data_init(void)
 	data->enemy->map = 'A';
 	data->enemy->ray = malloc(sizeof(t_ray));
 	data->enemy->rdata = data;
+	data->enemy->tex_iddle = malloc(sizeof(t_tex_iddle));
+	data->enemy->tex_iddle->sprite1 = malloc(sizeof(t_img));
+	if (!data->enemy->tex_iddle->sprite1)
+		ft_free(-1, data);
+	ft_start_tex(data, data->enemy->tex_iddle->sprite1, "idle1.xpm");
+
+	data->enemy->tex_iddle->sprite2 = malloc(sizeof(t_img));
+	if (!data->enemy->tex_iddle->sprite2)
+		ft_free(-1, data);
+	ft_start_tex(data, data->enemy->tex_iddle->sprite2, "idle2.xpm");
+
+	data->enemy->tex_iddle->sprite3 = malloc(sizeof(t_img));
+	if (!data->enemy->tex_iddle->sprite3)
+		ft_free(-1, data);
+	ft_start_tex(data, data->enemy->tex_iddle->sprite3, "idle3.xpm");
+
+	data->enemy->tex_iddle->sprite4 = malloc(sizeof(t_img));
+	if (!data->enemy->tex_iddle->sprite4)
+		ft_free(-1, data);
+	ft_start_tex(data, data->enemy->tex_iddle->sprite4, "idle4.xpm");
+	data->enemy->tex = data->enemy->tex_iddle->sprite4;
+
+	data->enemy->tex_iddle->sprite5 = malloc(sizeof(t_img));
+	if (!data->enemy->tex_iddle->sprite5)
+		ft_free(-1, data);
+	ft_start_tex(data, data->enemy->tex_iddle->sprite5, "idle5.xpm");
+
+	data->enemy->tex_iddle->sprite6 = malloc(sizeof(t_img));
+	if (!data->enemy->tex_iddle->sprite6)
+		ft_free(-1, data);
+	ft_start_tex(data, data->enemy->tex_iddle->sprite6, "idle6.xpm");
 	data->enemy->data->y_look = cos(data->enemy->data->angle * M_PI / 180.0);
 	data->enemy->data->x_look = sin(data->enemy->data->angle * M_PI / 180.0);
+	data->enemy->next_frame = 0;
+	data->enemy->frame = 0;
 
 	data->enemy_arr[0] = data->enemy;
-
-
 	data->enemy_arr[1] = malloc(sizeof(t_enemy));
 	if (!data->enemy_arr[1])
 		ft_free(-1, data);
@@ -102,9 +134,10 @@ t_data	*ft_data_init(void)
 	data->enemy_arr[1]->map = 'B';
 	data->enemy_arr[1]->rdata = data;
 	data->enemy_arr[1]->ray = malloc(sizeof(t_ray));
+	data->enemy_arr[1]->tex_iddle = data->enemy_arr[0]->tex_iddle;
+	data->enemy_arr[1]->tex = data->enemy_arr[1]->tex_iddle->sprite1;
 	data->enemy_arr[1]->data->y_look = cos(data->enemy_arr[1]->data->angle * M_PI / 180.0);
 	data->enemy_arr[1]->data->x_look = sin(data->enemy_arr[1]->data->angle * M_PI / 180.0);
-	ft_win_start(data);
 
 	data->tex_north = malloc(sizeof(t_img));
 	if (!data->tex_north)
@@ -126,16 +159,7 @@ t_data	*ft_data_init(void)
 		ft_free(-1, data);
 	ft_start_tex(data, data->tex_west, "west.xpm");
 
-	data->tex_enemy = malloc(sizeof(t_tex_enemy));
-	if (!data->tex_enemy)
-		ft_free(-1, data);
-	data->tex_enemy->idle1 = malloc(sizeof(t_img));
-	if (!data->tex_enemy->idle1)
-		ft_free(-1, data);
-	ft_start_tex(data, data->tex_enemy->idle1, "enemy.xpm");
-	data->tex_enemy->tex_enemy = data->tex_enemy->idle1;
-
-	data->nbr_threads = 1;
+	data->nbr_threads = 8;
 	data->tdata = malloc(sizeof(t_thread_data) * data->nbr_threads + 1);
 	data->thread = malloc(sizeof(pthread_t) * data->nbr_threads + 1);
 	int	i = -1;
@@ -147,6 +171,57 @@ t_data	*ft_data_init(void)
     	data->tdata[i].end_x = (i + 1) * WIN_WIDTH / data->nbr_threads;
 	}
 	data->player->angle_y = 0;
+	data->nbrs = malloc(sizeof(t_tex_nbrs));
+
+	data->nbrs->nbr_0 = malloc(sizeof(t_img));
+	if (!data->nbrs->nbr_0)
+		ft_free(-1, data);
+	ft_start_tex(data, data->nbrs->nbr_0, "0.xpm");
+
+	data->nbrs->nbr_1 = malloc(sizeof(t_img));
+	if (!data->nbrs->nbr_1)
+		ft_free(-1, data);
+	ft_start_tex(data, data->nbrs->nbr_1, "1.xpm");
+
+	data->nbrs->nbr_2 = malloc(sizeof(t_img));
+	if (!data->nbrs->nbr_2)
+		ft_free(-1, data);
+	ft_start_tex(data, data->nbrs->nbr_2, "2.xpm");
+
+	data->nbrs->nbr_3 = malloc(sizeof(t_img));
+	if (!data->nbrs->nbr_3)
+		ft_free(-1, data);
+	ft_start_tex(data, data->nbrs->nbr_3, "3.xpm");
+
+	data->nbrs->nbr_4 = malloc(sizeof(t_img));
+	if (!data->nbrs->nbr_4)
+		ft_free(-1, data);
+	ft_start_tex(data, data->nbrs->nbr_4, "4.xpm");
+
+	data->nbrs->nbr_5 = malloc(sizeof(t_img));
+	if (!data->nbrs->nbr_5)
+		ft_free(-1, data);
+	ft_start_tex(data, data->nbrs->nbr_5, "5.xpm");
+
+	data->nbrs->nbr_6 = malloc(sizeof(t_img));
+	if (!data->nbrs->nbr_6)
+		ft_free(-1, data);
+	ft_start_tex(data, data->nbrs->nbr_6, "6.xpm");
+
+	data->nbrs->nbr_7 = malloc(sizeof(t_img));
+	if (!data->nbrs->nbr_7)
+		ft_free(-1, data);
+	ft_start_tex(data, data->nbrs->nbr_7, "7.xpm");
+
+	data->nbrs->nbr_8 = malloc(sizeof(t_img));
+	if (!data->nbrs->nbr_8)
+		ft_free(-1, data);
+	ft_start_tex(data, data->nbrs->nbr_8, "8.xpm");
+
+	data->nbrs->nbr_9 = malloc(sizeof(t_img));
+	if (!data->nbrs->nbr_9)
+		ft_free(-1, data);
+	ft_start_tex(data, data->nbrs->nbr_9, "9.xpm");
 	return (data);
 }
 

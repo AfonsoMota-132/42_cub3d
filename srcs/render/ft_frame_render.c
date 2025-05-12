@@ -469,6 +469,7 @@ void	ft_put_fps(t_data *data)
 			ft_render_put_fps(data->img, data->nbrs->nbr_9, offset);
 		offset += 16;
 	}
+	free(str);
 }
 int	ft_frame_render(t_data *data)
 {

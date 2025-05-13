@@ -108,6 +108,7 @@ typedef struct s_mov {
 	int		sound;
 	double	time_sound;
 	int		shoot;
+	bool	pause;
 } t_mov;
 
 typedef	struct	s_line_improv_render {
@@ -173,6 +174,8 @@ typedef struct	s_enemy
 typedef struct s_data 
 {
 	t_img					*img;
+	t_img					*img_pause;
+	t_img					*tex_pause;
 	t_img 					*texture_wall;
 	t_img					*tex_north;
 	t_img					*tex_south;

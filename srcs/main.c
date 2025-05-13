@@ -18,7 +18,8 @@ int mouse_move(int x, int y, t_data *data)
 		data->mov->lookml = idk;
 	if (x > WIN_WIDTH / 2 + 10)
 		data->mov->lookmr = idk;
-	mlx_mouse_move(data->mlx, data->win, WIN_WIDTH / 2, WIN_HEIGHT / 2);
+	if (!data->mov->pause)
+		mlx_mouse_move(data->mlx, data->win, WIN_WIDTH / 2, WIN_HEIGHT / 2);
 	(void) y;
 	return (1);
 }
@@ -36,6 +37,22 @@ int mouse_move(int x, int y, t_data *data)
 // 		data->mov->shoot = 2;
 // 	return (0);
 // }
+
+int mouse_handler(int button, int x, int y, t_data *data)
+{
+    if (button == 1 && data->mov->pause) // left click
+    {
+        if (x >= 621 && x <= 657 && y >= 484 && y <= 618)
+			mlx_loop_end(data->mlx);
+    }
+	else if (!data->mov->pause)
+	{
+		if (button == 1)
+			data->mov->shoot = true;
+	}
+    return (0);
+	(void) data;
+}
 int	main(void)
 {
 	t_data	*data;
@@ -47,8 +64,10 @@ int	main(void)
 	mlx_hook(data->win, 6, 1L << 6, &mouse_move, data);
 	// mlx_hook(data->win, 4, 1L << 2, &ft_mouse_hook, data);
 	// mlx_hook(data->win, 5, 1L << 3, &ft_mouse_release, data);
+	mlx_mouse_hook(data->win, mouse_handler, data);
 	mlx_mouse_move(data->mlx, data->win, WIN_HEIGHT / 2, WIN_WIDTH / 2);
 	mlx_loop_hook(data->mlx, &ft_frame_render, data);
 	mlx_loop(data->mlx);
+	// mlx_do_key_autorepeaton(data->mlx);
 	ft_free(0, data);
 }

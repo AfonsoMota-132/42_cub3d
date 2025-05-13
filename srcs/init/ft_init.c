@@ -222,6 +222,11 @@ t_data	*ft_data_init(void)
 	if (!data->nbrs->nbr_9)
 		ft_free(-1, data);
 	ft_start_tex(data, data->nbrs->nbr_9, "9.xpm");
+
+	data->tex_pause = malloc(sizeof(t_img));
+	if (!data->tex_pause)
+		ft_free(-1, data);
+	ft_start_tex(data, data->tex_pause, "menu.xpm");
 	return (data);
 }
 
@@ -271,6 +276,15 @@ void	ft_win_start(t_data *data)
 		ft_free(-1, data);
 	data->img->addr = (int *)mlx_get_data_addr(data->img->img, &data->img->pixel_bits,
 			&data->img->size_line, &data->img->endian);
+	data->img_pause = malloc(sizeof(t_img));
+	if (!data->img_pause)
+		ft_free(-1, data);
+	data->img_pause->img = NULL;
+	data->img_pause->img = mlx_new_image(data->mlx, WIN_WIDTH, WIN_HEIGHT);
+	if (!data->img_pause->img)
+		ft_free(-1, data);
+	data->img_pause->addr = (int *)mlx_get_data_addr(data->img_pause->img,
+			&data->img_pause->pixel_bits, &data->img_pause->size_line, &data->img_pause->endian);
 }
 
 void	ft_data_set_def(t_data *data)

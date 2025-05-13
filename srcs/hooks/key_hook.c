@@ -14,8 +14,16 @@
 
 int	key_hook_press(int key, t_data *data)
 {
-	if (key == 65307)
-		mlx_loop_end(data->mlx);
+	if (key == 65307 && !data->mov->pause)
+	{
+		printf("wtf on\n");
+		data->mov->pause = true;
+	}
+	else if (key == 65307 && data->mov->pause)
+	{
+		printf("wtf off\n");
+		data->mov->pause = false;
+	}
 	if (key == 119)
 		data->mov->mov_f = true;
 	if (key == 97)

@@ -145,7 +145,7 @@ void ft_render_enemy_sprite(t_data *data, t_ray *ray, t_enemy *enemy)
     if (drawStartY < 0) drawStartY = 0;
     int drawEndY = spriteHeight / 2 + WIN_HEIGHT / 2 + data->player->angle_y;
     if (drawEndY >= WIN_HEIGHT) drawEndY = WIN_HEIGHT - 1;
-    int spriteWidth = spriteHeight;
+    int spriteWidth = spriteHeight;\
     int drawStartX = -spriteWidth / 2 + spriteScreenX;
     if (drawStartX < 0) drawStartX = 0;
     int drawEndX = spriteWidth / 2 + spriteScreenX;
@@ -389,7 +389,7 @@ void	ft_shoot_raycasting(t_data *data)
 	int is_moving = data->mov->mov || data->mov->look;
 	
 	// Example: ±3px if still, ±15px if moving
-	int max_offset = is_moving ? 150 : 3;
+	int max_offset = is_moving ? 300 : 15;
 	
 	int spread = (rand() % (2 * max_offset + 1)) - max_offset;
 	
@@ -478,31 +478,68 @@ int	ft_frame_render(t_data *data)
 	while (ft_get_time_in_ms() <= data->time_frame)
 		;
 	data->time_frame = ft_get_time_in_ms() + 16.6;
-	data->fps = 1000 / (ft_get_time_in_ms() - data->old_frame);
-	data->old_frame = ft_get_time_in_ms();
-	ft_player_mov(data);
-	ft_pre_render_loop(data->ray, data->player);
-	i = -1;
-	while (++i < data->nbr_threads)
+	if (!data->mov->pause)
 	{
-		ft_pre_render_loop(data->tdata[i].ray, data->player);
-		pthread_create(&data->thread[i], NULL, thread_render, &data->tdata[i]);
+		data->fps = 1000 / (ft_get_time_in_ms() - data->old_frame);
+		data->old_frame = ft_get_time_in_ms();
+		ft_player_mov(data);
+		ft_pre_render_loop(data->ray, data->player);
+		i = -1;
+		while (++i < data->nbr_threads)
+		{
+			ft_pre_render_loop(data->tdata[i].ray, data->player);
+			pthread_create(&data->thread[i], NULL, thread_render, &data->tdata[i]);
+		}
+		i = -1;
+		while (++i < data->nbr_threads)
+			pthread_join(data->thread[i], NULL);
+		ft_sort_enemies(data);
+		if (data->mov->shoot)
+			ft_shoot_raycasting(data);
+		i = -1;
+		while (data->enemy_arr[++i])
+			ft_enemy_render_threads(data->enemy_arr[i]);
+		ft_pre_render_loop(data->ray, data->player);
+		ft_put_fps(data);
+		mlx_put_image_to_window(data->mlx, data->win, data->img->img, 0, 0);
+		data->mov->mov = false;
+		data->mov->look = false;
+		data->mov->shoot = false;
 	}
-	i = -1;
-	while (++i < data->nbr_threads)
-		pthread_join(data->thread[i], NULL);
-	ft_sort_enemies(data);
-	if (data->mov->shoot)
-		ft_shoot_raycasting(data);
-	i = -1;
-	while (data->enemy_arr[++i])
-		ft_enemy_render_threads(data->enemy_arr[i]);
-	ft_pre_render_loop(data->ray, data->player);
-	ft_put_fps(data);
-	mlx_put_image_to_window(data->mlx, data->win, data->img->img, 0, 0);
-	data->mov->mov = false;
-	data->mov->look = false;
-	data->mov->shoot = false;
+	else
+	{
+		for (int x = 0; x < WIN_WIDTH; x++)
+		{
+			for (int y = 0; y < WIN_HEIGHT; y++)
+			{
+				int color = data->img->addr[y * WIN_WIDTH + x];
+				float	factor	= 0.45;
+				int r = ((color >> 16) & 0xFF) * factor;
+				int g = ((color >> 8) & 0xFF) * factor;
+				int b = (color & 0xFF) * factor;
+				color = (r << 16) | (g << 8) | b;
+				data->img_pause->addr[y * WIN_WIDTH + x] = color;
+			}
+		}
+		for (int x = 0; x < 318; x++)
+		{
+			for (int y = 0; y < 366; y++)
+			{
+				int	texX = x / 3;
+				int	texY = y / 3;
+				int color = data->tex_pause->addr[texY * 106 + texX];
+				// float	factor	= 0.45;
+				// int r = ((color >> 16) & 0xFF) * factor;
+				// int g = ((color >> 8) & 0xFF) * factor;
+				// int b = (color & 0xFF) * factor;
+				// color = (r << 16) | (g << 8) | b;
+				if (color != 0x000000)
+					data->img_pause->addr[y * WIN_WIDTH + (((WIN_HEIGHT / 2) - 183)
+						* WIN_WIDTH) + x + (WIN_WIDTH / 2 - 159)] = color;
+			}
+		}
+		mlx_put_image_to_window(data->mlx, data->win, data->img_pause->img, 0, 0);
+	}
 	return (0);
 }
 

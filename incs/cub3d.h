@@ -27,8 +27,6 @@
 # include <pthread.h>
 // # include "../srcs/render/ft_render.h"
 
-# define WIN_WIDTH 1280
-# define WIN_HEIGHT 720
 # define PI 3.14159265358979323846264338327950288419716939937510582097494459230781640628620899862803
 # define BLOCK 25
 
@@ -51,11 +49,11 @@ typedef struct s_img
 
 typedef struct s_player 
 {
-	float	x_pos;
-	float	y_pos;
-	float	y_look;
-	float	x_look;
-	float	angle;
+	double	x_pos;
+	double	y_pos;
+	double	y_look;
+	double	x_look;
+	double	angle;
 	int		angle_y;
 } t_player;
 
@@ -125,6 +123,8 @@ typedef	struct	s_line_improv_render {
 	int		drawStart;
 	int		texX;
 	t_img	*tex_wall;
+	int		height;
+	int		width;
 } t_line_improv_render;
 
 
@@ -198,7 +198,10 @@ typedef struct s_data
 	double					fps;
 	int						nbr_threads;
 	pthread_t				*thread;
-	double					zbuffer[WIN_WIDTH];
+	double					*zbuffer;
+	int						width;
+	int						height;
+	double					frame_time;
 	struct s_thread_data	*tdata;
 } t_data;
 
@@ -225,5 +228,6 @@ void	ft_win_start(t_data *data);
 void	ft_start_tex(t_data *data, t_img *img, char *file);
 double	ft_add_angle(double angle, double delta);
 void	ft_player_lookul(t_player *player, int angle);
+void	ft_render(t_data *data);
 
 #endif

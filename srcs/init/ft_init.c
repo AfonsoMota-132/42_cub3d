@@ -45,15 +45,14 @@ t_data	*ft_data_init(void)
 	if (!data->mov)
 		ft_free(-1, data);
 	ft_mov_set_def(data->mov);
-	data->player1 = malloc(sizeof(t_player));
-	if (!data->player1)
+	data->player = malloc(sizeof(t_player));
+	if (!data->player)
 		ft_free(-1, data);
-	data->player1->x_pos = 4.5;
-	data->player1->y_pos = 3.5;
-	data->player1->angle = 300;
-	data->player1->y_look = cos(data->player1->angle * M_PI / 180.0);
-	data->player1->x_look = sin(data->player1->angle * M_PI / 180.0);
-	data->player = data->player1;
+	data->player->x_pos = 4.5;
+	data->player->y_pos = 3.5;
+	data->player->angle = 300;
+	data->player->y_look = cos(data->player->angle * M_PI / 180.0);
+	data->player->x_look = sin(data->player->angle * M_PI / 180.0);
 	data->time_frame = ft_get_time_in_ms() + 17;
 
 	data->enemy_arr = malloc(sizeof(t_enemy *) * 10);
@@ -167,8 +166,8 @@ t_data	*ft_data_init(void)
 	{
 		data->tdata[i].ray = malloc(sizeof(t_ray));
     	data->tdata[i].data = data;
-    	data->tdata[i].start_x = i * WIN_WIDTH / data->nbr_threads;
-    	data->tdata[i].end_x = (i + 1) * WIN_WIDTH / data->nbr_threads;
+    	data->tdata[i].start_x = i * data->width / data->nbr_threads;
+    	data->tdata[i].end_x = (i + 1) * data->width / data->nbr_threads;
 	}
 	data->player->angle_y = 0;
 	data->nbrs = malloc(sizeof(t_tex_nbrs));
@@ -264,14 +263,14 @@ void	ft_win_start(t_data *data)
 	data->mlx = mlx_init();
 	if (!data->mlx)
 		ft_free(-1, data);
-	data->win = mlx_new_window(data->mlx, WIN_WIDTH, WIN_HEIGHT, "cub3d");
+	data->win = mlx_new_window(data->mlx, data->width, data->height, "cub3d");
 	if (!data->win)
 		ft_free(-1, data);
 	data->img = malloc(sizeof(t_img));
 	if (!data->img)
 		ft_free(-1, data);
 	data->img->img = NULL;
-	data->img->img = mlx_new_image(data->mlx, WIN_WIDTH, WIN_HEIGHT);
+	data->img->img = mlx_new_image(data->mlx, data->width, data->height);
 	if (!data->img->img)
 		ft_free(-1, data);
 	data->img->addr = (int *)mlx_get_data_addr(data->img->img, &data->img->pixel_bits,
@@ -280,11 +279,12 @@ void	ft_win_start(t_data *data)
 	if (!data->img_pause)
 		ft_free(-1, data);
 	data->img_pause->img = NULL;
-	data->img_pause->img = mlx_new_image(data->mlx, WIN_WIDTH, WIN_HEIGHT);
+	data->img_pause->img = mlx_new_image(data->mlx, data->width, data->height);
 	if (!data->img_pause->img)
 		ft_free(-1, data);
 	data->img_pause->addr = (int *)mlx_get_data_addr(data->img_pause->img,
 			&data->img_pause->pixel_bits, &data->img_pause->size_line, &data->img_pause->endian);
+	data->zbuffer = malloc(sizeof(double) * data->width);
 }
 
 void	ft_data_set_def(t_data *data)
@@ -307,6 +307,9 @@ void	ft_data_set_def(t_data *data)
 	data->old_frame = 0;
 	data->hex_ceiling = 0x0000FF; // change both for 0x000000 after parsing is done
 	data->hex_floor = 0xFF0000;
+	data->width = 1280;
+	data->height = 720;
+	data->frame_time = 0;
 }
 
 

@@ -26,7 +26,7 @@ void	ft_render_line(int x, int y, t_line_improv_render line)
 {
 	int	color;
 
-	while (++y <= WIN_HEIGHT)
+	while (++y <= line.height)
 	{
 		if (y < line.drawStart)
 			line.addr[y * line.img_sl + x] = line.hex_ceil;
@@ -70,8 +70,10 @@ void	ft_pre_render_line(t_data *data, t_ray *ray, int x, int y)
 		data->texture_wall = data->tex_east;
 	ft_ray_render_line(ray, data);
 	line.addr = data->img->addr;
+	line.height = data->height;
+	line.width = data->width;
 	line.step = 1.0 * data->texture_wall->y / ray->lineHeight;
-	line.texPos = (ray->drawStart - data->player->angle_y - (WIN_HEIGHT >> 1)
+	line.texPos = (ray->drawStart - data->player->angle_y - (line.height >> 1)
 			+ (ray->lineHeight >> 1)) * line.step;
 	line.hex_ceil = data->hex_ceiling;
 	line.hex_floor = data->hex_floor;

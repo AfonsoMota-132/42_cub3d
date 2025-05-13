@@ -21,31 +21,31 @@ void	ft_player_lookul(t_player *player, int angle)
 	else
 		player->angle_y += angle;
 }
+double	ft_round_to_nd(double value, int decimals)
+{
+    double scale;
+	
+	scale = pow(10.0, decimals);
+    return (round(value * scale) / scale);
+}
 void	ft_player_rot(t_data *data)
 {
+	double	offset;
+
+	offset = ft_round_to_nd(-1 * 0.0936 * data->frame_time, 1);
 	if (data->mov->lookl || data->mov->lookml)
 	{
 		data->mov->look = true;
-		data->player->angle = ft_add_angle(data->player->angle, -1.5);
+		data->player->angle = ft_add_angle(data->player->angle, offset);
 		data->player->y_look = cos(data->player->angle * M_PI / 180.0);
 		data->player->x_look = sin(data->player->angle * M_PI / 180.0);
 		if (data->mov->lookml)
 			data->mov->lookml -= 1;
 	}
-	if (data->mov->jump >= 18)
-	{
-		// ft_player_lookul(data->player, 0.05 * (data->mov->jump * data->mov->jump) - 18);
-			data->mov->jump -= 1;
-	}
-	if (data->mov->jump < 18 && data->mov->jump > 0)
-	{
-		// ft_player_lookul(data->player, -(0.05 * (data->mov->jump * data->mov->jump) + 17));
-			data->mov->jump -= 1;
-	}
 	if (data->mov->lookr || data->mov->lookmr)
 	{
 		data->mov->look = true;
-		data->player->angle = ft_add_angle(data->player->angle, 1.5);
+		data->player->angle = ft_add_angle(data->player->angle, 0.0936 * data->frame_time);
 		data->player->y_look = cos(data->player->angle * M_PI / 180.0);
 		data->player->x_look = sin(data->player->angle * M_PI / 180.0);
 		if (data->mov->lookmr)
@@ -81,10 +81,10 @@ void	ft_ray_dir(t_ray *ray)
 	}
 }
 
-void	ft_set_ray_loop(t_ray *ray, int x)
+void	ft_set_ray_loop(t_ray *ray, int x, t_data *data)
 {
-	ray->cameraX = (2 * x / (double)WIN_WIDTH - 1)
-		* ((double)WIN_WIDTH / WIN_HEIGHT);
+	ray->cameraX = (2 * x / (double)data->width - 1)
+		* ((double)data->width / data->height);
 	ray->rayDirX = ray->dirX + ray->planeX
 		* ray->cameraX;
 	ray->rayDirY = ray->dirY + ray->planeY

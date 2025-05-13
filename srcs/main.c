@@ -14,12 +14,12 @@
 int mouse_move(int x, int y, t_data *data)
 {
 	int	idk = 3;
-	if (x < WIN_WIDTH / 2 - 10)
+	if (x < (data->width >> 1) - 10)
 		data->mov->lookml = idk;
-	if (x > WIN_WIDTH / 2 + 10)
+	if (x > (data->width >> 1)+ 10)
 		data->mov->lookmr = idk;
 	if (!data->mov->pause)
-		mlx_mouse_move(data->mlx, data->win, WIN_WIDTH / 2, WIN_HEIGHT / 2);
+		mlx_mouse_move(data->mlx, data->win, data->width / 2, data->height / 2);
 	(void) y;
 	return (1);
 }
@@ -42,14 +42,16 @@ int mouse_handler(int button, int x, int y, t_data *data)
 {
     if (button == 1 && data->mov->pause) // left click
     {
-        if (x >= 621 && x <= 657 && y >= 484 && y <= 618)
-			mlx_loop_end(data->mlx);
+        // if (x >= 621 && x <= 657 && y >= 484 && y <= 618)
+		mlx_loop_end(data->mlx);
     }
 	else if (!data->mov->pause)
 	{
 		if (button == 1)
 			data->mov->shoot = true;
 	}
+	(void) x;
+	(void) y;
     return (0);
 	(void) data;
 }
@@ -62,12 +64,29 @@ int	main(void)
 	mlx_hook(data->win, 2, 1L << 0, &key_hook_press, data);
 	mlx_hook(data->win, 3, 1L << 1, &key_hook_relea, data);
 	mlx_hook(data->win, 6, 1L << 6, &mouse_move, data);
-	// mlx_hook(data->win, 4, 1L << 2, &ft_mouse_hook, data);
-	// mlx_hook(data->win, 5, 1L << 3, &ft_mouse_release, data);
 	mlx_mouse_hook(data->win, mouse_handler, data);
-	mlx_mouse_move(data->mlx, data->win, WIN_HEIGHT / 2, WIN_WIDTH / 2);
+	mlx_mouse_move(data->mlx, data->win, data->height >> 1, data->width >> 1);
 	mlx_loop_hook(data->mlx, &ft_frame_render, data);
 	mlx_loop(data->mlx);
-	// mlx_do_key_autorepeaton(data->mlx);
-	ft_free(0, data);
+	
+	mlx_destroy_window(data->mlx, data->win);
+	mlx_destroy_display(data->mlx);
+	data->width = 1920;
+	data->height = 1080;
+	ft_win_start(data);
+	int	i = -1;
+	while (++i < data->nbr_threads)
+	{
+	   	data->tdata[i].start_x = i * data->width / data->nbr_threads;
+	   	data->tdata[i].end_x = (i + 1) * data->width / data->nbr_threads;
+	}
+	ft_render(data);
+	mlx_hook(data->win, 2, 1L << 0, &key_hook_press, data);
+	mlx_hook(data->win, 3, 1L << 1, &key_hook_relea, data);
+	mlx_hook(data->win, 6, 1L << 6, &mouse_move, data);
+	mlx_mouse_hook(data->win, mouse_handler, data);
+	mlx_mouse_move(data->mlx, data->win, data->height >> 1, data->width >> 1);
+	mlx_loop_hook(data->mlx, &ft_frame_render, data);
+	mlx_loop(data->mlx);
+	// ft_free(0, data);
 }

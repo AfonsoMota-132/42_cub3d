@@ -22,23 +22,25 @@ double	ft_add_angle(double angle, double delta)
 	return (angle);
 }
 
-void	ft_render_line(int x, int y, t_line_improv_render line)
+void	ft_render_line(int x, t_line_improv_render *line, t_data *data, t_ray *ray)
 {
 	int	color;
+	int	y;
 
-	while (++y <= line.height)
+	y = -1;
+	while (++y <= data->height)
 	{
-		if (y < line.drawStart)
-			line.addr[y * line.img_sl + x] = line.hex_ceil;
-		else if (y > line.drawEnd)
-			line.addr[y * line.img_sl + x] = line.hex_floor;
+		if (y < ray->drawStart)
+			line->addr[y * line->img_sl + x] = line->hex_ceil;
+		else if (y > line->drawEnd)
+			line->addr[y * line->img_sl + x] = line->hex_floor;
 		else
 		{
-			line.texPos += line.step;
-			color = line.tex_addr[((int)line.texPos
-					& (line.text_y)) * (line.tex_sl) + line.texX];
+			line->texPos += line->step;
+			color = line->tex_addr[((int)line->texPos
+					& (line->text_y)) * (line->tex_sl) + line->texX];
 			if (color)
-				line.addr[y * line.img_sl + x] = color; 
+				line->addr[y * line->img_sl + x] = color; 
 		}
 	}
 }
@@ -84,7 +86,35 @@ void	ft_pre_render_loop_portal(t_ray *ray, t_portal *portal)
 	ray->planeY = -ray->dirX * 0.66;
 }
 
-void	ft_pre_render_line(t_data *data, t_ray *ray, int x, int y)
+void	ft_render_line_portal(int x, t_line_improv_render *line, t_data *data, t_ray *ray)
+{
+	int	color;
+	int	color2;
+	int	y;
+
+	y = -1;
+	while (++y <= data->height)
+	{
+		color2 = line->addr[y * line->img_sl + x];
+		if (color2 == 0xFFFFFF)
+		{
+			if (y < ray->drawStart)
+				line->addr[y * line->img_sl + x] = line->hex_ceil;
+			else if (y > line->drawEnd)
+				line->addr[y * line->img_sl + x] = line->hex_floor;
+			else
+			{
+				line->texPos += line->step;
+				color = line->tex_addr[((int)line->texPos
+						& (line->text_y)) * (line->tex_sl) + line->texX];
+				if (color)
+					line->addr[y * line->img_sl + x] = color; 
+			}
+		}
+	}
+}
+
+void	ft_pre_render_line(t_data *data, t_ray *ray, int x)
 {
 	t_line_improv_render	line;
 
@@ -110,10 +140,16 @@ void	ft_pre_render_line(t_data *data, t_ray *ray, int x, int y)
 		line.tex_sl = data->texture_wall->size_line >> 2;
 		line.text_y = data->texture_wall->y - 1;
 		line.tex_addr = data->texture_wall->addr;
+		line.drawEnd = 0;
+		line.drawStart = 0;
 		line.drawEnd = ray->drawEnd;
 		line.drawStart = ray->drawStart;
 		line.texX = ray->texX;
-		ft_render_line(x, y, line);
+		line.portal_hit = ray->portal_see;
+		if (!line.portal_hit)
+			ft_render_line(x, &line, data, ray);
+		else
+			ft_render_line_portal(x, &line, data, ray);
 		if (ray->hit == 2)
 		{
 			data->texture_wall = data->tex_pl;

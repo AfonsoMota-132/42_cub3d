@@ -87,6 +87,8 @@ typedef struct s_ray
 	int		texX;
 	double	wallX;
 	double	step;
+	bool	portal_hit;
+	bool	portal_see;
 }	t_ray;
 
 typedef struct s_mov {
@@ -125,6 +127,7 @@ typedef	struct	s_line_improv_render {
 	t_img	*tex_wall;
 	int		height;
 	int		width;
+	bool	portal_hit;
 } t_line_improv_render;
 
 

@@ -36,8 +36,8 @@ t_data	*ft_data_init(void)
 	data->map[2] = ft_strdup("100A001101");
 	data->map[3] = ft_strdup("1000001101");
 	data->map[4] = ft_strdup("100P000001");
-	data->map[5] = ft_strdup("100000R001");
-	data->map[6] = ft_strdup("1000001001");
+	data->map[5] = ft_strdup("100100R001");
+	data->map[6] = ft_strdup("1001001001");
 	data->map[7] = ft_strdup("1000001001");
 	data->map[8] = ft_strdup("1111111111");
 	data->map[9] = NULL; //should put malloc protection here but gonna leave it because its gonna be joanas part
@@ -58,9 +58,9 @@ t_data	*ft_data_init(void)
 	data->portal = malloc(sizeof(t_player));
 	if (!data->portal)
 		ft_free(-1, data);
-	data->portal->x_pos = 5.5;
-	data->portal->y_pos = 2.5;
-	data->portal->angle = 300;
+	data->portal->x_pos = 2;
+	data->portal->y_pos = 1;
+	data->portal->angle = 360;
 	data->portal->y_look = cos(data->portal->angle * M_PI / 180.0);
 	data->portal->x_look = sin(data->portal->angle * M_PI / 180.0);
 	data->portal_ray = malloc(sizeof(t_ray));
@@ -237,6 +237,10 @@ t_data	*ft_data_init(void)
 		ft_free(-1, data);
 	ft_start_tex(data, data->tex_pause, "menu.xpm");
 
+	data->tex_pl = malloc(sizeof(t_img));
+	if (!data->tex_pl)
+		ft_free(-1, data);
+	ft_start_tex(data, data->tex_pl, "portal_blue.xpm");
 	return (data);
 }
 
@@ -266,6 +270,7 @@ void	ft_mov_set_def(t_mov *mov)
 	mov->sound = 0;
 	mov->jump = 0;
 	mov->shoot = 0;
+	mov->pause = false;
 	mov->time_sound = ft_get_time_in_ms();
 }
 
@@ -336,6 +341,7 @@ void	ft_data_set_def(t_data *data)
 	data->width = 1280;
 	data->height = 720;
 	data->frame_time = 0;
+	data->see_portal = false;
 }
 
 

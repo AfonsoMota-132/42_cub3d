@@ -30,24 +30,24 @@ double	ft_round_to_nd(double value, int decimals)
 }
 void	ft_player_rot(t_data *data)
 {
-	double	offset;
-
-	offset = ft_round_to_nd(-1 * 0.0936 * data->frame_time, 1);
+	// double	offset;
+	//
+	// offset = ft_round_to_nd(-1 * 0.0936 * data->frame_time, 1);
 	if (data->mov->lookl || data->mov->lookml)
 	{
 		data->mov->look = true;
-		data->player->angle = ft_add_angle(data->player->angle, offset);
-		data->player->y_look = cos(data->player->angle * M_PI / 180.0);
-		data->player->x_look = sin(data->player->angle * M_PI / 180.0);
+		data->player1->angle = ft_add_angle(data->player1->angle, -1.5);
+		data->player1->y_look = cos(data->player1->angle * M_PI / 180.0);
+		data->player1->x_look = sin(data->player1->angle * M_PI / 180.0);
 		if (data->mov->lookml)
 			data->mov->lookml -= 1;
 	}
 	if (data->mov->lookr || data->mov->lookmr)
 	{
 		data->mov->look = true;
-		data->player->angle = ft_add_angle(data->player->angle, 0.0936 * data->frame_time);
-		data->player->y_look = cos(data->player->angle * M_PI / 180.0);
-		data->player->x_look = sin(data->player->angle * M_PI / 180.0);
+		data->player1->angle = ft_add_angle(data->player1->angle, 0.0936 * data->frame_time);
+		data->player1->y_look = cos(data->player1->angle * M_PI / 180.0);
+		data->player1->x_look = sin(data->player1->angle * M_PI / 180.0);
 		if (data->mov->lookmr)
 			data->mov->lookmr -= 1;
 	}

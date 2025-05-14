@@ -16,6 +16,8 @@ void	ft_dda_enemy(t_ray *ray, t_data *data, char detect)
 {
 	char	enemy;
 
+	ray->portal_hit = false;
+	enemy = 0;
 	while (ray->hit == 0)
 	{
 		if (ray->sideDistX < ray->sideDistY)
@@ -32,13 +34,23 @@ void	ft_dda_enemy(t_ray *ray, t_data *data, char detect)
 		}
 		enemy = data->map[ray->mapX][ray->mapY];
 		if (enemy == detect)
+		{
 			ray->hit = 2;
+			break ;
+		}
 		if (enemy == '1')
 			ray->hit = 1;
+		if (!ray->portal_hit && data->map[ray->mapX][ray->mapY] == 'R')
+		{
+			ray->mapX = data->portal->x_pos;
+			ray->mapY = data->portal->y_pos;
+				data->see_portal = true;
+		}
 	}
 	for (int i = 0; data->enemy_arr[i]; i++)
 	{
 		if (data->enemy_arr[i]->map == enemy)
 			data->enemy = data->enemy_arr[i];
 	}
+	ray->portal_hit = false;
 }

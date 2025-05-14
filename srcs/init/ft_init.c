@@ -36,8 +36,8 @@ t_data	*ft_data_init(void)
 	data->map[2] = ft_strdup("100A001101");
 	data->map[3] = ft_strdup("1000001101");
 	data->map[4] = ft_strdup("100P000001");
-	data->map[5] = ft_strdup("1001001101");
-	data->map[6] = ft_strdup("1001001101");
+	data->map[5] = ft_strdup("100100R001");
+	data->map[6] = ft_strdup("1001000001");
 	data->map[7] = ft_strdup("1000001001");
 	data->map[8] = ft_strdup("1111111111");
 	data->map[9] = NULL; //should put malloc protection here but gonna leave it because its gonna be joanas part
@@ -45,15 +45,25 @@ t_data	*ft_data_init(void)
 	if (!data->mov)
 		ft_free(-1, data);
 	ft_mov_set_def(data->mov);
-	data->player = malloc(sizeof(t_player));
-	if (!data->player)
+	data->player1 = malloc(sizeof(t_player));
+	if (!data->player1)
 		ft_free(-1, data);
-	data->player->x_pos = 4.5;
-	data->player->y_pos = 3.5;
-	data->player->angle = 300;
-	data->player->y_look = cos(data->player->angle * M_PI / 180.0);
-	data->player->x_look = sin(data->player->angle * M_PI / 180.0);
+	data->player1->x_pos = 4.5;
+	data->player1->y_pos = 3.5;
+	data->player1->angle = 300;
+	data->player1->y_look = cos(data->player1->angle * M_PI / 180.0);
+	data->player1->x_look = sin(data->player1->angle * M_PI / 180.0);
 	data->time_frame = ft_get_time_in_ms() + 17;
+
+	data->portal = malloc(sizeof(t_player));
+	if (!data->portal)
+		ft_free(-1, data);
+	data->portal->x_pos = 5.5;
+	data->portal->y_pos = 2.5;
+	data->portal->angle = 300;
+	data->portal->y_look = cos(data->portal->angle * M_PI / 180.0);
+	data->portal->x_look = sin(data->portal->angle * M_PI / 180.0);
+	data->portal_ray = malloc(sizeof(t_ray));
 
 	data->enemy_arr = malloc(sizeof(t_enemy *) * 10);
 	data->enemy_arr[0] = NULL;
@@ -158,7 +168,7 @@ t_data	*ft_data_init(void)
 		ft_free(-1, data);
 	ft_start_tex(data, data->tex_west, "west.xpm");
 
-	data->nbr_threads = 8;
+	data->nbr_threads = 1;
 	data->tdata = malloc(sizeof(t_thread_data) * data->nbr_threads + 1);
 	data->thread = malloc(sizeof(pthread_t) * data->nbr_threads + 1);
 	int	i = -1;
@@ -169,7 +179,7 @@ t_data	*ft_data_init(void)
     	data->tdata[i].start_x = i * data->width / data->nbr_threads;
     	data->tdata[i].end_x = (i + 1) * data->width / data->nbr_threads;
 	}
-	data->player->angle_y = 0;
+	data->player1->angle_y = 0;
 	data->nbrs = malloc(sizeof(t_tex_nbrs));
 
 	data->nbrs->nbr_0 = malloc(sizeof(t_img));
@@ -226,6 +236,7 @@ t_data	*ft_data_init(void)
 	if (!data->tex_pause)
 		ft_free(-1, data);
 	ft_start_tex(data, data->tex_pause, "menu.xpm");
+
 	return (data);
 }
 
@@ -266,15 +277,30 @@ void	ft_win_start(t_data *data)
 	data->win = mlx_new_window(data->mlx, data->width, data->height, "cub3d");
 	if (!data->win)
 		ft_free(-1, data);
-	data->img = malloc(sizeof(t_img));
-	if (!data->img)
+
+	data->img_player = malloc(sizeof(t_img));
+	if (!data->img_player)
 		ft_free(-1, data);
-	data->img->img = NULL;
-	data->img->img = mlx_new_image(data->mlx, data->width, data->height);
-	if (!data->img->img)
+	data->img_player->img = NULL;
+	data->img_player->img = mlx_new_image(data->mlx, data->width, data->height);
+	if (!data->img_player->img)
 		ft_free(-1, data);
-	data->img->addr = (int *)mlx_get_data_addr(data->img->img, &data->img->pixel_bits,
-			&data->img->size_line, &data->img->endian);
+	data->img_player->addr = (int *)mlx_get_data_addr(data->img_player->img, &data->img_player->pixel_bits,
+			&data->img_player->size_line, &data->img_player->endian);
+	data->img = data->img_player;
+
+	data->img_portal = malloc(sizeof(t_img));
+	if (!data->img_portal)
+		ft_free(-1, data);
+	data->img_portal->img = NULL;
+	data->img_portal->img = mlx_new_image(data->mlx, data->width, data->height);
+	if (!data->img_portal->img)
+		ft_free(-1, data);
+	data->img_portal->addr = (int *)mlx_get_data_addr(data->img_portal->img, &data->img_portal->pixel_bits,
+			&data->img_portal->size_line, &data->img_portal->endian);
+	data->img_portal->x = data->width;
+	data->img_portal->y = data->height;
+
 	data->img_pause = malloc(sizeof(t_img));
 	if (!data->img_pause)
 		ft_free(-1, data);

@@ -57,20 +57,36 @@ void	ft_player_mov_fb(t_data *data)
 		data->mov->mov = true;
 		tempx = data->player->x_pos + data->player->x_look * (0.003012 * data->frame_time);
 		tempy = data->player->y_pos + data->player->y_look * (0.003012 * data->frame_time);
-		if (ft_ver_col(data->map, tempx, data->player->y_pos, 'P'))
+		if (ft_ver_col(data->map, tempx, data->player->y_pos, 'P') == 1)
 			data->player->x_pos = tempx;
-		if (ft_ver_col(data->map, data->player->x_pos, tempy, 'P'))
+		if (ft_ver_col(data->map, data->player->x_pos, tempy, 'P') == 1)
 			data->player->y_pos = tempy;
+		if (ft_ver_col(data->map, tempx, data->player->y_pos, 'P') == 2)
+		{
+			data->player1->x_pos = data->portal->x_pos;
+			data->player1->y_pos = data->portal->y_pos + 0.5;
+			printf("wtf1 x: %f\ty: %f \n", data->player1->x_pos, data->player1->y_pos);
+		}
+		if (ft_ver_col(data->map, data->player->x_pos, tempy, 'P') == 2)
+		{
+			data->player1->x_pos = data->portal->x_pos;
+			data->player1->y_pos = data->portal->y_pos + 0.5;
+			printf("wtf2 x: %f\ty: %f \n", data->player1->x_pos, data->player1->y_pos);
+		}
 	}
 	if (data->mov->mov_b && !data->mov->mov_f)
 	{
 		data->mov->mov = true;
 		tempx = data->player->x_pos - data->player->x_look * (0.003012 * data->frame_time);
 		tempy = data->player->y_pos - data->player->y_look * (0.003012 * data->frame_time);
-		if (ft_ver_col(data->map, tempx, data->player->y_pos, 'P'))
+		if (ft_ver_col(data->map, tempx, data->player->y_pos, 'P') == 1)
 			data->player->x_pos = tempx;
-		if (ft_ver_col(data->map, data->player->x_pos, tempy, 'P'))
+		if (ft_ver_col(data->map, data->player->x_pos, tempy, 'P') == 1)
 			data->player->y_pos = tempy;
+		if (ft_ver_col(data->map, tempx, data->player->y_pos, 'P') == 2)
+			data->player->x_pos = data->portal->x_pos + 0.5;
+		if (ft_ver_col(data->map, data->player->x_pos, tempy, 'P') == 2)
+			data->player->y_pos = data->player->y_pos + 0.5;
 	}
 }
 
@@ -101,8 +117,12 @@ void	ft_player_mov_lr(t_data *data)
 	}
 }
 
-bool	ft_ver_col(char **map, double tempx, double tempy, char except)
+int	ft_ver_col(char **map, double tempx, double tempy, char except)
 {
+	if (map[(int)(tempx - 0.05)][(int)(tempy - 0.05)] == 'R'
+		|| map[(int)(tempx + 0.05)][(int)(tempy + 0.05)] == 'R'
+		|| map[(int)tempx][(int)tempy] == 'R')
+		return (2);
 	if ((map[(int)(tempx - 0.1)][(int)(tempy - 0.1)] != '1'
 		&& map[(int)(tempx + 0.1)][(int)(tempy + 0.1)] != '1'
 		&& !(map[(int)(tempx - 0.1)][(int)(tempy - 0.1)] >= 'A'
@@ -115,5 +135,6 @@ bool	ft_ver_col(char **map, double tempx, double tempy, char except)
 		|| map[(int)tempx][(int)tempy] == except
 		|| map[(int)tempx][(int)tempy] == '0')
 		return (true);
+		
 	return (false);
 }

@@ -171,9 +171,21 @@ typedef struct	s_enemy
 	struct s_enemy	*next;
 } t_enemy;
 
+typedef struct s_portal 
+{
+	double	x_pos;
+	double	y_pos;
+	double	y_look;
+	double	x_look;
+	double	angle;
+	int		angle_y;
+} t_portal;
+
 typedef struct s_data 
 {
 	t_img					*img;
+	t_img					*img_player;
+	t_img					*img_portal;
 	t_img					*img_pause;
 	t_img					*tex_pause;
 	t_img 					*texture_wall;
@@ -181,11 +193,14 @@ typedef struct s_data
 	t_img					*tex_south;
 	t_img					*tex_east;
 	t_img					*tex_west;
+	t_img					*tex_pl;
 	t_tex_nbrs				*nbrs;
 	void					*mlx;
 	void					*win;
 	t_player				*player;
 	t_player				*player1;
+	t_player				*portal;
+	t_ray					*portal_ray;
 	t_enemy					*enemy;
 	t_enemy					**enemy_arr;
 	t_ray					*ray;
@@ -202,6 +217,7 @@ typedef struct s_data
 	int						width;
 	int						height;
 	double					frame_time;
+	bool					see_portal;
 	struct s_thread_data	*tdata;
 } t_data;
 

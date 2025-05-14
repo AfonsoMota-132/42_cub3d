@@ -33,7 +33,7 @@ void	ft_line_height(t_ray *ray, t_data *data)
 		ray->orien = 2 + (ray->stepY <= 0);
 }
 
-void *thread_render(void *arg)
+void *ft_thread_render(void *arg)
 {
     t_thread_data *tdata = (t_thread_data *)arg;
     int x = tdata->start_x - 1;
@@ -324,7 +324,7 @@ void	*ft_enemy_render_threads(void *arg)
 			break ;
 		}
 	}
-	ft_raycasting_enemies(data, enemy);
+	// ft_raycasting_enemies(data, enemy);
 	return (NULL);
 }
 
@@ -472,27 +472,74 @@ void	ft_put_fps(t_data *data)
 	free(str);
 }
 
+void	ft_calc_portal(t_data *data)
+{
+	int	texX;
+	int	texY;
+
+	data->tex_pl = malloc(sizeof(t_img));
+	if (!data->tex_pl)
+		ft_free(-1, data);
+	ft_start_tex(data, data->tex_pl, "portal_blue.xpm");
+	int	x = -1;
+	while (++x < data->tex_pl->x)
+	{
+		int	y = -1;
+		while (++y < data->tex_pl->y)
+		{
+			texY = (y * data->height) / data->tex_pl->y;
+			texX = ((x * data->width) / data->tex_pl->x);
+			if (data->tex_pl->addr[y * data->tex_pl->x + x] == 0xFFFFFF)
+				data->tex_pl->addr[y * data->tex_pl->x + x]
+					= data->img_portal->addr[texY * data->width + texX];
+		}
+	}
+	(void) texX;
+	(void) texY;
+}
+
 void	ft_render(t_data *data)
 {
 	int	i;
 
+	data->player = data->portal;
+	data->img = data->img_portal;
+	i = -1;
+	while (++i < data->nbr_threads)
+	{
+		ft_pre_render_loop(data->tdata[i].ray, data->player);
+		pthread_create(&data->thread[i], NULL, ft_thread_render, &data->tdata[i]);
+	}
+	i = -1;
+	while (++i < data->nbr_threads)
+		pthread_join(data->thread[i], NULL);
+	i = -1;
+	while (data->enemy_arr[++i])
+		ft_enemy_render_threads(data->enemy_arr[i]);
+	// mlx_put_image_to_window(data->mlx, data->win, data->img->img, 0, 0);
+	ft_calc_portal(data);
+	// mlx_put_image_to_window(data->mlx, data->win, data->img_portal->img, 0, 0);
+	data->player = data->player1;
+	data->img = data->img_player;
 	ft_pre_render_loop(data->ray, data->player);
 	i = -1;
 	while (++i < data->nbr_threads)
 	{
 		ft_pre_render_loop(data->tdata[i].ray, data->player);
-		pthread_create(&data->thread[i], NULL, thread_render, &data->tdata[i]);
+		pthread_create(&data->thread[i], NULL, ft_thread_render, &data->tdata[i]);
 	}
 	i = -1;
 	while (++i < data->nbr_threads)
 		pthread_join(data->thread[i], NULL);
+	data->player = data->player1;
+	data->img = data->img_player;
+
 	ft_sort_enemies(data);
-	if (data->mov->shoot)
-		ft_shoot_raycasting(data);
+	// if (data->mov->shoot)
+	// 	ft_shoot_raycasting(data);
 	i = -1;
 	while (data->enemy_arr[++i])
 		ft_enemy_render_threads(data->enemy_arr[i]);
-	ft_pre_render_loop(data->ray, data->player);
 	ft_put_fps(data);
 }
 
@@ -509,9 +556,17 @@ int	ft_frame_render(t_data *data)
 		ft_player_mov(data);
 		ft_render(data);
 		mlx_put_image_to_window(data->mlx, data->win, data->img->img, 0, 0);
+		if (data->see_portal)
+		{
+			data->portal->angle = data->player1->angle;
+			data->portal->y_look = cos(data->portal->angle * M_PI / 180.0);
+			data->portal->x_look = sin(data->portal->angle * M_PI / 180.0);
+			
+		}
 		data->mov->mov = false;
 		data->mov->look = false;
 		data->mov->shoot = false;
+		data->see_portal = false;
 	}
 	else
 	{
@@ -564,5 +619,11 @@ void	ft_dda(t_ray *ray, t_data *data)
 		}
 		if (data->map[ray->mapX][ray->mapY] == '1')
 			ray->hit = 1;
+		if (data->map[ray->mapX][ray->mapY] == 'R')
+		{
+			ray->hit = 2;
+			if (!data->see_portal)
+				data->see_portal = true;
+		}
 	}
 }

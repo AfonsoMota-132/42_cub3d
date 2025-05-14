@@ -59,7 +59,6 @@ int	main(void)
 {
 	t_data	*data;
 
-	// system("paplay sound_effects/hope.wav &");
 	data = ft_data_init();
 	mlx_hook(data->win, 2, 1L << 0, &key_hook_press, data);
 	mlx_hook(data->win, 3, 1L << 1, &key_hook_relea, data);

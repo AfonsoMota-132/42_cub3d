@@ -57,6 +57,33 @@ void	ft_ray_render_line(t_ray *ray, t_data *data)
 			- ray->texX - ray->texX - 1);
 }
 
+void	ft_set_ray_loop_portal(t_ray *ray, int x, t_data *data)
+{
+	ray->cameraX = (2 * x / (double)data->width - 1)
+		* ((double)data->width / data->height);
+	ray->rayDirX = ray->dirX + ray->planeX
+		* ray->cameraX;
+	ray->rayDirY = ray->dirY + ray->planeY
+		* ray->cameraX;
+	ray->mapX = (int) ray->posX;
+	ray->mapY = (int) ray->posY;
+	ray->hit = 0;
+	ray->deltaDistX = fabs(1 / (ray->rayDirX
+				+ (ray->rayDirX == 0) * 1e-30));
+	ray->deltaDistY = fabs(1 / (ray->rayDirY
+				+ (ray->rayDirY == 0) * 1e-30));
+}
+
+void	ft_pre_render_loop_portal(t_ray *ray, t_portal *portal)
+{
+	ray->dirX = portal->x_look;
+	ray->dirY = portal->y_look;
+	ray->posX = portal->x_pos;
+	ray->posY = portal->y_pos;
+	ray->planeX = ray->dirY * 0.66;
+	ray->planeY = -ray->dirX * 0.66;
+}
+
 void	ft_pre_render_line(t_data *data, t_ray *ray, int x, int y)
 {
 	t_line_improv_render	line;
@@ -68,21 +95,31 @@ void	ft_pre_render_line(t_data *data, t_ray *ray, int x, int y)
 		data->texture_wall = data->tex_west;
 	if (ray->orien == 3)
 		data->texture_wall = data->tex_east;
-	ft_ray_render_line(ray, data);
-	line.addr = data->img->addr;
-	line.height = data->height;
-	line.width = data->width;
-	line.step = 1.0 * data->texture_wall->y / ray->lineHeight;
-	line.texPos = (ray->drawStart - data->player->angle_y - (line.height >> 1)
-			+ (ray->lineHeight >> 1)) * line.step;
-	line.hex_ceil = data->hex_ceiling;
-	line.hex_floor = data->hex_floor;
-	line.img_sl = (data->img->size_line >> 2);
-	line.tex_sl = data->texture_wall->size_line >> 2;
-	line.text_y = data->texture_wall->y - 1;
-	line.tex_addr = data->texture_wall->addr;
-	line.drawEnd = ray->drawEnd;
-	line.drawStart = ray->drawStart;
-	line.texX = ray->texX;
-	ft_render_line(x, y, line);
+	while (1)
+	{
+		ft_ray_render_line(ray, data);
+		line.addr = data->img->addr;
+		line.height = data->height;
+		line.width = data->width;
+		line.step = 1.0 * data->texture_wall->y / ray->lineHeight;
+		line.texPos = (ray->drawStart - data->player->angle_y - (line.height >> 1)
+				+ (ray->lineHeight >> 1)) * line.step;
+		line.hex_ceil = data->hex_ceiling;
+		line.hex_floor = data->hex_floor;
+		line.img_sl = (data->img->size_line >> 2);
+		line.tex_sl = data->texture_wall->size_line >> 2;
+		line.text_y = data->texture_wall->y - 1;
+		line.tex_addr = data->texture_wall->addr;
+		line.drawEnd = ray->drawEnd;
+		line.drawStart = ray->drawStart;
+		line.texX = ray->texX;
+		ft_render_line(x, y, line);
+		if (ray->hit == 2)
+		{
+			data->texture_wall = data->tex_pl;
+			ray->hit = 1;
+		}
+		else
+			break ;
+	}
 }

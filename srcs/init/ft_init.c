@@ -36,8 +36,8 @@ t_data	*ft_data_init(void)
 	data->map[2] = ft_strdup("100A001101");
 	data->map[3] = ft_strdup("1000001101");
 	data->map[4] = ft_strdup("100P000001");
-	data->map[5] = ft_strdup("100100R001");
-	data->map[6] = ft_strdup("1001000001");
+	data->map[5] = ft_strdup("100000R001");
+	data->map[6] = ft_strdup("1000001001");
 	data->map[7] = ft_strdup("1000001001");
 	data->map[8] = ft_strdup("1111111111");
 	data->map[9] = NULL; //should put malloc protection here but gonna leave it because its gonna be joanas part

@@ -65,13 +65,11 @@ void	ft_player_mov_fb(t_data *data)
 		{
 			data->player1->x_pos = data->portal->x_pos;
 			data->player1->y_pos = data->portal->y_pos + 0.5;
-			printf("wtf1 x: %f\ty: %f \n", data->player1->x_pos, data->player1->y_pos);
 		}
 		if (ft_ver_col(data->map, data->player->x_pos, tempy, 'P') == 2)
 		{
 			data->player1->x_pos = data->portal->x_pos;
 			data->player1->y_pos = data->portal->y_pos + 0.5;
-			printf("wtf2 x: %f\ty: %f \n", data->player1->x_pos, data->player1->y_pos);
 		}
 	}
 	if (data->mov->mov_b && !data->mov->mov_f)
@@ -84,9 +82,17 @@ void	ft_player_mov_fb(t_data *data)
 		if (ft_ver_col(data->map, data->player->x_pos, tempy, 'P') == 1)
 			data->player->y_pos = tempy;
 		if (ft_ver_col(data->map, tempx, data->player->y_pos, 'P') == 2)
-			data->player->x_pos = data->portal->x_pos + 0.5;
+		{
+			data->player1->x_pos = data->portal->x_pos;
+			data->player1->y_pos = data->portal->y_pos + 0.5;
+			printf("wtf1 x: %f\ty: %f \n", data->player1->x_pos, data->player1->y_pos);
+		}
 		if (ft_ver_col(data->map, data->player->x_pos, tempy, 'P') == 2)
-			data->player->y_pos = data->player->y_pos + 0.5;
+		{
+			data->player1->x_pos = data->portal->x_pos;
+			data->player1->y_pos = data->portal->y_pos + 0.5;
+			printf("wtf2 x: %f\ty: %f \n", data->player1->x_pos, data->player1->y_pos);
+		}
 	}
 }
 

@@ -487,11 +487,11 @@ void	ft_calc_portal(t_data *data)
 		int	y = -1;
 		while (++y < data->tex_pl->y)
 		{
-			texY = (y * data->height) / data->tex_pl->y;
-			texX = ((x * data->width) / data->tex_pl->x);
+			texY = (y * data->img_portal->y) / data->tex_pl->y;
+			texX = ((x * data->img_portal->x) / data->tex_pl->x);
 			if (data->tex_pl->addr[y * data->tex_pl->x + x] == 0xFFFFFF)
 				data->tex_pl->addr[y * data->tex_pl->x + x]
-					= data->img_portal->addr[texY * data->width + texX];
+					= data->img_portal->addr[texY * data->img_portal->x + texX];
 		}
 	}
 	(void) texX;

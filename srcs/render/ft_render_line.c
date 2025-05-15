@@ -42,16 +42,16 @@ void	ft_render_line(int x, t_line_improv_render *line, t_data *data, t_ray *ray)
 			if (color)
 				line->addr[y * line->img_sl + x] = color; 
 		}
-		if (ray->count == 1)
-		{
-			int	color2 = line->addr[y * line->img_sl + x];
-			float	factor	= 0.45;
-			int r = ((color2 >> 16) & 0xFF) * factor;
-			int g = ((color2 >> 8) & 0xFF) * factor;
-			int b = (color2 & 0xFF) * factor;
-			color2 = (r << 16) | (g << 8) | b;
-			line->addr[y * data->width + x] = color2;
-		}
+		// if (ray->count == 1)
+		// {
+		// 	int	color2 = line->addr[y * line->img_sl + x];
+		// 	float	factor	= 0.45;
+		// 	int r = ((color2 >> 16) & 0xFF) * factor;
+		// 	int g = ((color2 >> 8) & 0xFF) * factor;
+		// 	int b = (color2 & 0xFF) * factor;
+		// 	color2 = (r << 16) | (g << 8) | b;
+		// 	line->addr[y * data->width + x] = color2;
+		// }
 	}
 }
 
@@ -121,18 +121,18 @@ void	ft_render_line_portal(int x, t_line_improv_render *line, t_data *data, t_ra
 				if (color)
 					line->addr[y * line->img_sl + x] = color; 
 			}
-			color2 = line->addr[y * line->img_sl + x];
-			float	factor	= 0.45;
-			int r = ((color2 >> 16) & 0xFF) * factor;
-			int g = ((color2 >> 8) & 0xFF) * factor;
-			int b = (color2 & 0xFF) * factor;
-			color2 = (r << 16) | (g << 8) | b;
-			line->addr[y * data->width + x] = color2;
+			// color2 = line->addr[y * line->img_sl + x];
+			// float	factor	= 0.45;
+			// int r = ((color2 >> 16) & 0xFF) * factor;
+			// int g = ((color2 >> 8) & 0xFF) * factor;
+			// int b = (color2 & 0xFF) * factor;
+			// color2 = (r << 16) | (g << 8) | b;
+			// line->addr[y * data->width + x] = color2;
 		}
 	}
 }
 
-void	ft_pre_render_line(t_data *data, t_ray *ray, int x)
+void	ft_pre_render_line(t_data *data, t_ray *ray, int x, int option)
 {
 	t_line_improv_render	line;
 
@@ -165,8 +165,9 @@ void	ft_pre_render_line(t_data *data, t_ray *ray, int x)
 	line.texX = ray->texX;
 	line.portal_hit = ray->portal_see;
 	line.count = ray->count;
-	if (!line.portal_hit)
+	line.hit = ray->hit;
+	if (!option)
 		ft_render_line(x, &line, data, ray);
-	else
+	else if (option == 1)
 		ft_render_line_portal(x, &line, data, ray);
 }

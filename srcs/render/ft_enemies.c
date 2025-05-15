@@ -40,11 +40,11 @@ void	ft_dda_enemy(t_ray *ray, t_data *data, char detect)
 		}
 		if (enemy == '1')
 			ray->hit = 1;
-		if (!ray->portal_hit && data->map[ray->mapX][ray->mapY] == 'R')
+		if (data->map[ray->mapX][ray->mapY] == 'R')
 		{
 			ray->mapX = data->portal->x_pos;
 			ray->mapY = data->portal->y_pos;
-				data->see_portal = true;
+			data->see_portal = true;
 		}
 	}
 	for (int i = 0; data->enemy_arr[i]; i++)

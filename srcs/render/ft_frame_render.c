@@ -54,7 +54,7 @@ void	ft_first_render_loop(t_thread_data *tdata, int x, int end, int rec)
 			last_x = x;
 		}
         ft_line_height(tdata->ray, tdata->data);
-        ft_pre_render_line(tdata->data, tdata->ray, x);
+        ft_pre_render_line(tdata->data, tdata->ray, x, 0);
     }
 	if (rec == 1)
 		return ;
@@ -66,7 +66,7 @@ void	ft_render_portal(t_thread_data *tdata, int x, int end, int rec)
 	int	first_x = 0;
 	int	last_x = 0;
 
-	if (rec >= 4)
+	if (rec >= 1000)
 		return ;
     while (++x < end)
     {
@@ -77,11 +77,8 @@ void	ft_render_portal(t_thread_data *tdata, int x, int end, int rec)
 		ft_set_ray_loop(tdata->ray, x, tdata->data);
 		ft_ray_dir(tdata->ray);
 		ft_dda(tdata->ray, tdata->data, rec);
-		if (tdata->ray->portal_see)
-		{
 			ft_line_height(tdata->ray, tdata->data);
-			ft_pre_render_line(tdata->data, tdata->ray, x);
-		}
+			ft_pre_render_line(tdata->data, tdata->ray, x, 1);
 		if (tdata->ray->portal_hit)
 		{
 			if (!first_x)
@@ -89,8 +86,6 @@ void	ft_render_portal(t_thread_data *tdata, int x, int end, int rec)
 			last_x = x;
 		}
     }
-	// tdata->ray->portal_hit = true;
-	// tdata->ray->portal_see = false;
 	ft_render_portal(tdata, first_x - 1, last_x + 1, rec + 1);
 }
 
@@ -104,24 +99,6 @@ void *ft_thread_render(void *arg)
 	tdata->ray->portal_hit = true;
 	tdata->ray->portal_see = false;
 	ft_first_render_loop(tdata, x, tdata->end_x, 0);
-	ft_render_portal(tdata, x, tdata->end_x, 2);
-	// tdata->ray->portal_hit = true;
-	// tdata->ray->portal_see = false;
-		//   x = tdata->start_x - 1;
-		//   while (++x < tdata->end_x)
-		//   {
-		// tdata->ray->drawEnd = 0;
-		// tdata->ray->drawStart = 0;
-		// tdata->ray->portal_hit = false;
-		// tdata->ray->portal_see = false;
-		// ft_set_ray_loop(tdata->ray, x, tdata->data);
-		// ft_ray_dir(tdata->ray);
-		// ft_dda(tdata->ray, tdata->data);
-		//   }
-		// tdata->ray->portal_hit = false;
-		// tdata->ray->portal_see = false;
-	// ft_first_render_loop(tdata, first_x, last_x);
-    return (NULL);
     return (NULL);
 }
 
@@ -135,8 +112,6 @@ void ft_render_enemy_sprite(t_data *data, t_ray *ray, t_enemy *enemy)
     double spriteY = data->enemy->data->y_pos - data->ray->posY;
 
 	double invDet = 1.0 / (planeX * dirY - dirX * planeY);
-	
-	// Correct transform
 	double transformX = invDet * (dirY * spriteX - dirX * spriteY);
 	double transformY = invDet * (-planeY * spriteX + planeX * spriteY);
 	int spriteScreenX = (int)((data->width / 2) + (transformX / transformY) * (data->width / 4));
@@ -342,7 +317,7 @@ void	*ft_enemy_render_threads(void *arg)
 			break ;
 		}
 	}
-	// ft_raycasting_enemies(data, enemy);
+	ft_raycasting_enemies(data, enemy);
 	return (NULL);
 }
 
@@ -490,31 +465,6 @@ void	ft_put_fps(t_data *data)
 	free(str);
 }
 
-// void *ft_thread_render_portal(void *arg)
-// {
-//     t_thread_data *tdata = (t_thread_data *)arg;
-//     int x = -1;
-//
-//     while (++x < tdata->data->width)
-//     {
-// 		tdata->ray->drawEnd = 0;
-// 		tdata->ray->drawStart = 0;
-// 		tdata->ray->portal_hit = false;
-// 		tdata->ray->portal_see = false;
-// 		ft_set_ray_loop(tdata->ray, x, tdata->data);
-// 		ft_ray_dir(tdata->ray);
-// 		ft_dda(tdata->ray, tdata->data, 0);
-// 		if (tdata->ray->portal_see)
-// 		{
-// 			ft_line_height(tdata->ray, tdata->data);
-// 			ft_pre_render_line(tdata->data, tdata->ray, x);
-// 		}
-//     }
-// 	tdata->ray->portal_hit = true;
-// 	tdata->ray->portal_see = false;
-//     return (NULL);
-// }
-
 void	ft_render(t_data *data)
 {
 	int	i;
@@ -531,16 +481,13 @@ void	ft_render(t_data *data)
 	i = -1;
 	while (++i < data->nbr_threads)
 		pthread_join(data->thread[i], NULL);
-	// ft_pre_render_loop(data->tdata[0].ray, data->player);
-	// pthread_create(&data->thread[0], NULL, ft_thread_render_portal, &data->tdata[0]);
-	// pthread_join(data->thread[0], NULL);
 	i = -1;
 
-	// ft_sort_enemies(data);
-	// while (data->enemy_arr[++i])
-	// 	ft_enemy_render_threads(data->enemy_arr[i]);
-	// if (data->mov->shoot)
-	// 	ft_shoot_raycasting(data);
+	ft_sort_enemies(data);
+	while (data->enemy_arr[++i])
+		ft_enemy_render_threads(data->enemy_arr[i]);
+	if (data->mov->shoot)
+		ft_shoot_raycasting(data);
 	i = -1;
 	// while (data->enemy_arr[++i])
 	// 	ft_enemy_render_threads(data->enemy_arr[i]);

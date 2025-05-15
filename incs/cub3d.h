@@ -130,6 +130,7 @@ typedef	struct	s_line_improv_render {
 	int		width;
 	bool	portal_hit;
 	int		count;
+	int		hit;
 } t_line_improv_render;
 
 

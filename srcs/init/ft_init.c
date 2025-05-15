@@ -168,7 +168,7 @@ t_data	*ft_data_init(void)
 		ft_free(-1, data);
 	ft_start_tex(data, data->tex_west, "west.xpm");
 
-	data->nbr_threads = 1;
+	data->nbr_threads = 8;
 	data->tdata = malloc(sizeof(t_thread_data) * data->nbr_threads + 1);
 	data->thread = malloc(sizeof(pthread_t) * data->nbr_threads + 1);
 	int	i = -1;

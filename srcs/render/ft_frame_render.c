@@ -33,6 +33,67 @@ void	ft_line_height(t_ray *ray, t_data *data)
 		ray->orien = 2 + (ray->stepY <= 0);
 }
 
+void	ft_render_portal(t_thread_data *tdata, int x, int end, int rec);
+void	ft_first_render_loop(t_thread_data *tdata, int x, int end, int rec)
+{
+	int	first_x = 0;
+	int	last_x = 0;
+	if (rec >= 2)
+		return ;
+    while (++x < end)
+    {
+		ft_set_ray_loop(tdata->ray, x, tdata->data);
+        ft_ray_dir(tdata->ray);
+        ft_dda(tdata->ray, tdata->data, rec);
+		if (!rec)
+			tdata->data->zbuffer[x] = tdata->ray->perpWallDist;
+		if (tdata->ray->portal_hit)
+		{
+			if (!first_x)
+				first_x = x;
+			last_x = x;
+		}
+        ft_line_height(tdata->ray, tdata->data);
+        ft_pre_render_line(tdata->data, tdata->ray, x);
+    }
+	if (rec == 1)
+		return ;
+	ft_render_portal(tdata, first_x - 1, last_x + 1, rec + 1);
+}
+
+void	ft_render_portal(t_thread_data *tdata, int x, int end, int rec)
+{
+	int	first_x = 0;
+	int	last_x = 0;
+
+	if (rec >= 4)
+		return ;
+    while (++x < end)
+    {
+		tdata->ray->drawEnd = 0;
+		tdata->ray->drawStart = 0;
+		tdata->ray->portal_hit = false;
+		tdata->ray->portal_see = false;
+		ft_set_ray_loop(tdata->ray, x, tdata->data);
+		ft_ray_dir(tdata->ray);
+		ft_dda(tdata->ray, tdata->data, rec);
+		if (tdata->ray->portal_see)
+		{
+			ft_line_height(tdata->ray, tdata->data);
+			ft_pre_render_line(tdata->data, tdata->ray, x);
+		}
+		if (tdata->ray->portal_hit)
+		{
+			if (!first_x)
+				first_x = x;
+			last_x = x;
+		}
+    }
+	// tdata->ray->portal_hit = true;
+	// tdata->ray->portal_see = false;
+	ft_render_portal(tdata, first_x - 1, last_x + 1, rec + 1);
+}
+
 void *ft_thread_render(void *arg)
 {
     t_thread_data *tdata = (t_thread_data *)arg;
@@ -41,15 +102,26 @@ void *ft_thread_render(void *arg)
 	tdata->ray->drawEnd = 0;
 	tdata->ray->drawStart = 0;
 	tdata->ray->portal_hit = true;
-    while (++x < tdata->end_x)
-    {
-		ft_set_ray_loop(tdata->ray, x, tdata->data);
-        ft_ray_dir(tdata->ray);
-        ft_dda(tdata->ray, tdata->data);
-		tdata->data->zbuffer[x] = tdata->ray->perpWallDist;
-        ft_line_height(tdata->ray, tdata->data);
-        ft_pre_render_line(tdata->data, tdata->ray, x);
-    }
+	tdata->ray->portal_see = false;
+	ft_first_render_loop(tdata, x, tdata->end_x, 0);
+	ft_render_portal(tdata, x, tdata->end_x, 2);
+	// tdata->ray->portal_hit = true;
+	// tdata->ray->portal_see = false;
+		//   x = tdata->start_x - 1;
+		//   while (++x < tdata->end_x)
+		//   {
+		// tdata->ray->drawEnd = 0;
+		// tdata->ray->drawStart = 0;
+		// tdata->ray->portal_hit = false;
+		// tdata->ray->portal_see = false;
+		// ft_set_ray_loop(tdata->ray, x, tdata->data);
+		// ft_ray_dir(tdata->ray);
+		// ft_dda(tdata->ray, tdata->data);
+		//   }
+		// tdata->ray->portal_hit = false;
+		// tdata->ray->portal_see = false;
+	// ft_first_render_loop(tdata, first_x, last_x);
+    return (NULL);
     return (NULL);
 }
 
@@ -232,7 +304,6 @@ void	*ft_enemy_render_threads(void *arg)
 		ft_dda_enemy(enemy->ray, data, enemy->map);
 		if (enemy->ray->hit == 2)
 		{
-			printf("wtf\n");
 			if (ft_get_time_in_ms() > enemy->next_frame)
 			{
 				if (enemy->frame == 0)
@@ -267,7 +338,6 @@ void	*ft_enemy_render_threads(void *arg)
 				}
 				enemy->next_frame = ft_get_time_in_ms() + 133.66f;
 			}
-			printf("\n");
 			ft_render_enemy_sprite(data, enemy->ray, enemy);
 			break ;
 		}
@@ -420,28 +490,30 @@ void	ft_put_fps(t_data *data)
 	free(str);
 }
 
-void *ft_thread_render_portal(void *arg)
-{
-    t_thread_data *tdata = (t_thread_data *)arg;
-    int x = tdata->start_x - 1;
-
-	tdata->ray->portal_hit = false;
-	tdata->ray->drawEnd = 0;
-	tdata->ray->drawStart = 0;
-    while (++x < tdata->end_x)
-    {
-		tdata->ray->portal_see = false;
-		ft_set_ray_loop(tdata->ray, x, tdata->data);
-        ft_ray_dir(tdata->ray);
-        ft_dda(tdata->ray, tdata->data);
-		if (tdata->ray->portal_see)
-		{
-			ft_line_height(tdata->ray, tdata->data);
-			ft_pre_render_line(tdata->data, tdata->ray, x);
-		}
-    }
-    return (NULL);
-}
+// void *ft_thread_render_portal(void *arg)
+// {
+//     t_thread_data *tdata = (t_thread_data *)arg;
+//     int x = -1;
+//
+//     while (++x < tdata->data->width)
+//     {
+// 		tdata->ray->drawEnd = 0;
+// 		tdata->ray->drawStart = 0;
+// 		tdata->ray->portal_hit = false;
+// 		tdata->ray->portal_see = false;
+// 		ft_set_ray_loop(tdata->ray, x, tdata->data);
+// 		ft_ray_dir(tdata->ray);
+// 		ft_dda(tdata->ray, tdata->data, 0);
+// 		if (tdata->ray->portal_see)
+// 		{
+// 			ft_line_height(tdata->ray, tdata->data);
+// 			ft_pre_render_line(tdata->data, tdata->ray, x);
+// 		}
+//     }
+// 	tdata->ray->portal_hit = true;
+// 	tdata->ray->portal_see = false;
+//     return (NULL);
+// }
 
 void	ft_render(t_data *data)
 {
@@ -459,25 +531,19 @@ void	ft_render(t_data *data)
 	i = -1;
 	while (++i < data->nbr_threads)
 		pthread_join(data->thread[i], NULL);
-	i = -1;
-	while (++i < data->nbr_threads)
-	{
-		ft_pre_render_loop(data->tdata[i].ray, data->player);
-		pthread_create(&data->thread[i], NULL, ft_thread_render_portal, &data->tdata[i]);
-	}
-	i = -1;
-	while (++i < data->nbr_threads)
-		pthread_join(data->thread[i], NULL);
+	// ft_pre_render_loop(data->tdata[0].ray, data->player);
+	// pthread_create(&data->thread[0], NULL, ft_thread_render_portal, &data->tdata[0]);
+	// pthread_join(data->thread[0], NULL);
 	i = -1;
 
-	ft_sort_enemies(data);
-	while (data->enemy_arr[++i])
-		ft_enemy_render_threads(data->enemy_arr[i]);
+	// ft_sort_enemies(data);
+	// while (data->enemy_arr[++i])
+	// 	ft_enemy_render_threads(data->enemy_arr[i]);
 	// if (data->mov->shoot)
 	// 	ft_shoot_raycasting(data);
 	i = -1;
-	while (data->enemy_arr[++i])
-		ft_enemy_render_threads(data->enemy_arr[i]);
+	// while (data->enemy_arr[++i])
+	// 	ft_enemy_render_threads(data->enemy_arr[i]);
 	ft_put_fps(data);
 }
 
@@ -539,8 +605,11 @@ int	ft_frame_render(t_data *data)
 	return (0);
 }
 
-void	ft_dda(t_ray *ray, t_data *data)
+void	ft_dda(t_ray *ray, t_data *data, int rec)
 {
+	ray->count = 0;
+	ray->portal_see = false;
+	ray->portal_hit = false;
 	while (ray->hit == 0)
 	{
 		if (ray->sideDistX < ray->sideDistY)
@@ -557,7 +626,8 @@ void	ft_dda(t_ray *ray, t_data *data)
 		}
 		if (data->map[ray->mapX][ray->mapY] == '1')
 			ray->hit = 1;
-		if (!ray->portal_hit && data->map[ray->mapX][ray->mapY] == 'R')
+		if (data->map[ray->mapX][ray->mapY] == 'R'
+			&& ray->count < rec)
 		{
 			if (ray->side == 0)
 				ray->orien = (ray->stepX <= 0);
@@ -565,9 +635,9 @@ void	ft_dda(t_ray *ray, t_data *data)
 				ray->orien = 2 + (ray->stepY <= 0);
 			if (ray->orien == 2)
 			{
-				ray->mapX = 6;
+				ray->mapX = 2;
 				ray->mapY = 1;
-				if (!ray->portal_hit)
+					ray->count++;
 					ray->portal_see = true;
 			}
 			else
@@ -575,5 +645,8 @@ void	ft_dda(t_ray *ray, t_data *data)
 		}
 		else if (data->map[ray->mapX][ray->mapY] == 'R')
 			ray->hit = 2;
+		if (data->map[ray->mapX][ray->mapY] == 'R'
+			&& ray->count == rec)
+			ray->portal_hit = true;
 	}
 }

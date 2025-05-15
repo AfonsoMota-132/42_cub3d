@@ -42,6 +42,16 @@ void	ft_render_line(int x, t_line_improv_render *line, t_data *data, t_ray *ray)
 			if (color)
 				line->addr[y * line->img_sl + x] = color; 
 		}
+		if (ray->count == 1)
+		{
+			int	color2 = line->addr[y * line->img_sl + x];
+			float	factor	= 0.45;
+			int r = ((color2 >> 16) & 0xFF) * factor;
+			int g = ((color2 >> 8) & 0xFF) * factor;
+			int b = (color2 & 0xFF) * factor;
+			color2 = (r << 16) | (g << 8) | b;
+			line->addr[y * data->width + x] = color2;
+		}
 	}
 }
 
@@ -96,6 +106,8 @@ void	ft_render_line_portal(int x, t_line_improv_render *line, t_data *data, t_ra
 	while (++y <= data->height)
 	{
 		color2 = line->addr[y * line->img_sl + x];
+		if (y >= ray->drawStart && y <= line->drawEnd)
+				line->texPos += line->step;
 		if (color2 == 0xFFFFFF)
 		{
 			if (y < ray->drawStart)
@@ -104,12 +116,18 @@ void	ft_render_line_portal(int x, t_line_improv_render *line, t_data *data, t_ra
 				line->addr[y * line->img_sl + x] = line->hex_floor;
 			else
 			{
-				line->texPos += line->step;
 				color = line->tex_addr[((int)line->texPos
 						& (line->text_y)) * (line->tex_sl) + line->texX];
 				if (color)
 					line->addr[y * line->img_sl + x] = color; 
 			}
+			color2 = line->addr[y * line->img_sl + x];
+			float	factor	= 0.45;
+			int r = ((color2 >> 16) & 0xFF) * factor;
+			int g = ((color2 >> 8) & 0xFF) * factor;
+			int b = (color2 & 0xFF) * factor;
+			color2 = (r << 16) | (g << 8) | b;
+			line->addr[y * data->width + x] = color2;
 		}
 	}
 }
@@ -125,37 +143,30 @@ void	ft_pre_render_line(t_data *data, t_ray *ray, int x)
 		data->texture_wall = data->tex_west;
 	if (ray->orien == 3)
 		data->texture_wall = data->tex_east;
-	while (1)
-	{
-		ft_ray_render_line(ray, data);
-		line.addr = data->img->addr;
-		line.height = data->height;
-		line.width = data->width;
-		line.step = 1.0 * data->texture_wall->y / ray->lineHeight;
-		line.texPos = (ray->drawStart - data->player->angle_y - (line.height >> 1)
-				+ (ray->lineHeight >> 1)) * line.step;
-		line.hex_ceil = data->hex_ceiling;
-		line.hex_floor = data->hex_floor;
-		line.img_sl = (data->img->size_line >> 2);
-		line.tex_sl = data->texture_wall->size_line >> 2;
-		line.text_y = data->texture_wall->y - 1;
-		line.tex_addr = data->texture_wall->addr;
-		line.drawEnd = 0;
-		line.drawStart = 0;
-		line.drawEnd = ray->drawEnd;
-		line.drawStart = ray->drawStart;
-		line.texX = ray->texX;
-		line.portal_hit = ray->portal_see;
-		if (!line.portal_hit)
-			ft_render_line(x, &line, data, ray);
-		else
-			ft_render_line_portal(x, &line, data, ray);
-		if (ray->hit == 2)
-		{
-			data->texture_wall = data->tex_pl;
-			ray->hit = 1;
-		}
-		else
-			break ;
-	}
+	if (ray->hit == 2)
+		data->texture_wall = data->tex_pl;
+	ft_ray_render_line(ray, data);
+	line.addr = data->img->addr;
+	line.height = data->height;
+	line.width = data->width;
+	line.step = 1.0 * data->texture_wall->y / ray->lineHeight;
+	line.texPos = (ray->drawStart - data->player->angle_y - (line.height >> 1)
+			+ (ray->lineHeight >> 1)) * line.step;
+	line.hex_ceil = data->hex_ceiling;
+	line.hex_floor = data->hex_floor;
+	line.img_sl = (data->img->size_line >> 2);
+	line.tex_sl = data->texture_wall->size_line >> 2;
+	line.text_y = data->texture_wall->y - 1;
+	line.tex_addr = data->texture_wall->addr;
+	line.drawEnd = 0;
+	line.drawStart = 0;
+	line.drawEnd = ray->drawEnd;
+	line.drawStart = ray->drawStart;
+	line.texX = ray->texX;
+	line.portal_hit = ray->portal_see;
+	line.count = ray->count;
+	if (!line.portal_hit)
+		ft_render_line(x, &line, data, ray);
+	else
+		ft_render_line_portal(x, &line, data, ray);
 }

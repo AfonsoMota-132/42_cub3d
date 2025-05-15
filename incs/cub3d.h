@@ -89,6 +89,7 @@ typedef struct s_ray
 	double	step;
 	bool	portal_hit;
 	bool	portal_see;
+	int		count;
 }	t_ray;
 
 typedef struct s_mov {
@@ -128,6 +129,7 @@ typedef	struct	s_line_improv_render {
 	int		height;
 	int		width;
 	bool	portal_hit;
+	int		count;
 } t_line_improv_render;
 
 

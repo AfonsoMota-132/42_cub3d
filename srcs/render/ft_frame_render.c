@@ -110,7 +110,7 @@ int	ft_frame_render(t_data *data)
 {
 	while (ft_get_time_in_ms() <= data->time_frame)
 		;
-	data->time_frame = ft_get_time_in_ms() + 16.6;
+	data->time_frame = ft_get_time_in_ms() + 0;
 	data->frame_time = ft_get_time_in_ms() - data->old_frame;
 	data->fps = 1000 / (data->frame_time);
 	data->old_frame = ft_get_time_in_ms();

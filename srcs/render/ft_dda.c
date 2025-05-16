@@ -47,12 +47,14 @@ void	ft_dda(t_ray *ray, t_data *data, int rec)
 		if (ray->sideDistX < ray->sideDistY)
 		{
 			ray->sideDistX += ray->deltaDistX;
+			ray->rayPosX += ray->stepX;
 			ray->mapX += ray->stepX;
 			ray->side = 0;
 		}
 		else
 		{
 			ray->sideDistY += ray->deltaDistY;
+			ray->rayPosY += ray->stepY;
 			ray->mapY += ray->stepY;
 			ray->side = 1;
 		}

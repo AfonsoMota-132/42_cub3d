@@ -27,7 +27,8 @@ void	ft_player_rot(t_data *data)
 	if (data->mov->lookl || data->mov->lookml)
 	{
 		data->mov->look = true;
-		data->player1->angle = ft_add_angle(data->player1->angle, -1.5);
+		data->player1->angle = ft_add_angle(data->player1->angle,
+				-0.0936 * data->frame_time);
 		data->player1->y_look = cos(data->player1->angle * M_PI / 180.0);
 		data->player1->x_look = sin(data->player1->angle * M_PI / 180.0);
 		if (data->mov->lookml)

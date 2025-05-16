@@ -47,7 +47,7 @@ void	ft_render_portal(t_thread_data *tdata, int x, int end, int rec)
 
 	first_x = 0;
 	last_x = 0;
-	if (rec >= 1000)
+	if (rec >= 100)
 		return ;
 	while (++x < end)
 	{

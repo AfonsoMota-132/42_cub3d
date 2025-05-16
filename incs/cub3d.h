@@ -90,6 +90,8 @@ typedef struct s_ray
 	bool	portal_hit;
 	bool	portal_see;
 	int		count;
+	double	rayPosX;
+	double	rayPosY;
 }	t_ray;
 
 typedef struct s_mov {

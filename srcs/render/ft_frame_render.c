@@ -6,463 +6,61 @@
 /*   By: afogonca <afogonca@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/26 09:49:26 by afogonca          #+#    #+#             */
-/*   Updated: 2025/04/26 09:54:48 by afogonca         ###   ########.fr       */
+/*   Updated: 2025/05/16 11:25:58 by afogonca         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_render.h"
 
-void	ft_line_height(t_ray *ray, t_data *data)
+void	ft_raycasting_enemies_utils3(t_data *data, t_enemy *enemy)
 {
-	if (ray->side == 0)
-		ray->perpWallDist = (ray->sideDistX
-				- ray->deltaDistX);
-	else
-		ray->perpWallDist = (ray->sideDistY
-				- ray->deltaDistY);
-	ray->lineHeight = (int)(data->height / ray->perpWallDist);
-	ray->drawStart = -(ray->lineHeight >> 1) + (data->height >> 1) + data->player->angle_y;
-	if (ray->drawStart < 0)
-		ray->drawStart = 0;
-	ray->drawEnd = (ray->lineHeight >> 1) + (data->height >> 1) + data->player->angle_y;
-	if (ray->drawEnd >= data->height)
-		ray->drawEnd = data->height - 1;
-	if (ray->side == 0)
-		ray->orien = (ray->stepX <= 0);
-	else
-		ray->orien = 2 + (ray->stepY <= 0);
-}
-
-void	ft_render_portal(t_thread_data *tdata, int x, int end, int rec);
-void	ft_first_render_loop(t_thread_data *tdata, int x, int end, int rec)
-{
-	int	first_x = 0;
-	int	last_x = 0;
-	if (rec >= 2)
-		return ;
-    while (++x < end)
-    {
-		ft_set_ray_loop(tdata->ray, x, tdata->data);
-        ft_ray_dir(tdata->ray);
-        ft_dda(tdata->ray, tdata->data, rec);
-		if (!rec)
-			tdata->data->zbuffer[x] = tdata->ray->perpWallDist;
-		if (tdata->ray->portal_hit)
-		{
-			if (!first_x)
-				first_x = x;
-			last_x = x;
-		}
-        ft_line_height(tdata->ray, tdata->data);
-        ft_pre_render_line(tdata->data, tdata->ray, x, 0);
-    }
-	if (rec == 1)
-		return ;
-	ft_render_portal(tdata, first_x - 1, last_x + 1, rec + 1);
-}
-
-void	ft_render_portal(t_thread_data *tdata, int x, int end, int rec)
-{
-	int	first_x = 0;
-	int	last_x = 0;
-
-	if (rec >= 1000)
-		return ;
-    while (++x < end)
-    {
-		tdata->ray->drawEnd = 0;
-		tdata->ray->drawStart = 0;
-		tdata->ray->portal_hit = false;
-		tdata->ray->portal_see = false;
-		ft_set_ray_loop(tdata->ray, x, tdata->data);
-		ft_ray_dir(tdata->ray);
-		ft_dda(tdata->ray, tdata->data, rec);
-			ft_line_height(tdata->ray, tdata->data);
-			ft_pre_render_line(tdata->data, tdata->ray, x, 1);
-		if (tdata->ray->portal_hit)
-		{
-			if (!first_x)
-				first_x = x;
-			last_x = x;
-		}
-    }
-	ft_render_portal(tdata, first_x - 1, last_x + 1, rec + 1);
-}
-
-void *ft_thread_render(void *arg)
-{
-    t_thread_data *tdata = (t_thread_data *)arg;
-    int x = tdata->start_x - 1;
-
-	tdata->ray->drawEnd = 0;
-	tdata->ray->drawStart = 0;
-	tdata->ray->portal_hit = true;
-	tdata->ray->portal_see = false;
-	ft_first_render_loop(tdata, x, tdata->end_x, 0);
-    return (NULL);
-}
-
-void ft_render_enemy_sprite(t_data *data, t_ray *ray, t_enemy *enemy)
-{
-	double dirX = data->player->x_look;
-	double dirY = data->player->y_look;
-	double planeX = ray->planeX;
-	double planeY = ray->planeY;
-    double spriteX = data->enemy->data->x_pos - data->ray->posX;
-    double spriteY = data->enemy->data->y_pos - data->ray->posY;
-
-	double invDet = 1.0 / (planeX * dirY - dirX * planeY);
-	double transformX = invDet * (dirY * spriteX - dirX * spriteY);
-	double transformY = invDet * (-planeY * spriteX + planeX * spriteY);
-	int spriteScreenX = (int)((data->width / 2) + (transformX / transformY) * (data->width / 4));
-    int spriteHeight = abs((int)(data->height / transformY));
-    int drawStartY = -spriteHeight / 2 + data->height / 2 + data->player->angle_y;
-    if (drawStartY < 0) drawStartY = 0;
-    int drawEndY = spriteHeight / 2 + data->height / 2 + data->player->angle_y;
-    if (drawEndY >= data->height) drawEndY = data->height - 1;
-    int spriteWidth = spriteHeight;\
-    int drawStartX = -spriteWidth / 2 + spriteScreenX;
-    if (drawStartX < 0) drawStartX = 0;
-    int drawEndX = spriteWidth / 2 + spriteScreenX;
-    if (drawEndX >= data->width) drawEndX = data->width - 1;
-    for (int stripe = drawStartX; stripe < drawEndX; stripe++)
-    {
-        int texX = (int)(256 * (stripe - (-spriteWidth / 2 + spriteScreenX)) * enemy->tex->x / spriteWidth) / 256;
-        if (texX < 0) texX = 0;
-        if (texX >= enemy->tex->x) texX = enemy->tex->x - 1;
-		if (transformY > 0 && stripe > 0 && stripe < data->width && transformY < data->zbuffer[stripe + 1])
-        {
-            for (int y = drawStartY; y < drawEndY + 1; y++)
-            {
-                int d = (y - data->player->angle_y) * 256 - data->height * 128 + spriteHeight * 128;
-                int texY = ((d * enemy->tex->y) / spriteHeight) / 256;
-                if (texY < 0) texY = 0;
-                if (texY >= enemy->tex->y) texY = enemy->tex->y - 1;
-
-                int color = enemy->tex->addr[texY * enemy->tex->x + texX];
-				if (color != 0x000000)
-				{
-					data->zbuffer[stripe] = transformY;
-                    data->img->addr[y * data->width + stripe] = color;
-				}
-            }
-        }
-    }
-}
-
-void	ft_dda_enemies(t_ray *ray, t_data *data)
-{
-	ray->portal_hit = false;
-	while (ray->hit == 0)
+	if ((data->map[(int) enemy->data->x_pos] \
+		[(int) enemy->data->y_pos] != 'A'))
 	{
-		if (ray->sideDistX < ray->sideDistY)
-		{
-			ray->sideDistX += ray->deltaDistX;
-			ray->mapX += ray->stepX;
-			ray->side = 0;
-		}
-		else
-		{
-			ray->sideDistY += ray->deltaDistY;
-			ray->mapY += ray->stepY;
-			ray->side = 1;
-		}
-		if (data->map[ray->mapX][ray->mapY] == 'P')
-				ray->hit = 3;
-		if (data->map[ray->mapX][ray->mapY] == '1')
-			ray->hit = 1;
-		if (!ray->portal_hit && data->map[ray->mapX][ray->mapY] == 'R')
-		{
-			if (ray->side == 0)
-				ray->orien = (ray->stepX <= 0);
-			else
-				ray->orien = 2 + (ray->stepY <= 0);
-			if (ray->orien == 2)
-			{
-				ray->mapX = 6;
-				ray->mapY = 1;
-				if (!data->see_portal)
-					data->see_portal = true;
-			}
-			else
-				ray->hit = 1;
-		}
+		if (data->map[(int) enemy->data->x_pos] \
+			[(int) enemy->data->y_pos] != 'P')
+			data->map[(int) enemy->data->x_pos] \
+			[(int) enemy->data->y_pos] = enemy->map;
+		if (data->map[(int) enemy->data->x_pos + 1] \
+			[(int) enemy->data->y_pos] == enemy->map)
+			data->map[(int) enemy->data->x_pos + 1] \
+				[(int) enemy->data->y_pos] = '0';
+		if (data->map[(int) enemy->data->x_pos - 1] \
+			[(int) enemy->data->y_pos] == enemy->map)
+			data->map[(int) enemy->data->x_pos - 1] \
+			[(int) enemy->data->y_pos] = '0';
+		if (data->map[(int) enemy->data->x_pos] \
+				[(int) enemy->data->y_pos + 1] == enemy->map)
+			data->map[(int) enemy->data->x_pos] \
+				[(int) enemy->data->y_pos + 1] = '0';
+		if (data->map[(int) enemy->data->x_pos] \
+			[(int) enemy->data->y_pos - 1] == enemy->map)
+			data->map[(int) enemy->data->x_pos] \
+				[(int) enemy->data->y_pos - 1] = '0';
 	}
-	ray->portal_hit = false;
-}
-
-void	ft_raycasting_enemies(t_data *data, t_enemy *enemy)
-{
-	double	tempx;
-	double	tempy;
-	int		x = -1;
-	int		first_x = -1;
-	double dx = enemy->data->x_pos - data->player->x_pos;
-	double dy = enemy->data->y_pos - data->player->y_pos;
-	double	dist_sq = (dx * dx) + (dy * dy);
-	
-	if (enemy->map == '0')
-		return ;
-	while (++x < data->width)
-	{
-		ft_pre_render_loop(enemy->ray, enemy->data);
-		ft_set_ray_loop(enemy->ray, x, enemy->rdata);
-		ft_ray_dir(enemy->ray);
-		ft_dda_enemies(enemy->ray, data);
-		if (enemy->ray->hit == 3 && first_x == -1)
-			first_x = x;
-		else if (enemy->ray->hit == 1 && first_x != -1)
-			break ;
-	}
-	if (first_x != -1 || data->map[(int) enemy->data->x_pos][(int) enemy->data->y_pos] == 'P')
-	{
-		enemy->ray->sideDistX = fabs(data->player->y_pos - enemy->data->x_pos);
-		enemy->ray->sideDistX = fabs(data->player->y_pos - enemy->data->y_pos);
-		x = (x + first_x) / 2;
-		if (x > (data->width / 2) && first_x != -1)
-		{
-			enemy->data->angle = ft_add_angle(enemy->data->angle, +2.5);
-			enemy->data->y_look = cos(enemy->data->angle * M_PI / 180.0);
-			enemy->data->x_look = sin(enemy->data->angle * M_PI / 180.0);
-		}
-		if (x < (data->width / 2) && first_x != -1)
-		{
-			enemy->data->angle = ft_add_angle(enemy->data->angle, -2.5);
-			enemy->data->y_look = cos(enemy->data->angle * M_PI / 180.0);
-			enemy->data->x_look = sin(enemy->data->angle * M_PI / 180.0);
-		}
-		if ((x < data->width / 2 || x > data->width / 2)
-			|| (enemy->ray->sideDistX > 1 && enemy->ray->sideDistY > 1)
-			|| (dist_sq < 1 && dist_sq > 0.5))
-		{
-			tempx = enemy->data->x_pos + enemy->data->x_look * 0.01;
-			tempy = enemy->data->y_pos + enemy->data->y_look * 0.01;
-			if (ft_ver_col(data->map, tempx, tempy, enemy->map))
-			{
-				enemy->data->x_pos = tempx;
-				enemy->data->y_pos = tempy;
-			}
-		}
-		if ((data->map[(int) enemy->data->x_pos][ (int) enemy->data->y_pos] != 'A'))
-		{
-		if (data->map[(int) enemy->data->x_pos][ (int) enemy->data->y_pos] != 'P')
-			data->map[(int) enemy->data->x_pos][(int) enemy->data->y_pos] = enemy->map;
-		if (data->map[(int) enemy->data->x_pos + 1][(int) enemy->data->y_pos] == enemy->map)
-			data->map[(int) enemy->data->x_pos + 1][(int) enemy->data->y_pos] = '0';
-		if (data->map[(int) enemy->data->x_pos - 1][(int) enemy->data->y_pos] == enemy->map)
-			data->map[(int) enemy->data->x_pos - 1][(int) enemy->data->y_pos] = '0';	
-		if (data->map[(int) enemy->data->x_pos][(int) enemy->data->y_pos + 1] == enemy->map)
-			data->map[(int) enemy->data->x_pos][(int) enemy->data->y_pos + 1] = '0';
-		if (data->map[(int) enemy->data->x_pos][(int) enemy->data->y_pos - 1] == enemy->map)
-			data->map[(int) enemy->data->x_pos][(int) enemy->data->y_pos - 1] = '0';
-		}
-	}
-}
-
-void	*ft_enemy_render_threads(void *arg)
-{
-	t_enemy	*enemy;
-	t_data	*data;
-	int x = - 1;
-
-	enemy = (t_enemy *) arg;
-	data = enemy->rdata;
-	enemy->render = false;
-	enemy->visible = false;
-	if (enemy->map == '0')
-		return (NULL);
-	ft_pre_render_loop(enemy->ray, data->player);
-	while (++x < data->width)
-	{
-		ft_set_ray_loop(enemy->ray, x, data);
-		ft_ray_dir(enemy->ray);
-		ft_dda_enemy(enemy->ray, data, enemy->map);
-		if (enemy->ray->hit == 2)
-		{
-			if (ft_get_time_in_ms() > enemy->next_frame)
-			{
-				if (enemy->frame == 0)
-				{
-					enemy->tex = enemy->tex_iddle->sprite1;
-					enemy->frame = 1;
-				}
-				else if (enemy->frame == 1)
-				{
-					enemy->tex = enemy->tex_iddle->sprite2;
-					enemy->frame = 2;
-				}
-				else if (enemy->frame == 2)
-				{
-					enemy->tex = enemy->tex_iddle->sprite3;
-					enemy->frame = 3;
-				}
-				else if (enemy->frame == 3)
-				{
-					enemy->tex = enemy->tex_iddle->sprite4;
-					enemy->frame = 4;
-				}
-				else if (enemy->frame == 4)
-				{
-					enemy->tex = enemy->tex_iddle->sprite5;
-					enemy->frame = 5;
-				}
-				else if (enemy->frame == 5)
-				{
-					enemy->tex = enemy->tex_iddle->sprite6;
-					enemy->frame = 0;
-				}
-				enemy->next_frame = ft_get_time_in_ms() + 133.66f;
-			}
-			ft_render_enemy_sprite(data, enemy->ray, enemy);
-			break ;
-		}
-	}
-	ft_raycasting_enemies(data, enemy);
-	return (NULL);
-}
-
-void	ft_sort_enemies(t_data *data)
-{
-	int		i;
-	t_enemy	*tmp;
-	int		dist1;
-	int		dist2;
-
-	tmp = data->enemy_arr[0];
-	i = -1;
-	while (data->enemy_arr[++i + 1])
-	{
-		dist1 = sqrt(pow(data->player->x_pos - data->enemy_arr[i]->data->x_pos, 2)
-			   + pow(data->player->y_pos - data->enemy_arr[i]->data->y_pos, 2));
-		dist2 = sqrt(pow(data->player->x_pos - data->enemy_arr[i + 1]->data->x_pos, 2)
-			   + pow(data->player->y_pos - data->enemy_arr[i + 1]->data->y_pos, 2));
-		if (dist1 < dist2)
-		{
-			tmp = data->enemy_arr[i];
-			data->enemy_arr[i] = data->enemy_arr[i + 1];
-			data->enemy_arr[i + 1] = tmp; 
-			i = -1;
-		}
-	}
-}
-
-char	ft_dda_shoot(t_ray *ray, t_data *data)
-{
-	char	enemy;
-
-	while (ray->hit == 0)
-	{
-		if (ray->sideDistX < ray->sideDistY)
-		{
-			ray->sideDistX += ray->deltaDistX;
-			ray->mapX += ray->stepX;
-			ray->side = 0;
-		}
-		else
-		{
-			ray->sideDistY += ray->deltaDistY;
-			ray->mapY += ray->stepY;
-			ray->side = 1;
-		}
-		enemy = data->map[ray->mapX][ray->mapY];
-		if (enemy >= 'A' && enemy <= 'K')
-			return (enemy);
-		if (enemy == '1')
-			return ('1');
-	}
-	return (0);
 }
 
 void	ft_shoot_raycasting(t_data *data)
 {
-	int	i;
-	// int	x;
-	char	enemy;
-	int	hit = data->width / 2;
-	int is_moving = data->mov->mov || data->mov->look;
-	
-	// Example: ±3px if still, ±15px if moving
-	int max_offset = is_moving ? 300 : 15;
-	
-	int spread = (rand() % (2 * max_offset + 1)) - max_offset;
-	
-	hit += spread;
-	
-	// Clamp to screen bounds
-	if (hit < 0) hit = 0;
-	if (hit >= data->width) hit = data->width - 1;
+	t_shoot_rc	sdata;
+
+	sdata.hit = data->width / 2;
+	sdata.is_moving = data->mov->mov || data->mov->look;
+	if (sdata.is_moving)
+		sdata.max_offset = 600;
+	else
+		sdata.max_offset = 15;
+	sdata.spread = (rand() % (2 * sdata.max_offset + 1)) - sdata.max_offset;
+	sdata.hit += sdata.spread;
+	if (sdata.hit < 0)
+		sdata.hit = 0;
+	if (sdata.hit >= data->width)
+		sdata.hit = data->width - 1;
 	ft_pre_render_loop(data->ray, data->player);
-	ft_set_ray_loop(data->ray, hit, data);
+	ft_set_ray_loop(data->ray, sdata.hit, data);
 	ft_ray_dir(data->ray);
-	enemy = ft_dda_shoot(data->ray, data);
-	if (enemy)
-	{
-		i = -1;
-		while (data->enemy_arr[++i])
-		{
-			if (data->enemy_arr[i]->map == enemy)
-			{
-				data->enemy_arr[i]->map = '0';
-				data->map[(int) data->enemy_arr[i]->data->x_pos][(int) data->enemy_arr[i]->data->y_pos] = '0';
-			}
-		}
-	}
-}
-
-void	ft_render_put_fps(t_img *img, t_img *nbr, int x_offset, t_data *data)
-{
-	int	x;
-	int	y;
-	int	color;
-
-	x = -1;
-	while (++x < nbr->x)
-	{
-		y = -1;
-		while (++y < nbr->y)
-		{
-			color = nbr->addr[y * 32 + x];
-			if (color != 0x000000)
-				img->addr[y * data->width + x + x_offset] = color;
-		}
-	}
-
-}
-
-void	ft_put_fps(t_data *data)
-{
-	char	*str;
-	int		offset;
-	int		i;
-
-	str = ft_itoa((int) data->fps);
-	i = -1;
-	offset = 0;
-	while (str[++i])
-	{
-		if (str[i] == '0')
-			ft_render_put_fps(data->img, data->nbrs->nbr_0, offset, data);
-		else if (str[i] == '1')
-			ft_render_put_fps(data->img, data->nbrs->nbr_1, offset, data);
-		else if (str[i] == '2')
-			ft_render_put_fps(data->img, data->nbrs->nbr_2, offset, data);
-		else if (str[i] == '3')
-			ft_render_put_fps(data->img, data->nbrs->nbr_3, offset, data);
-		else if (str[i] == '4')
-			ft_render_put_fps(data->img, data->nbrs->nbr_4, offset, data);
-		else if (str[i] == '5')
-			ft_render_put_fps(data->img, data->nbrs->nbr_5, offset, data);
-		else if (str[i] == '6')
-			ft_render_put_fps(data->img, data->nbrs->nbr_6, offset, data);
-		else if (str[i] == '7')
-			ft_render_put_fps(data->img, data->nbrs->nbr_7, offset, data);
-		else if (str[i] == '8')
-			ft_render_put_fps(data->img, data->nbrs->nbr_8, offset, data);
-		else if (str[i] == '9')
-			ft_render_put_fps(data->img, data->nbrs->nbr_9, offset, data);
-		offset += 16;
-	}
-	free(str);
+	sdata.enemy = ft_dda_shoot(data->ray, data);
+	ft_shoot_raycasting2(data, &sdata);
 }
 
 void	ft_render(t_data *data)
@@ -476,22 +74,36 @@ void	ft_render(t_data *data)
 	while (++i < data->nbr_threads)
 	{
 		ft_pre_render_loop(data->tdata[i].ray, data->player);
-		pthread_create(&data->thread[i], NULL, ft_thread_render, &data->tdata[i]);
+		pthread_create(&data->thread[i], NULL,
+			ft_thread_render, &data->tdata[i]);
 	}
 	i = -1;
 	while (++i < data->nbr_threads)
 		pthread_join(data->thread[i], NULL);
 	i = -1;
-
 	ft_sort_enemies(data);
 	while (data->enemy_arr[++i])
 		ft_enemy_render_threads(data->enemy_arr[i]);
 	if (data->mov->shoot)
 		ft_shoot_raycasting(data);
-	i = -1;
-	// while (data->enemy_arr[++i])
-	// 	ft_enemy_render_threads(data->enemy_arr[i]);
 	ft_put_fps(data);
+}
+
+void	ft_frame_render_pause(t_data *data)
+{
+	int				x;
+	int				y;
+
+	x = -1;
+	while (++x < data->width)
+	{
+		y = -1;
+		while (++y < data->height)
+			data->img_pause->addr[y * data->width + x]
+				= ft_pixel_darken(data->img->addr[y * data->width + x], 0.45);
+	}
+	ft_frame_render_pause_utils(data);
+	mlx_put_image_to_window(data->mlx, data->win, data->img_pause->img, 0, 0);
 }
 
 int	ft_frame_render(t_data *data)
@@ -512,7 +124,6 @@ int	ft_frame_render(t_data *data)
 			data->portal->angle = data->player1->angle;
 			data->portal->y_look = cos(data->portal->angle * M_PI / 180.0);
 			data->portal->x_look = sin(data->portal->angle * M_PI / 180.0);
-			
 		}
 		data->mov->mov = false;
 		data->mov->look = false;
@@ -520,80 +131,6 @@ int	ft_frame_render(t_data *data)
 		data->see_portal = false;
 	}
 	else
-	{
-		for (int x = 0; x < data->width; x++)
-		{
-			for (int y = 0; y < data->height; y++)
-			{
-				int color = data->img->addr[y * data->width + x];
-				float	factor	= 0.45;
-				int r = ((color >> 16) & 0xFF) * factor;
-				int g = ((color >> 8) & 0xFF) * factor;
-				int b = (color & 0xFF) * factor;
-				color = (r << 16) | (g << 8) | b;
-				data->img_pause->addr[y * data->width + x] = color;
-			}
-		}
-		for (int x = 0; x < (0.2 * data->width); x++)
-		{
-			for (int y = 0; y < (0.4 * data->height); y++)
-			{
-				int	texX = (x * 106) / (0.2 * data->width);
-				int	texY = (y * 122) / (0.4 * data->height);
-				int color = data->tex_pause->addr[texY * 106 + texX];
-				if (color != 0x000000)
-					data->img_pause->addr[(int) (y * data->width +
-						((data->height * 0.3) * data->width)\
-						+ x + ((0.4 * data->width)))] = color;
-			}
-		}
-		mlx_put_image_to_window(data->mlx, data->win, data->img_pause->img, 0, 0);
-	}
+		ft_frame_render_pause(data);
 	return (0);
-}
-
-void	ft_dda(t_ray *ray, t_data *data, int rec)
-{
-	ray->count = 0;
-	ray->portal_see = false;
-	ray->portal_hit = false;
-	while (ray->hit == 0)
-	{
-		if (ray->sideDistX < ray->sideDistY)
-		{
-			ray->sideDistX += ray->deltaDistX;
-			ray->mapX += ray->stepX;
-			ray->side = 0;
-		}
-		else
-		{
-			ray->sideDistY += ray->deltaDistY;
-			ray->mapY += ray->stepY;
-			ray->side = 1;
-		}
-		if (data->map[ray->mapX][ray->mapY] == '1')
-			ray->hit = 1;
-		if (data->map[ray->mapX][ray->mapY] == 'R'
-			&& ray->count < rec)
-		{
-			if (ray->side == 0)
-				ray->orien = (ray->stepX <= 0);
-			else
-				ray->orien = 2 + (ray->stepY <= 0);
-			if (ray->orien == 2)
-			{
-				ray->mapX = 2;
-				ray->mapY = 1;
-					ray->count++;
-					ray->portal_see = true;
-			}
-			else
-				ray->hit = 1;
-		}
-		else if (data->map[ray->mapX][ray->mapY] == 'R')
-			ray->hit = 2;
-		if (data->map[ray->mapX][ray->mapY] == 'R'
-			&& ray->count == rec)
-			ray->portal_hit = true;
-	}
 }

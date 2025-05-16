@@ -133,6 +133,18 @@ typedef	struct	s_line_improv_render {
 	int		hit;
 } t_line_improv_render;
 
+typedef struct s_frame_pause {
+	int	texX;
+	int	texY;
+	int	color;
+}	t_frame_pause;
+typedef	struct s_shoot_rc {
+	char	enemy;
+	int		hit;
+	int		is_moving;
+	int		max_offset;
+	int		spread;
+}	t_shoot_rc;
 
 typedef	struct s_tex_enemy {
 	t_img					*tex_enemy;
@@ -187,6 +199,28 @@ typedef struct s_portal
 	int		angle_y;
 } t_portal;
 
+typedef	struct s_enemy_improv_render {
+	double	dirX;
+	double	dirY;
+	double	planeX;
+	double	planeY;
+	double	spriteX;
+	double	spriteY;
+	double	invDet;
+	double	transformX;
+	double	transformY;
+	int		spriteScreenX;
+	int		spriteHeight;
+	int		drawStartY;
+	int		drawEndY;
+	int		spriteWidth;
+	int		drawStartX;
+	int		drawEndX;
+	int		texX;
+	int		d;
+	int		texY;
+	int		color;
+}	t_enemy_improv_render;
 typedef struct s_data 
 {
 	t_img					*img;

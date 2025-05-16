@@ -6,7 +6,7 @@
 /*   By: afogonca <afogonca@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/06 09:30:03 by afogonca          #+#    #+#             */
-/*   Updated: 2025/05/06 09:32:34 by afogonca         ###   ########.fr       */
+/*   Updated: 2025/05/16 11:53:43 by afogonca         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,18 +21,9 @@ void	ft_player_lookul(t_player *player, int angle)
 	else
 		player->angle_y += angle;
 }
-double	ft_round_to_nd(double value, int decimals)
-{
-    double scale;
-	
-	scale = pow(10.0, decimals);
-    return (round(value * scale) / scale);
-}
+
 void	ft_player_rot(t_data *data)
 {
-	// double	offset;
-	//
-	// offset = ft_round_to_nd(-1 * 0.0936 * data->frame_time, 1);
 	if (data->mov->lookl || data->mov->lookml)
 	{
 		data->mov->look = true;
@@ -45,7 +36,8 @@ void	ft_player_rot(t_data *data)
 	if (data->mov->lookr || data->mov->lookmr)
 	{
 		data->mov->look = true;
-		data->player1->angle = ft_add_angle(data->player1->angle, 0.0936 * data->frame_time);
+		data->player1->angle = ft_add_angle(data->player1->angle,
+				0.0936 * data->frame_time);
 		data->player1->y_look = cos(data->player1->angle * M_PI / 180.0);
 		data->player1->x_look = sin(data->player1->angle * M_PI / 180.0);
 		if (data->mov->lookmr)

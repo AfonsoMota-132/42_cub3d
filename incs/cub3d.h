@@ -191,16 +191,6 @@ typedef struct	s_enemy
 	struct s_enemy	*next;
 } t_enemy;
 
-typedef struct s_portal 
-{
-	double	x_pos;
-	double	y_pos;
-	double	y_look;
-	double	x_look;
-	double	angle;
-	int		angle_y;
-} t_portal;
-
 typedef	struct s_enemy_improv_render {
 	double	dirX;
 	double	dirY;
@@ -223,6 +213,17 @@ typedef	struct s_enemy_improv_render {
 	int		texY;
 	int		color;
 }	t_enemy_improv_render;
+
+typedef struct s_portal
+{
+	double	x_pos;
+	double	y_pos;
+	double	y_look;
+	double	x_look;
+	int		orien;
+	int		angle_y;
+} t_portal;
+
 typedef struct s_data 
 {
 	t_img					*img;
@@ -241,7 +242,7 @@ typedef struct s_data
 	void					*win;
 	t_player				*player;
 	t_player				*player1;
-	t_player				*portal;
+	t_portal				*portalL;
 	t_ray					*portal_ray;
 	t_enemy					*enemy;
 	t_enemy					**enemy_arr;

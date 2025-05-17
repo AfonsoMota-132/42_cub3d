@@ -96,8 +96,10 @@ void	ft_pre_render_line(t_data *data, t_ray *ray, int x, int option)
 		data->texture_wall = data->tex_west;
 	if (ray->orien == 3)
 		data->texture_wall = data->tex_east;
-	if (ray->hit == 2)
+	if (ray->hit == 2 && data->portalL->orien == ray->orien)
+	{
 		data->texture_wall = data->tex_pl;
+	}
 	ft_ray_render_line(ray, data);
 	ft_pre_render_line_utils(data, ray, &line);
 	if (!option)

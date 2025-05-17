@@ -119,12 +119,12 @@ int	ft_frame_render(t_data *data)
 		ft_player_mov(data);
 		ft_render(data);
 		mlx_put_image_to_window(data->mlx, data->win, data->img->img, 0, 0);
-		if (data->see_portal)
-		{
-			data->portal->angle = data->player1->angle;
-			data->portal->y_look = cos(data->portal->angle * M_PI / 180.0);
-			data->portal->x_look = sin(data->portal->angle * M_PI / 180.0);
-		}
+		// if (data->see_portal)
+		// {
+		// 	data->portalL->angle = data->player1->angle;
+		// 	data->portalL->y_look = cos(data->portalL->angle * M_PI / 180.0);
+		// 	data->portalL->x_look = sin(data->portalL->angle * M_PI / 180.0);
+		// }
 		data->mov->mov = false;
 		data->mov->look = false;
 		data->mov->shoot = false;

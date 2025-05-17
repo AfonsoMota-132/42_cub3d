@@ -44,13 +44,13 @@ void	ft_player_mov_b(t_data *data)
 			data->player->y_pos = tempy;
 		if (ft_ver_col(data->map, tempx, data->player->y_pos, 'P') == 2)
 		{
-			data->player1->x_pos = data->portal->x_pos;
-			data->player1->y_pos = data->portal->y_pos;
+			data->player1->x_pos = data->portalL->x_pos;
+			data->player1->y_pos = data->portalL->y_pos;
 		}
 		if (ft_ver_col(data->map, data->player->x_pos, tempy, 'P') == 2)
 		{
-			data->player1->x_pos = data->portal->x_pos;
-			data->player1->y_pos = data->portal->y_pos;
+			data->player1->x_pos = data->portalL->x_pos;
+			data->player1->y_pos = data->portalL->y_pos;
 		}
 	}
 }
@@ -71,15 +71,11 @@ void	ft_player_mov_f(t_data *data)
 			data->player->x_pos = tempx;
 		if (ft_ver_col(data->map, data->player1->x_pos, tempy, 'P') == 1)
 			data->player->y_pos = tempy;
-		if (ft_ver_col(data->map, tempx, data->player1->y_pos, 'P') == 2)
+		if (ft_ver_col(data->map, tempx, data->player1->y_pos, 'P') == 2
+			|| ft_ver_col(data->map, data->player1->x_pos, tempy, 'P') == 2)
 		{
-			data->player1->x_pos = data->portal->x_pos;
-			data->player1->y_pos = data->portal->y_pos;
-		}
-		if (ft_ver_col(data->map, data->player1->x_pos, tempy, 'P') == 2)
-		{
-			data->player1->x_pos = data->portal->x_pos;
-			data->player1->y_pos = data->portal->y_pos;
+			data->player1->x_pos = data->portalL->x_pos;
+			data->player1->y_pos = data->portalL->y_pos;
 		}
 	}
 }
@@ -100,15 +96,11 @@ void	ft_player_mov_r(t_data *data)
 			data->player->x_pos = tempx;
 		if (ft_ver_col(data->map, data->player->x_pos, tempy, 'P') == 1)
 			data->player->y_pos = tempy;
-		if (ft_ver_col(data->map, tempx, data->player1->y_pos, 'P') == 2)
+		if (ft_ver_col(data->map, tempx, data->player1->y_pos, 'P') == 2
+			|| ft_ver_col(data->map, data->player1->x_pos, tempy, 'P') == 2)
 		{
-			data->player1->x_pos = data->portal->x_pos;
-			data->player1->y_pos = data->portal->y_pos;
-		}
-		if (ft_ver_col(data->map, data->player1->x_pos, tempy, 'P') == 2)
-		{
-			data->player1->x_pos = data->portal->x_pos;
-			data->player1->y_pos = data->portal->y_pos;
+			data->player1->x_pos = data->portalL->x_pos;
+			data->player1->y_pos = data->portalL->y_pos;
 		}
 	}
 }
@@ -131,13 +123,13 @@ void	ft_player_mov_l(t_data *data)
 			data->player->y_pos = tempy;
 		if (ft_ver_col(data->map, tempx, data->player1->y_pos, 'P') == 2)
 		{
-			data->player1->x_pos = data->portal->x_pos;
-			data->player1->y_pos = data->portal->y_pos;
+			data->player1->x_pos = data->portalL->x_pos;
+			data->player1->y_pos = data->portalL->y_pos;
 		}
 		if (ft_ver_col(data->map, data->player1->x_pos, tempy, 'P') == 2)
 		{
-			data->player1->x_pos = data->portal->x_pos;
-			data->player1->y_pos = data->portal->y_pos;
+			data->player1->x_pos = data->portalL->x_pos;
+			data->player1->y_pos = data->portalL->y_pos;
 		}
 	}
 }

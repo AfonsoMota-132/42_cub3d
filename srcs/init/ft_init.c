@@ -55,14 +55,12 @@ t_data	*ft_data_init(void)
 	data->player1->x_look = sin(data->player1->angle * M_PI / 180.0);
 	data->time_frame = ft_get_time_in_ms() + 17;
 
-	data->portal = malloc(sizeof(t_player));
-	if (!data->portal)
+	data->portalL = malloc(sizeof(t_player));
+	if (!data->portalL)
 		ft_free(-1, data);
-	data->portal->x_pos = 2;
-	data->portal->y_pos = 1;
-	data->portal->angle = 360;
-	data->portal->y_look = cos(data->portal->angle * M_PI / 180.0);
-	data->portal->x_look = sin(data->portal->angle * M_PI / 180.0);
+	data->portalL->x_pos = 2;
+	data->portalL->y_pos = 1;
+	data->portalL->orien = 2;
 	data->portal_ray = malloc(sizeof(t_ray));
 
 	data->enemy_arr = malloc(sizeof(t_enemy *) * 10);

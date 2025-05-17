@@ -18,7 +18,7 @@ void	ft_render_enemy_loop(t_enemy_improv_render *edata, \
 	int	y;
 
 	y = edata->drawStartY - 1;
-	while (++y < edata->drawEndY)
+	while (++y <= edata->drawEndY)
 	{
 		edata->d = (y - data->player->angle_y) * 256
 			- data->height * 128 + edata->spriteHeight * 128;
@@ -53,9 +53,10 @@ void	ft_render_enemy_sprite(t_enemy_improv_render *edata, \
 			edata->texX = 0;
 		if (edata->texX >= enemy->tex->x)
 			edata->texX = enemy->tex->x - 1;
+		#define EPSILON 0.0005
 		if (edata->transformY > 0 && stripe > 0
 			&& stripe < data->width && edata->transformY
-			< data->zbuffer[stripe + 1])
+			<= data->zbuffer[stripe] + EPSILON)
 			ft_render_enemy_loop(edata, enemy, data, stripe);
 	}
 }

@@ -54,10 +54,18 @@ void	ft_ray_render_line(t_ray *ray, t_data *data)
 		* (ray->side != 0);
 	ray->wallX -= floor(ray->wallX);
 	ray->texX = (int)(ray->wallX * (double)data->texture_wall->x);
-	ray->texX = ray->texX + ((ray->side == 0
-				&& ray->rayDirX > 0) || (ray->side == 1
-				&& ray->rayDirY < 0)) * (data->texture_wall->x
-			- ray->texX - ray->texX - 1);
+
+if (ray->portal_see)
+{
+ray->texX = data->texture_wall->x - ray->texX - 1;
+}
+else
+{
+	if (ray->side == 0 && ray->rayDirX > 0)
+		ray->texX = data->texture_wall->x - ray->texX - 1;
+	if (ray->side == 1 && ray->rayDirY < 0)
+		ray->texX = data->texture_wall->x - ray->texX - 1;
+}
 }
 
 void	ft_pre_render_line_utils(t_data *data, t_ray *ray, \

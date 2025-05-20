@@ -81,11 +81,11 @@ void	ft_render(t_data *data)
 	while (++i < data->nbr_threads)
 		pthread_join(data->thread[i], NULL);
 	i = -1;
-	ft_sort_enemies(data);
-	while (data->enemy_arr[++i])
-		ft_enemy_render_threads(data->enemy_arr[i]);
-	if (data->mov->shoot)
-		ft_shoot_raycasting(data);
+	// ft_sort_enemies(data);
+	// while (data->enemy_arr[++i])
+	// 	ft_enemy_render_threads(data->enemy_arr[i]);
+	// if (data->mov->shoot)
+	// 	ft_shoot_raycasting(data);
 	ft_put_fps(data);
 }
 

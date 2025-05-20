@@ -220,6 +220,7 @@ typedef struct s_portal
 	double	y_pos;
 	double	y_look;
 	double	x_look;
+	double	angle;
 	int		orien;
 	int		angle_y;
 } t_portal;
@@ -242,8 +243,9 @@ typedef struct s_data
 	void					*win;
 	t_player				*player;
 	t_player				*player1;
-	t_portal				*portalL;
 	t_ray					*portal_ray;
+	t_portal				*portalL;
+	t_portal				*portalR;
 	t_enemy					*enemy;
 	t_enemy					**enemy_arr;
 	t_ray					*ray;

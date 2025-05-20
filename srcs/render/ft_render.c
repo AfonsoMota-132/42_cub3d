@@ -23,7 +23,7 @@ void	ft_first_render_loop(t_thread_data *tdata, int x, int end, int rec)
 	{
 		ft_set_ray_loop(tdata->ray, x, tdata->data);
 		ft_ray_dir(tdata->ray);
-		ft_dda(tdata->ray, tdata->data, rec);
+		ft_dda(tdata->ray, tdata->data, x, rec);
 		tdata->data->zbuffer[x] = tdata->ray->perpWallDist;
 		if (tdata->ray->portal_hit)
 		{
@@ -52,9 +52,10 @@ void	ft_render_portal(t_thread_data *tdata, int x, int end, int rec)
 	{
 		tdata->ray->portal_hit = false;
 		tdata->ray->portal_see = false;
+		ft_pre_render_loop(tdata->ray, tdata->data->player);
 		ft_set_ray_loop(tdata->ray, x, tdata->data);
 		ft_ray_dir(tdata->ray);
-		ft_dda(tdata->ray, tdata->data, rec);
+		ft_dda(tdata->ray, tdata->data, x,rec);
 		ft_line_height(tdata->ray, tdata->data);
 		ft_pre_render_line(tdata->data, tdata->ray, x, 1);
 		if (tdata->ray->portal_hit)
@@ -64,8 +65,8 @@ void	ft_render_portal(t_thread_data *tdata, int x, int end, int rec)
 			last_x = x;
 		}
 	}
-	if (first_x && last_x)
-		ft_render_portal(tdata, first_x - 1, last_x + 1, rec + 1);
+	// if (first_x && last_x)
+	// 	ft_render_portal(tdata, first_x - 1, last_x + 1, rec + 1);
 }
 
 void	*ft_thread_render(void *arg)

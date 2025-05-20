@@ -32,8 +32,8 @@ t_data	*ft_data_init(void)
 	if (!data->map)
 		ft_free(-1, data);
 	data->map[0] = ft_strdup("1111111111");
-	data->map[1] = ft_strdup("1B10100001");
-	data->map[2] = ft_strdup("100A001101");
+	data->map[1] = ft_strdup("1010100001");
+	data->map[2] = ft_strdup("1000001101");
 	data->map[3] = ft_strdup("1000001101");
 	data->map[4] = ft_strdup("100P000001");
 	data->map[5] = ft_strdup("100100R001");
@@ -50,7 +50,7 @@ t_data	*ft_data_init(void)
 		ft_free(-1, data);
 	data->player1->x_pos = 4.5;
 	data->player1->y_pos = 3.5;
-	data->player1->angle = 300;
+	data->player1->angle = 90;
 	data->player1->y_look = cos(data->player1->angle * M_PI / 180.0);
 	data->player1->x_look = sin(data->player1->angle * M_PI / 180.0);
 	data->time_frame = ft_get_time_in_ms() + 17;
@@ -58,10 +58,22 @@ t_data	*ft_data_init(void)
 	data->portalL = malloc(sizeof(t_player));
 	if (!data->portalL)
 		ft_free(-1, data);
-	data->portalL->x_pos = 2;
-	data->portalL->y_pos = 1;
+	data->portalL->x_pos = 0;
 	data->portalL->orien = 2;
+	data->portalL->y_pos = 2;
+	data->portalL->angle = 270;
+	data->portalL->y_look = cos(data->portalL->angle * M_PI / 180.0);
+	data->portalL->x_look = sin(data->portalL->angle * M_PI / 180.0);
 	data->portal_ray = malloc(sizeof(t_ray));
+
+	data->portalR = malloc(sizeof(t_player));
+	if (!data->portalR)
+		ft_free(-1, data);
+	data->portalR->x_pos = 5;
+	data->portalR->y_pos = 6;
+	data->portalR->orien = 2;
+
+	// data->portal_ray = malloc(sizeof(t_ray));
 
 	data->enemy_arr = malloc(sizeof(t_enemy *) * 10);
 	data->enemy_arr[0] = NULL;
@@ -166,7 +178,7 @@ t_data	*ft_data_init(void)
 		ft_free(-1, data);
 	ft_start_tex(data, data->tex_west, "west.xpm");
 
-	data->nbr_threads = 8;
+	data->nbr_threads = 16;
 	data->tdata = malloc(sizeof(t_thread_data) * data->nbr_threads + 1);
 	data->thread = malloc(sizeof(pthread_t) * data->nbr_threads + 1);
 	int	i = -1;

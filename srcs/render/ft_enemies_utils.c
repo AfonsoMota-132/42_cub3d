@@ -27,6 +27,12 @@ char	ft_dda_enemy2(t_ray *ray, t_data *data, char detect)
 		ray->mapY = data->portalL->y_pos;
 		data->see_portal = true;
 	}
+	if (data->map[ray->mapX][ray->mapY] == 'L')
+	{
+		ray->mapX = data->portalR->x_pos;
+		ray->mapY = data->portalR->y_pos;
+		data->see_portal = true;
+	}
 	return (enemy);
 }
 

@@ -238,6 +238,7 @@ typedef struct s_data
 	t_ray					*ray;
 	t_mov					*mov;
 	char					**map;
+	char					**bigmap;
 	int						hex_ceiling;
 	int						hex_floor;
 	double					time_frame;
@@ -249,6 +250,9 @@ typedef struct s_data
 	int						width;
 	int						height;
 	double					frame_time;
+	int						map_height;
+	int						map_width;
+	int						scale;
 	bool					see_portal;
 	struct s_thread_data	*tdata;
 } t_data;
@@ -277,5 +281,6 @@ void	ft_start_tex(t_data *data, t_img *img, char *file);
 double	ft_add_angle(double angle, double delta);
 void	ft_player_lookul(t_player *player, int angle);
 void	ft_render(t_data *data);
+char	**ft_cp2bm(char **map, int height, int width, int scale);
 
 #endif

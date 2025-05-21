@@ -51,7 +51,7 @@ void	ft_raycasting_enemies(t_data *data, t_enemy *enemy)
 		return ;
 	while (++x < data->width)
 	{
-		ft_pre_render_loop(enemy->ray, enemy->data);
+		ft_pre_render_loop(enemy->ray, enemy->data, data);
 		ft_set_ray_loop(enemy->ray, x, enemy->rdata);
 		ft_ray_dir(enemy->ray);
 		ft_dda_enemies(enemy->ray, data);
@@ -117,7 +117,7 @@ void	*ft_enemy_render_threads(void *arg)
 	data = enemy->rdata;
 	if (enemy->map == '0')
 		return (NULL);
-	ft_pre_render_loop(enemy->ray, data->player);
+	ft_pre_render_loop(enemy->ray, data->player, data);
 	while (++x < data->width)
 	{
 		ft_set_ray_loop(enemy->ray, x, data);

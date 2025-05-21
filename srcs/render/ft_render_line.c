@@ -23,7 +23,7 @@ double	ft_add_angle(double angle, double delta)
 }
 
 void	ft_render_line(int x, t_line_improv_render *line, \
-					t_data *data, t_ray *ray)
+					t_data *data, int colorDodge)
 {
 	int	color;
 	int	y;
@@ -31,7 +31,7 @@ void	ft_render_line(int x, t_line_improv_render *line, \
 	y = -1;
 	while (++y <= data->height)
 	{
-		if (y < ray->drawStart)
+		if (y < line->drawStart)
 			line->addr[y * line->img_sl + x] = line->hex_ceil;
 		else if (y > line->drawEnd)
 			line->addr[y * line->img_sl + x] = line->hex_floor;
@@ -40,7 +40,8 @@ void	ft_render_line(int x, t_line_improv_render *line, \
 			line->texPos += line->step;
 			color = line->tex_addr[((int)line->texPos
 					& (line->text_y)) * (line->tex_sl) + line->texX];
-			if (color)
+			if (color && (colorDodge < 0 || (
+				colorDodge >= 0 && color != colorDodge )))
 				line->addr[y * line->img_sl + x] = color;
 		}
 	}
@@ -48,8 +49,8 @@ void	ft_render_line(int x, t_line_improv_render *line, \
 
 void	ft_ray_render_line(t_ray *ray, t_data *data)
 {
-	ray->wallX = (ray->posY + ray->perpWallDist
-			* ray->rayDirY) * (ray->side == 0)
+	ray->wallX = ((ray->posY + ray->perpWallDist
+			* ray->rayDirY)) * (ray->side == 0)
 		+ (ray->posX + ray->perpWallDist * ray->rayDirX)
 		* (ray->side != 0);
 	ray->wallX -= floor(ray->wallX);
@@ -91,7 +92,12 @@ void	ft_pre_render_line(t_data *data, t_ray *ray, int x)
 		data->texture_wall = data->tex_west;
 	if (ray->orien == 3)
 		data->texture_wall = data->tex_east;
+	if (ray->hit == 2)
+		data->texture_wall = data->tex_pl;
 	ft_ray_render_line(ray, data);
 	ft_pre_render_line_utils(data, ray, &line);
-	ft_render_line(x, &line, data, ray);
+	if (ray->hit == 2)
+		ft_render_line(x, &line, data, 0xFFFFFF);
+	else
+	ft_render_line(x, &line, data, -1);
 }

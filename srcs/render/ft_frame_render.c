@@ -56,7 +56,7 @@ void	ft_shoot_raycasting(t_data *data)
 		sdata.hit = 0;
 	if (sdata.hit >= data->width)
 		sdata.hit = data->width - 1;
-	ft_pre_render_loop(data->ray, data->player);
+	ft_pre_render_loop(data->ray, data->player, data);
 	ft_set_ray_loop(data->ray, sdata.hit, data);
 	ft_ray_dir(data->ray);
 	sdata.enemy = ft_dda_shoot(data->ray, data);
@@ -69,11 +69,11 @@ void	ft_render(t_data *data)
 
 	data->player = data->player1;
 	data->img = data->img_player;
-	ft_pre_render_loop(data->ray, data->player);
+	ft_pre_render_loop(data->ray, data->player, data);
 	i = -1;
 	while (++i < data->nbr_threads)
 	{
-		ft_pre_render_loop(data->tdata[i].ray, data->player);
+		ft_pre_render_loop(data->tdata[i].ray, data->player, data);
 		pthread_create(&data->thread[i], NULL,
 			ft_thread_render, &data->tdata[i]);
 	}
@@ -81,11 +81,11 @@ void	ft_render(t_data *data)
 	while (++i < data->nbr_threads)
 		pthread_join(data->thread[i], NULL);
 	i = -1;
-	ft_sort_enemies(data);
-	while (data->enemy_arr[++i])
-		ft_enemy_render_threads(data->enemy_arr[i]);
-	if (data->mov->shoot)
-		ft_shoot_raycasting(data);
+	// ft_sort_enemies(data);
+	// while (data->enemy_arr[++i])
+	// 	ft_enemy_render_threads(data->enemy_arr[i]);
+	// if (data->mov->shoot)
+	// 	ft_shoot_raycasting(data);
 	ft_put_fps(data);
 }
 
@@ -116,6 +116,10 @@ int	ft_frame_render(t_data *data)
 	data->old_frame = ft_get_time_in_ms();
 	if (!data->mov->pause)
 	{
+		data->bigmap = ft_cp2bm(data->map, data->map_height, data->map_width, data->scale);
+		// for (int y = 0; y < data->map_height * data->scale; y++)
+			// if (ft_strchr(data->bigmap[y], 'H'))
+			// printf("%s\n", data->bigmap[y]);
 		ft_player_mov(data);
 		ft_render(data);
 		mlx_put_image_to_window(data->mlx, data->win, data->img->img, 0, 0);

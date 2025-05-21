@@ -19,6 +19,45 @@ double ft_get_time_in_ms()
     return (tv.tv_sec * 1000.0) + (tv.tv_usec / 1000.0);
 }
 
+char	**ft_cp2bm(char **map, int height, int width, int scale)
+{
+	int new_height = height * scale;
+	int new_width = width * scale;
+
+	char **upscaled = malloc(sizeof(char *) * (new_height + 1));
+	if (!upscaled)
+		return NULL;
+
+	for (int y = 0; y < height; y++) {
+		for (int sy = 0; sy < scale; sy++) {
+			// Allocate each new row
+			int new_row_index = y * scale + sy;
+			upscaled[new_row_index] = malloc(new_width + 1);
+			if (!upscaled[new_row_index]) {
+				// Free previous rows on failure
+				for (int k = 0; k < new_row_index; k++)
+					free(upscaled[k]);
+				free(upscaled);
+				return NULL;
+			}
+
+			for (int x = 0; x < width; x++) {
+				for (int sx = 0; sx < scale; sx++) {
+					// if (map[y][x] == 'H' && (y * scale == new_row_index
+					// 	|| y * scale == new_row_index - 3))
+					if (map[y][x] == 'H' && (sx <= 0.3 * scale || sx >= 0.6 * scale))
+						upscaled[new_row_index][x * scale + sx] = '0';
+					else
+						upscaled[new_row_index][x * scale + sx] = map[y][x];
+				}
+			}
+			upscaled[new_row_index][new_width] = '\0'; // null-terminate each row
+		}
+	}
+	upscaled[new_height] = NULL; // null-terminate the array
+	return upscaled;
+}
+
 t_data	*ft_data_init(void)
 {
 	t_data *data;
@@ -33,14 +72,19 @@ t_data	*ft_data_init(void)
 		ft_free(-1, data);
 	data->map[0] = ft_strdup("1111111111");
 	data->map[1] = ft_strdup("1010100001");
-	data->map[2] = ft_strdup("100A001101");
+	data->map[2] = ft_strdup("1000001101");
 	data->map[3] = ft_strdup("1000001101");
 	data->map[4] = ft_strdup("100P000001");
 	data->map[5] = ft_strdup("1001001001");
 	data->map[6] = ft_strdup("1001001001");
-	data->map[7] = ft_strdup("1000001001");
+	data->map[7] = ft_strdup("100000H001");
 	data->map[8] = ft_strdup("1111111111");
 	data->map[9] = NULL; //should put malloc protection here but gonna leave it because its gonna be joanas part
+	data->map_height = 9;
+	data->map_width = ft_strlen(data->map[0]);
+	data->scale = 8;
+	data->bigmap = ft_cp2bm(data->map, data->map_height, data->map_width, data->scale);
+	// data->map = data->bigmap;
 	data->mov = malloc(sizeof(t_mov));
 	if (!data->mov)
 		ft_free(-1, data);

@@ -12,7 +12,7 @@
 
 #include "ft_render.h"
 
-void	ft_dda(t_ray *ray, t_data *data)
+void	ft_dda(t_ray *ray, t_data *data, char door)
 {
 	while (ray->hit == 0)
 	{
@@ -30,9 +30,13 @@ void	ft_dda(t_ray *ray, t_data *data)
 			ray->mapY += ray->stepY;
 			ray->side = 1;
 		}
-		if (data->map[ray->mapX][ray->mapY] == '1')
+		if (data->bigmap[ray->mapX][ray->mapY] == '1')
 			ray->hit = 1;
+		if (door >= 0 && data->bigmap[ray->mapX][ray->mapY] == door)
+			ray->hit = 2;
 	}
+	ray->posX /= data->scale;
+	ray->posY /= data->scale;
 }
 
 char	ft_dda_shoot(t_ray *ray, t_data *data)

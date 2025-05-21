@@ -54,18 +54,6 @@ void	ft_ray_render_line(t_ray *ray, t_data *data)
 		* (ray->side != 0);
 	ray->wallX -= floor(ray->wallX);
 	ray->texX = (int)(ray->wallX * (double)data->texture_wall->x);
-
-if (ray->portal_see)
-{
-ray->texX = data->texture_wall->x - ray->texX - 1;
-}
-else
-{
-	if (ray->side == 0 && ray->rayDirX > 0)
-		ray->texX = data->texture_wall->x - ray->texX - 1;
-	if (ray->side == 1 && ray->rayDirY < 0)
-		ray->texX = data->texture_wall->x - ray->texX - 1;
-}
 }
 
 void	ft_pre_render_line_utils(t_data *data, t_ray *ray, \
@@ -88,12 +76,11 @@ void	ft_pre_render_line_utils(t_data *data, t_ray *ray, \
 	line->drawEnd = ray->drawEnd;
 	line->drawStart = ray->drawStart;
 	line->texX = ray->texX;
-	line->portal_hit = ray->portal_see;
 	line->count = ray->count;
 	line->hit = ray->hit;
 }
 
-void	ft_pre_render_line(t_data *data, t_ray *ray, int x, int option)
+void	ft_pre_render_line(t_data *data, t_ray *ray, int x)
 {
 	t_line_improv_render	line;
 
@@ -104,14 +91,7 @@ void	ft_pre_render_line(t_data *data, t_ray *ray, int x, int option)
 		data->texture_wall = data->tex_west;
 	if (ray->orien == 3)
 		data->texture_wall = data->tex_east;
-	if (ray->hit == 2 && data->portalL->orien == ray->orien)
-	{
-		data->texture_wall = data->tex_pl;
-	}
 	ft_ray_render_line(ray, data);
 	ft_pre_render_line_utils(data, ray, &line);
-	if (!option)
-		ft_render_line(x, &line, data, ray);
-	else if (option == 1)
-		ft_render_line_portal(x, &line, data, ray);
+	ft_render_line(x, &line, data, ray);
 }

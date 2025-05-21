@@ -17,11 +17,11 @@
 
 void	ft_player_mov(t_data *data);
 void	ft_player_rot(t_data *data);
-void	ft_pre_render_line(t_data *data, t_ray *ray, int x, int option);
+void	ft_pre_render_line(t_data *data, t_ray *ray, int x);
 void	ft_ray_render_line(t_ray *ray, t_data *data);
 void	ft_line_height(t_ray *ray, t_data *data);
 int		ft_frame_render(t_data *data);
-void	ft_dda(t_ray *ray, t_data *data, int x,int rec);
+void	ft_dda(t_ray *ray, t_data *data);
 void	ft_dda_enemy(t_ray *ray, t_data *data, char detect);
 void	ft_pre_render_loop(t_ray *ray, t_player *player);
 void	ft_set_ray_loop(t_ray *ray, int x, t_data *data);
@@ -57,7 +57,6 @@ void	ft_raycasting_enemies_utils3(t_data *data, t_enemy *enemy);
 void	ft_dda_enemies(t_ray *ray, t_data *data);
 void	ft_player_mov_utils(t_data *data);
 void	ft_set_ray_loop_portal(t_ray *ray, int x, t_data *data);
-void	ft_pre_render_loop_portal(t_ray *ray, t_portal *portal);
 void	ft_render_line_portal(int x, t_line_improv_render *line, \
 			t_data *data, t_ray *ray);
 

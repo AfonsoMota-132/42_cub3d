@@ -87,8 +87,6 @@ typedef struct s_ray
 	int		texX;
 	double	wallX;
 	double	step;
-	bool	portal_hit;
-	bool	portal_see;
 	int		count;
 	double	rayPosX;
 	double	rayPosY;
@@ -140,6 +138,7 @@ typedef struct s_frame_pause {
 	int	texY;
 	int	color;
 }	t_frame_pause;
+
 typedef	struct s_shoot_rc {
 	char	enemy;
 	int		hit;
@@ -176,6 +175,7 @@ typedef	struct s_tex_nbrs {
 	t_img	*nbr_8;
 	t_img	*nbr_9;
 }	t_tex_nbrs;
+
 typedef struct	s_enemy 
 {
 	t_player		*data;
@@ -214,17 +214,6 @@ typedef	struct s_enemy_improv_render {
 	int		color;
 }	t_enemy_improv_render;
 
-typedef struct s_portal
-{
-	double	x_pos;
-	double	y_pos;
-	double	y_look;
-	double	x_look;
-	double	angle;
-	int		orien;
-	int		angle_y;
-} t_portal;
-
 typedef struct s_data 
 {
 	t_img					*img;
@@ -244,8 +233,6 @@ typedef struct s_data
 	t_player				*player;
 	t_player				*player1;
 	t_ray					*portal_ray;
-	t_portal				*portalL;
-	t_portal				*portalR;
 	t_enemy					*enemy;
 	t_enemy					**enemy_arr;
 	t_ray					*ray;

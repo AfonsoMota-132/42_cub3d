@@ -12,61 +12,17 @@
 
 #include "ft_render.h"
 
-void	ft_first_render_loop(t_thread_data *tdata, int x, int end, int rec)
+void	ft_first_render_loop(t_thread_data *tdata, int x, int end)
 {
-	int	first_x;
-	int	last_x;
-
-	first_x = 0;
-	last_x = 0;
-	while (++x < end)
+	while (++x <= end)
 	{
 		ft_set_ray_loop(tdata->ray, x, tdata->data);
 		ft_ray_dir(tdata->ray);
-		ft_dda(tdata->ray, tdata->data, x, rec);
+		ft_dda(tdata->ray, tdata->data);
 		tdata->data->zbuffer[x] = tdata->ray->perpWallDist;
-		if (tdata->ray->portal_hit)
-		{
-			if (!first_x)
-				first_x = x;
-			last_x = x;
-		}
 		ft_line_height(tdata->ray, tdata->data);
-		ft_pre_render_line(tdata->data, tdata->ray, x, 0);
+		ft_pre_render_line(tdata->data, tdata->ray, x);
 	}
-	if (rec == 1)
-		return ;
-	ft_render_portal(tdata, first_x - 1, last_x + 1, rec + 1);
-}
-
-void	ft_render_portal(t_thread_data *tdata, int x, int end, int rec)
-{
-	int	first_x;
-	int	last_x;
-
-	first_x = 0;
-	last_x = 0;
-	if (rec >= 100)
-		return ;
-	while (++x < end)
-	{
-		tdata->ray->portal_hit = false;
-		tdata->ray->portal_see = false;
-		ft_pre_render_loop(tdata->ray, tdata->data->player);
-		ft_set_ray_loop(tdata->ray, x, tdata->data);
-		ft_ray_dir(tdata->ray);
-		ft_dda(tdata->ray, tdata->data, x,rec);
-		ft_line_height(tdata->ray, tdata->data);
-		ft_pre_render_line(tdata->data, tdata->ray, x, 1);
-		if (tdata->ray->portal_hit)
-		{
-			if (!first_x)
-				first_x = x;
-			last_x = x;
-		}
-	}
-	// if (first_x && last_x)
-	// 	ft_render_portal(tdata, first_x - 1, last_x + 1, rec + 1);
 }
 
 void	*ft_thread_render(void *arg)
@@ -78,9 +34,7 @@ void	*ft_thread_render(void *arg)
 	x = tdata->start_x - 1;
 	tdata->ray->drawEnd = 0;
 	tdata->ray->drawStart = 0;
-	tdata->ray->portal_hit = true;
-	tdata->ray->portal_see = false;
-	ft_first_render_loop(tdata, x, tdata->end_x, 0);
+	ft_first_render_loop(tdata, x, tdata->end_x);
 	return (NULL);
 }
 

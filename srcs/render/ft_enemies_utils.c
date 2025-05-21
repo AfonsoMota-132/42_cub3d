@@ -21,18 +21,6 @@ char	ft_dda_enemy2(t_ray *ray, t_data *data, char detect)
 		ray->hit = 2;
 	if (enemy == '1')
 		ray->hit = 1;
-	if (data->map[ray->mapX][ray->mapY] == 'R')
-	{
-		ray->mapX = data->portalL->x_pos;
-		ray->mapY = data->portalL->y_pos;
-		data->see_portal = true;
-	}
-	if (data->map[ray->mapX][ray->mapY] == 'L')
-	{
-		ray->mapX = data->portalR->x_pos;
-		ray->mapY = data->portalR->y_pos;
-		data->see_portal = true;
-	}
 	return (enemy);
 }
 

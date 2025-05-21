@@ -81,11 +81,11 @@ void	ft_render(t_data *data)
 	while (++i < data->nbr_threads)
 		pthread_join(data->thread[i], NULL);
 	i = -1;
-	// ft_sort_enemies(data);
-	// while (data->enemy_arr[++i])
-	// 	ft_enemy_render_threads(data->enemy_arr[i]);
-	// if (data->mov->shoot)
-	// 	ft_shoot_raycasting(data);
+	ft_sort_enemies(data);
+	while (data->enemy_arr[++i])
+		ft_enemy_render_threads(data->enemy_arr[i]);
+	if (data->mov->shoot)
+		ft_shoot_raycasting(data);
 	ft_put_fps(data);
 }
 
@@ -119,16 +119,9 @@ int	ft_frame_render(t_data *data)
 		ft_player_mov(data);
 		ft_render(data);
 		mlx_put_image_to_window(data->mlx, data->win, data->img->img, 0, 0);
-		// if (data->see_portal)
-		// {
-		// 	data->portalL->angle = data->player1->angle;
-		// 	data->portalL->y_look = cos(data->portalL->angle * M_PI / 180.0);
-		// 	data->portalL->x_look = sin(data->portalL->angle * M_PI / 180.0);
-		// }
 		data->mov->mov = false;
 		data->mov->look = false;
 		data->mov->shoot = false;
-		data->see_portal = false;
 	}
 	else
 		ft_frame_render_pause(data);

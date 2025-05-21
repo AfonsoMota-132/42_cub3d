@@ -11,8 +11,7 @@
 # **************************************************************************** #
 
 NAME = cub3d
-CFLAGS = -g -O3
-#-Wall -Wextra -Werror
+CFLAGS = -g -O3 -Wall -Wextra -Werror
 MLXFLAGS = -L ./libs/minilibx-linux -lm -Ilmlx -lXext -lX11
 CC = cc
 RM = rm -f
@@ -33,8 +32,7 @@ RENDER_SRCS =	srcs/render/ft_frame_render.c \
 				srcs/render/ft_raycast_enemies_utils.c \
 				srcs/render/ft_put_fps.c \
 				srcs/render/ft_render_utils2.c \
-				srcs/render/ft_player_mov_utils.c \
-				srcs/render/ft_render_portal.c
+				srcs/render/ft_player_mov_utils.c
 
 INIT = srcs/init/ft_init.c 
 SRCS = srcs/main.c srcs/ft_free.c \

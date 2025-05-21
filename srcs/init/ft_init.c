@@ -43,10 +43,12 @@ char	**ft_cp2bm(char **map, int height, int width, int scale)
 
 			for (int x = 0; x < width; x++) {
 				for (int sx = 0; sx < scale; sx++) {
-					// if (map[y][x] == 'H' && (y * scale == new_row_index
-					// 	|| y * scale == new_row_index - 3))
-					if (map[y][x] == 'H' && (sx <= 0.3 * scale || sx >= 0.6 * scale))
-						upscaled[new_row_index][x * scale + sx] = '0';
+					if ((map[y][x] == 'H' && (sx <= 0.3 * scale || sx >= 0.6 * scale)))
+						// || (map[y][x] == 'H' && (y * scale >= new_row_index + 3
+						// 	|| y * scale <= new_row_index - 3)))
+						{
+							upscaled[new_row_index][x * scale + sx] = '0';
+						}
 					else
 						upscaled[new_row_index][x * scale + sx] = map[y][x];
 				}
@@ -82,7 +84,7 @@ t_data	*ft_data_init(void)
 	data->map[9] = NULL; //should put malloc protection here but gonna leave it because its gonna be joanas part
 	data->map_height = 9;
 	data->map_width = ft_strlen(data->map[0]);
-	data->scale = 8;
+	data->scale = 9;
 	data->bigmap = ft_cp2bm(data->map, data->map_height, data->map_width, data->scale);
 	// data->map = data->bigmap;
 	data->mov = malloc(sizeof(t_mov));

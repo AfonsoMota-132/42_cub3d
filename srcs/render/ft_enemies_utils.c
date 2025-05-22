@@ -31,8 +31,8 @@ void	ft_load_edata(t_data *data, t_ray *ray, \
 	edata->dirY = data->player->y_look;
 	edata->planeX = ray->planeX;
 	edata->planeY = ray->planeY;
-	edata->spriteX = data->enemy->data->x_pos - data->ray->posX;
-	edata->spriteY = data->enemy->data->y_pos - data->ray->posY;
+	edata->spriteX = (data->enemy->data->x_pos - data->ray->posX) / data->scale;
+	edata->spriteY = (data->enemy->data->y_pos - data->ray->posY) / data->scale;
 	edata->invDet = 1.0 / (edata->planeX * edata->dirY
 			- edata->dirX * edata->planeY);
 	edata->transformX = edata->invDet * (edata->dirY
@@ -74,13 +74,15 @@ void	ft_dda_enemy(t_ray *ray, t_data *data, char detect)
 		if (data->enemy_arr[i]->map == enemy)
 			data->enemy = data->enemy_arr[i];
 	}
+	ray->posX /= data->scale;
+	ray->posY /= data->scale;
 }
 
 void	ft_raycasting_enemies_utils2(t_data *data, t_enemy *enemy, \
 				int x, int first_x)
 {
-	enemy->ray->sideDistX = fabs(data->player->y_pos - enemy->data->x_pos);
-	enemy->ray->sideDistX = fabs(data->player->y_pos - enemy->data->y_pos);
+	enemy->ray->sideDistX = fabs(data->player->y_pos - enemy->data->x_pos) / data->scale;
+	enemy->ray->sideDistY = fabs(data->player->y_pos - enemy->data->y_pos) / data->scale;
 	x = (x + first_x) / 2;
 	if (x > (data->width / 2) && first_x != -1)
 	{

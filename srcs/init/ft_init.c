@@ -109,10 +109,8 @@ t_data	*ft_data_init(void)
 	data->player1->y_look = cos(data->player1->angle * M_PI / 180.0);
 	data->player1->x_look = sin(data->player1->angle * M_PI / 180.0);
 	data->time_frame = ft_get_time_in_ms() + 17;
-	// data->bigmap[(int) (data->player1->x_pos * data->scale)]
-	// 	[(int) (data->player1->y_pos * data->scale)] = 'P';
-	for (int y = 0; data->bigmap[y]; y++)
-		printf("%s\n", data->bigmap[y]);
+	data->bigmap[(int) (data->player1->x_pos)]
+		[(int) (data->player1->y_pos)] = 'P';
 
 	data->enemy_arr = malloc(sizeof(t_enemy *) * 10);
 	data->enemy_arr[0] = NULL;
@@ -131,8 +129,10 @@ t_data	*ft_data_init(void)
 	data->enemy->data = malloc(sizeof(t_player));
 	if (!data->enemy->data)
 		ft_free(-1, data);
-	data->enemy->data->x_pos = 2.5;
-	data->enemy->data->y_pos = 3.5;
+	data->enemy->data->x_pos = 2.5 * data->scale;
+	data->enemy->data->y_pos = 3.5 * data->scale;
+	data->bigmap[(int) (data->enemy->data->x_pos)]
+		[(int) (data->enemy->data->y_pos)] = 'A';
 	data->enemy->data->angle = 100;
 	data->enemy->map = 'A';
 	data->enemy->ray = malloc(sizeof(t_ray));
@@ -320,6 +320,7 @@ void	ft_mov_set_def(t_mov *mov)
 	mov->jump = 0;
 	mov->shoot = 0;
 	mov->pause = false;
+	mov->open = false;
 	mov->time_sound = ft_get_time_in_ms();
 }
 

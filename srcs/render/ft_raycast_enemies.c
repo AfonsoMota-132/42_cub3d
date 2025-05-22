@@ -117,9 +117,9 @@ void	*ft_enemy_render_threads(void *arg)
 	data = enemy->rdata;
 	if (enemy->map == '0')
 		return (NULL);
-	ft_pre_render_loop(enemy->ray, data->player, data);
 	while (++x < data->width)
 	{
+		ft_pre_render_loop(enemy->ray, data->player, data);
 		ft_set_ray_loop(enemy->ray, x, data);
 		ft_ray_dir(enemy->ray);
 		ft_dda_enemy(enemy->ray, data, enemy->map);

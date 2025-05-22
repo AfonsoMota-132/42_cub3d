@@ -81,9 +81,9 @@ void	ft_render(t_data *data)
 	while (++i < data->nbr_threads)
 		pthread_join(data->thread[i], NULL);
 	i = -1;
-	// ft_sort_enemies(data);
-	// while (data->enemy_arr[++i])
-	// 	ft_enemy_render_threads(data->enemy_arr[i]);
+	ft_sort_enemies(data);
+	while (data->enemy_arr[++i])
+		ft_enemy_render_threads(data->enemy_arr[i]);
 	// if (data->mov->shoot)
 	// 	ft_shoot_raycasting(data);
 	ft_put_fps(data);
@@ -110,8 +110,9 @@ void	ft_door_handle_utils(t_data *data, int last, int i)
 {
 	data->door[i]->open = 0;
 	data->door[i]->last_open = last;
-	data->door[i]->pos = 1;
+	data->door[i]->pos = (last == 1);
 }
+
 void	ft_door_handle(t_data *data)
 {
 	int	i;
@@ -122,14 +123,14 @@ void	ft_door_handle(t_data *data)
 	{
 		if (data->door[i]->open == 1)
 		{
-			increment = 0.0001 * data->frame_time;
+			increment = 0.00015 * data->frame_time;
 			data->door[i]->pos += increment;
 			if (data->door[i]->pos >= 1)
-				ft_door_handle_utils(data, 11, i);
+				ft_door_handle_utils(data, 1, i);
 		}		
 		else if (data->door[i]->open == 2)
 		{
-			increment = 0.0001 * data->frame_time;
+			increment = 0.00015 * data->frame_time;
 			data->door[i]->pos -= increment;
 			if (data->door[i]->pos <= 0)
 				ft_door_handle_utils(data, 2, i);
@@ -160,6 +161,11 @@ void	ft_open_door(t_data *data, int x, int end)
 						data->ray->door->open = 1;
 					else if (data->ray->door->last_open == 1)
 						data->ray->door->open = 2;
+					if (data->ray->door->pos >= 1)
+						data->ray->door->open = 2;
+					else if (data->ray->door->pos <= 0)
+						data->ray->door->open = 1;
+					printf("%i\t%f\n", data->ray->door->open, data->ray->door->pos);
 				}
 				data->ray->door->last_open = temp;
 			}
@@ -186,6 +192,8 @@ int	ft_frame_render(t_data *data)
 	data->old_frame = ft_get_time_in_ms();
 	if (!data->mov->pause)
 	{
+		// for (int y = 0; data->bigmap[y]; y++)
+		// 	printf("%s\n", data->bigmap[y]);
 		// data->bigmap = ft_cp2bm(data->map, data->map_height, data->map_width, data->scale);
 		// for (int y = 0; y < data->map_height * data->scale; y++)
 			// if (ft_strchr(data->bigmap[y], 'H'))

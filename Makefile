@@ -55,8 +55,10 @@ $(NAME): $(OBJS)
 clean:
 	$(RM) $(OBJS)
 	$(MAKE) -C ./libs/mlx/ clean
+	$(MAKE) -C ./libs/libft/ clean
 
 fclean: clean
 	$(RM) $(NAME)
+	$(MAKE) -C ./libs/libft/ fclean
 
 re: fclean all

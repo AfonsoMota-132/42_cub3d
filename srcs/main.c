@@ -60,6 +60,8 @@ int	main(void)
 	t_data	*data;
 
 	data = ft_data_init();
+	for (int y = 0; data->bigmap[y]; y++)
+		printf("%s\n", data->bigmap[y]);
 	mlx_hook(data->win, 2, 1L << 0, &key_hook_press, data);
 	mlx_hook(data->win, 3, 1L << 1, &key_hook_relea, data);
 	mlx_hook(data->win, 6, 1L << 6, &mouse_move, data);
@@ -68,6 +70,7 @@ int	main(void)
 	mlx_mouse_move(data->mlx, data->win, data->height >> 1, data->width >> 1);
 	mlx_loop_hook(data->mlx, &ft_frame_render, data);
 	mlx_loop(data->mlx);
+	mlx_do_key_autorepeaton(data->mlx);
 	
 	mlx_destroy_window(data->mlx, data->win);
 	mlx_destroy_display(data->mlx);

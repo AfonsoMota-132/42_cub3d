@@ -67,12 +67,10 @@ void	ft_line_height(t_ray *ray, t_data *data)
 				- ray->deltaDistY);
 	ray->perpWallDist = ray->perpWallDist / data->scale;
 	ray->lineHeight = (int)(data->height / ray->perpWallDist);
-	ray->drawStart = -(ray->lineHeight >> 1)
-		+ (data->height >> 1) + data->player->angle_y;
+	ray->drawStart = -(ray->lineHeight >> 1) + (data->height >> 1) - data->player->angle_y;
+	ray->drawEnd   =  (ray->lineHeight >> 1) + (data->height >> 1) - data->player->angle_y;
 	if (ray->drawStart < 0)
 		ray->drawStart = 0;
-	ray->drawEnd = (ray->lineHeight >> 1)
-		+ (data->height >> 1) + data->player->angle_y;
 	if (ray->drawEnd >= data->height)
 		ray->drawEnd = data->height - 1;
 	if (ray->side == 0)

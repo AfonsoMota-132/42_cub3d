@@ -57,6 +57,14 @@ typedef struct s_player
 	int		angle_y;
 } t_player;
 
+typedef	struct s_door {
+	int		x_pos;
+	int		y_pos;
+	double	pos;
+	int		open;
+	int		last_open;
+}	t_door;
+
 typedef struct s_ray
 {
 	double	dirX;
@@ -90,6 +98,7 @@ typedef struct s_ray
 	int		count;
 	double	rayPosX;
 	double	rayPosY;
+	t_door	*door;
 }	t_ray;
 
 typedef struct s_mov {
@@ -110,6 +119,7 @@ typedef struct s_mov {
 	double	time_sound;
 	int		shoot;
 	bool	pause;
+	bool	open;
 } t_mov;
 
 typedef	struct	s_line_improv_render {
@@ -131,6 +141,7 @@ typedef	struct	s_line_improv_render {
 	bool	portal_hit;
 	int		count;
 	int		hit;
+	double	door;
 } t_line_improv_render;
 
 typedef struct s_frame_pause {
@@ -227,6 +238,7 @@ typedef struct s_data
 	t_img					*tex_east;
 	t_img					*tex_west;
 	t_img					*tex_pl;
+	t_door					**door;
 	t_tex_nbrs				*nbrs;
 	void					*mlx;
 	void					*win;
@@ -254,6 +266,9 @@ typedef struct s_data
 	int						map_width;
 	int						scale;
 	bool					see_portal;
+	double					fps_time;
+	double					total_fps;	
+	int						fps_count;
 	struct s_thread_data	*tdata;
 } t_data;
 

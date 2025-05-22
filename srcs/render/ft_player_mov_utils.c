@@ -12,24 +12,44 @@
 
 #include "ft_render.h"
 
-int	ft_ver_col(char **map, double tempx, double tempy, char except)
+int	ft_ver_col(double tempx, double tempy, char except, t_data *data)
 {
-	if (map[(int)(tempx - 0.05)][(int)(tempy - 0.05)] == 'R'
-		|| map[(int)(tempx + 0.05)][(int)(tempy + 0.05)] == 'R'
-		|| map[(int)tempx][(int)tempy] == 'R')
-		return (2);
-	if ((map[(int)(tempx - 0.1)][(int)(tempy - 0.1)] != '1'
-		&& map[(int)(tempx + 0.1)][(int)(tempy + 0.1)] != '1'
-		&& !(map[(int)(tempx - 0.1)][(int)(tempy - 0.1)] >= 'A'
-			&& map[(int)(tempx - 0.1)][(int)(tempy - 0.1)] <= 'K')
-		&& map[(int)(tempx + 0.1)][(int)(tempy + 0.1)] != '1'
-		&& !(map[(int)(tempx + 0.1)][(int)(tempy + 0.1)] >= 'A'
-			&& map[(int)(tempx + 0.1)][(int)(tempy + 0.1)] <= 'K')
-		&& map[(int)tempx][(int)tempy] != '1'
-		&& !(map[(int)tempx][(int)tempy] >= 'A'
-		&& map[(int)tempx][(int)tempy] <= 'K'))
-		|| map[(int)tempx][(int)tempy] == except
-		|| map[(int)tempx][(int)tempy] == '0')
+	int	i;
+
+	if (data->bigmap[(int)tempx][(int)tempy] == 'H')
+	{
+		i = -1;
+		int	i = -1;
+		while (data->door[++i])
+		{
+			printf("x1 %f\ty1 %f\tx2 %d\ty2 %d\n", tempx / data->scale, tempy / data->scale, data->door[i]->x_pos, data->door[i]->y_pos);
+			if (((int) (tempx / data->scale) == (int) data->door[i]->x_pos)
+				&& (((int) (tempy / data->scale) == (int) data->door[i]->y_pos)))
+			{
+				break ;
+			}
+		}
+		printf("wtf %f\n", data->door[i]->pos);
+		// if (data->door[i]
+		// 	&& data->door[i]->pos >= 0.8)
+		// {
+		// 	return (true);
+		// }
+		// else
+			return (false);
+	}
+	if ((data->bigmap[(int)(tempx - 0.1)][(int)(tempy - 0.1)] != '1'
+		&& data->bigmap[(int)(tempx + 0.1)][(int)(tempy + 0.1)] != '1'
+		&& !(data->bigmap[(int)(tempx - 0.1)][(int)(tempy - 0.1)] >= 'A'
+			&& data->bigmap[(int)(tempx - 0.1)][(int)(tempy - 0.1)] <= 'K')
+		&& data->bigmap[(int)(tempx + 0.1)][(int)(tempy + 0.1)] != '1'
+		&& !(data->bigmap[(int)(tempx + 0.1)][(int)(tempy + 0.1)] >= 'A'
+			&& data->bigmap[(int)(tempx + 0.1)][(int)(tempy + 0.1)] <= 'K')
+		&& data->bigmap[(int)tempx][(int)tempy] != '1'
+		&& !(data->bigmap[(int)tempx][(int)tempy] >= 'A'
+		&& data->bigmap[(int)tempx][(int)tempy] <= 'K'))
+		|| data->bigmap[(int)tempx][(int)tempy] == except
+		|| data->bigmap[(int)tempx][(int)tempy] == '0')
 		return (true);
 	return (false);
 }

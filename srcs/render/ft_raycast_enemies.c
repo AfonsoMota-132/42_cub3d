@@ -30,7 +30,7 @@ void	ft_raycasting_enemies_utils(t_data *data, t_enemy *enemy, \
 		{
 			tempx = enemy->data->x_pos + enemy->data->x_look * 0.01;
 			tempy = enemy->data->y_pos + enemy->data->y_look * 0.01;
-			if (ft_ver_col(data->map, tempx, tempy, enemy->map))
+			if (ft_ver_col(tempx, tempy, enemy->map, data))
 			{
 				enemy->data->x_pos = tempx;
 				enemy->data->y_pos = tempy;

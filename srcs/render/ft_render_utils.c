@@ -95,8 +95,9 @@ void	ft_pre_render_loop(t_ray *ray, t_player *player, t_data *data)
 {
 	ray->dirX = player->x_look;
 	ray->dirY = player->y_look;
-	ray->posX = player->x_pos * data->scale;
-	ray->posY = player->y_pos * data->scale;
+	ray->posX = player->x_pos;
+	ray->posY = player->y_pos;
 	ray->planeX = ray->dirY * 0.66;
 	ray->planeY = -ray->dirX * 0.66;
+	(void) data;
 }

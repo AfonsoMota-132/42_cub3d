@@ -76,7 +76,7 @@ t_data	*ft_data_init(void)
 	data->map[1] = ft_strdup("1010100001");
 	data->map[2] = ft_strdup("1000001101");
 	data->map[3] = ft_strdup("1000001101");
-	data->map[4] = ft_strdup("100P000001");
+	data->map[4] = ft_strdup("1000000001");
 	data->map[5] = ft_strdup("1001001001");
 	data->map[6] = ft_strdup("1001001001");
 	data->map[7] = ft_strdup("100000H001");
@@ -84,22 +84,35 @@ t_data	*ft_data_init(void)
 	data->map[9] = NULL; //should put malloc protection here but gonna leave it because its gonna be joanas part
 	data->map_height = 9;
 	data->map_width = ft_strlen(data->map[0]);
-	data->scale = 9;
+	data->scale = 5;
 	data->bigmap = ft_cp2bm(data->map, data->map_height, data->map_width, data->scale);
-	// data->map = data->bigmap;
+	data->map = data->bigmap;
 	data->mov = malloc(sizeof(t_mov));
 	if (!data->mov)
 		ft_free(-1, data);
 	ft_mov_set_def(data->mov);
+
+	data->door = malloc(sizeof(t_door *) * 2);
+	data->door[0] = malloc(sizeof(t_door));
+	data->door[1] = NULL;
+	data->door[0]->x_pos = 7;
+	data->door[0]->y_pos = 6;
+	data->door[0]->pos = 0.5;
+	data->door[0]->open = 0;
+	data->door[0]->last_open = 2;
 	data->player1 = malloc(sizeof(t_player));
 	if (!data->player1)
 		ft_free(-1, data);
-	data->player1->x_pos = 4.5;
-	data->player1->y_pos = 3.5;
+	data->player1->x_pos = 4.5 * data->scale;
+	data->player1->y_pos = 3.5 * data->scale;
 	data->player1->angle = 90;
 	data->player1->y_look = cos(data->player1->angle * M_PI / 180.0);
 	data->player1->x_look = sin(data->player1->angle * M_PI / 180.0);
 	data->time_frame = ft_get_time_in_ms() + 17;
+	// data->bigmap[(int) (data->player1->x_pos * data->scale)]
+	// 	[(int) (data->player1->y_pos * data->scale)] = 'P';
+	for (int y = 0; data->bigmap[y]; y++)
+		printf("%s\n", data->bigmap[y]);
 
 	data->enemy_arr = malloc(sizeof(t_enemy *) * 10);
 	data->enemy_arr[0] = NULL;
@@ -273,6 +286,10 @@ t_data	*ft_data_init(void)
 	if (!data->tex_pl)
 		ft_free(-1, data);
 	ft_start_tex(data, data->tex_pl, "portal_blue.xpm");
+	data->fps_time = ft_get_time_in_ms();
+	data->old_frame = ft_get_time_in_ms() + 5;
+	data->total_fps = 0;
+	data->fps_count = 0;
 	return (data);
 }
 

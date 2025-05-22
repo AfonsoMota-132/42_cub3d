@@ -64,7 +64,7 @@ void	ft_pre_render_line_utils(t_data *data, t_ray *ray, \
 	line->height = data->height;
 	line->width = data->width;
 	line->step = 1.0 * data->texture_wall->y / ray->lineHeight;
-	line->texPos = (ray->drawStart - data->player->angle_y - (line->height >> 1)
+	line->texPos = (ray->drawStart + data->player->angle_y - (line->height >> 1)
 			+ (ray->lineHeight >> 1)) * line->step;
 	line->hex_ceil = data->hex_ceiling;
 	line->hex_floor = data->hex_floor;
@@ -81,6 +81,27 @@ void	ft_pre_render_line_utils(t_data *data, t_ray *ray, \
 	line->hit = ray->hit;
 }
 
+void	ft_render_line_door(int x, t_line_improv_render *line, \
+					t_data *data, int colorDodge)
+{
+	int	color;
+	int	y;
+
+	y = -1;
+	while (++y <= data->height && ((int) line->texPos & line->text_y) + (int) (line->door * 1024) < 1024)
+	{
+		if (y >= line->drawStart && y <= line->drawEnd)
+		{
+			line->texPos += line->step;
+			color = line->tex_addr[(((((int)line->texPos
+					& (line->text_y)) + (int) (line->door * 1024)) * (line->tex_sl)) + line->texX)];
+			if (color && (colorDodge < 0 || (
+				colorDodge >= 0 && color != colorDodge )))
+				line->addr[y * line->img_sl + x] = color;
+		}
+	}
+}
+
 void	ft_pre_render_line(t_data *data, t_ray *ray, int x)
 {
 	t_line_improv_render	line;
@@ -92,12 +113,14 @@ void	ft_pre_render_line(t_data *data, t_ray *ray, int x)
 		data->texture_wall = data->tex_west;
 	if (ray->orien == 3)
 		data->texture_wall = data->tex_east;
-	if (ray->hit == 2)
-		data->texture_wall = data->tex_pl;
+	// 	data->texture_wall = data->tex_pl;
 	ft_ray_render_line(ray, data);
 	ft_pre_render_line_utils(data, ray, &line);
 	if (ray->hit == 2)
-		ft_render_line(x, &line, data, 0xFFFFFF);
+	{
+		line.door = ray->door->pos;
+		ft_render_line_door(x, &line, data, 0xFFFFFF);
+	}
 	else
 	ft_render_line(x, &line, data, -1);
 }

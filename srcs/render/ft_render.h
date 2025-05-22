@@ -31,7 +31,7 @@ void	ft_player_mov_f(t_data *data);
 void	ft_player_mov_b(t_data *data);
 void	ft_player_mov_l(t_data *data);
 void	ft_player_mov_r(t_data *data);
-int		ft_ver_col(char **map, double tempx, double tempy, char execpt);
+int		ft_ver_col(double tempx, double tempy, char execpt, t_data *data);
 void	ft_player_lookul(t_player *player, int angle);
 double	ft_add_angle(double angle, double delta);
 void	ft_render(t_data *data);

@@ -106,21 +106,93 @@ void	ft_frame_render_pause(t_data *data)
 	mlx_put_image_to_window(data->mlx, data->win, data->img_pause->img, 0, 0);
 }
 
+void	ft_door_handle_utils(t_data *data, int last, int i)
+{
+	data->door[i]->open = 0;
+	data->door[i]->last_open = last;
+	data->door[i]->pos = 1;
+}
+void	ft_door_handle(t_data *data)
+{
+	int	i;
+	double	increment;
+
+	i = -1;
+	while (data->door[++i])
+	{
+		if (data->door[i]->open == 1)
+		{
+			increment = 0.0001 * data->frame_time;
+			data->door[i]->pos += increment;
+			if (data->door[i]->pos >= 1)
+				ft_door_handle_utils(data, 11, i);
+		}		
+		else if (data->door[i]->open == 2)
+		{
+			increment = 0.0001 * data->frame_time;
+			data->door[i]->pos -= increment;
+			if (data->door[i]->pos <= 0)
+				ft_door_handle_utils(data, 2, i);
+		}
+	}
+}
+
+void	ft_open_door(t_data *data, int x, int end)
+{
+	int	temp;
+	while (++x <= end)
+	{
+		ft_pre_render_loop(data->ray, data->player1, data);
+		ft_set_ray_loop(data->ray, x, data);
+		ft_ray_dir(data->ray);
+		ft_dda(data->ray, data, 'H');
+		if (data->mov->open && data->ray->hit == 2)
+		{
+			ft_line_height(data->ray, data);
+			if (data->ray->perpWallDist <= 1)
+			{
+				temp = data->ray->door->open;
+				if (data->ray->door->open)
+					data->ray->door->open = 0;
+				else
+				{
+					if (data->ray->door->last_open == 2)
+						data->ray->door->open = 1;
+					else if (data->ray->door->last_open == 1)
+						data->ray->door->open = 2;
+				}
+				data->ray->door->last_open = temp;
+			}
+			data->mov->open = false;
+		}
+	}
+}
+
 int	ft_frame_render(t_data *data)
 {
 	while (ft_get_time_in_ms() <= data->time_frame)
 		;
-	data->time_frame = ft_get_time_in_ms() + 0;
+	data->time_frame = ft_get_time_in_ms() ;
 	data->frame_time = ft_get_time_in_ms() - data->old_frame;
-	data->fps = 1000 / (data->frame_time);
+	data->total_fps += 1000 / (data->frame_time);
+	data->fps_count++;
+	if (ft_get_time_in_ms() >= data->fps_time)
+	{
+		data->fps = data->total_fps / data->fps_count;
+		data->fps_time = ft_get_time_in_ms() + 1000;
+		data->total_fps = 0;
+		data->fps_count = 0;
+	}
 	data->old_frame = ft_get_time_in_ms();
 	if (!data->mov->pause)
 	{
-		data->bigmap = ft_cp2bm(data->map, data->map_height, data->map_width, data->scale);
+		// data->bigmap = ft_cp2bm(data->map, data->map_height, data->map_width, data->scale);
 		// for (int y = 0; y < data->map_height * data->scale; y++)
 			// if (ft_strchr(data->bigmap[y], 'H'))
 			// printf("%s\n", data->bigmap[y]);
+		ft_door_handle(data);
 		ft_player_mov(data);
+		ft_open_door(data, -1, data->width);
 		ft_render(data);
 		mlx_put_image_to_window(data->mlx, data->win, data->img->img, 0, 0);
 		data->mov->mov = false;

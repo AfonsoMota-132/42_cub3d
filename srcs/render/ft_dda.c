@@ -35,6 +35,16 @@ void	ft_dda(t_ray *ray, t_data *data, char door)
 		if (door >= 0 && data->bigmap[ray->mapX][ray->mapY] == door)
 			ray->hit = 2;
 	}
+	if (ray->hit == 2)
+	{
+		int	i = -1;
+		while (data->door[++i])
+		{
+			if (((int) (ray->mapX / data->scale) == (int) data->door[i]->x_pos)
+				&& (((int) (ray->mapY / data->scale) == (int) data->door[i]->y_pos)))
+				ray->door = data->door[i];
+		}
+	}
 	ray->posX /= data->scale;
 	ray->posY /= data->scale;
 }

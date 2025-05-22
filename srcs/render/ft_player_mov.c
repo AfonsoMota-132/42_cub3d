@@ -35,12 +35,12 @@ void	ft_player_mov_b(t_data *data)
 	{
 		data->mov->mov = true;
 		tempx = data->player->x_pos - data->player->x_look
-			* (0.003012 * data->frame_time);
+			* (0.003012 * data->frame_time) * data->scale;
 		tempy = data->player->y_pos - data->player->y_look
-			* (0.003012 * data->frame_time);
-		if (ft_ver_col(data->map, tempx, data->player->y_pos, 'P') == 1)
+			* (0.003012 * data->frame_time) * data->scale;
+		if (ft_ver_col(tempx, data->player1->y_pos, 'P', data) == 1)
 			data->player->x_pos = tempx;
-		if (ft_ver_col(data->map, data->player->x_pos, tempy, 'P') == 1)
+		if (ft_ver_col(data->player1->x_pos, tempy, 'P', data) == 1)
 			data->player->y_pos = tempy;
 	}
 }
@@ -54,12 +54,12 @@ void	ft_player_mov_f(t_data *data)
 	{
 		data->mov->mov = true;
 		tempx = data->player->x_pos + data->player->x_look
-			* (0.003012 * data->frame_time);
+			* (0.003012 * data->frame_time) * data->scale;
 		tempy = data->player->y_pos + data->player->y_look
-			* (0.003012 * data->frame_time);
-		if (ft_ver_col(data->map, tempx, data->player->y_pos, 'P') == 1)
+			* (0.003012 * data->frame_time) * data->scale;
+		if (ft_ver_col(tempx, data->player1->y_pos, 'P', data) == 1)
 			data->player->x_pos = tempx;
-		if (ft_ver_col(data->map, data->player1->x_pos, tempy, 'P') == 1)
+		if (ft_ver_col(data->player1->x_pos, tempy, 'P', data) == 1)
 			data->player->y_pos = tempy;
 	}
 }
@@ -73,12 +73,12 @@ void	ft_player_mov_r(t_data *data)
 	{
 		data->mov->mov = true;
 		tempx = data->player->x_pos + data->ray->planeX
-			* (0.003012 * data->frame_time);
+			* (0.003012 * data->frame_time) * data->scale;
 		tempy = data->player->y_pos + data->ray->planeY
-			* (0.003012 * data->frame_time);
-		if (ft_ver_col(data->map, tempx, data->player->y_pos, 'P') == 1)
+			* (0.003012 * data->frame_time) * data->scale;
+		if (ft_ver_col(tempx, data->player->y_pos, 'P', data) == 1)
 			data->player->x_pos = tempx;
-		if (ft_ver_col(data->map, data->player->x_pos, tempy, 'P') == 1)
+		if (ft_ver_col(data->player->x_pos, tempy, 'P', data) == 1)
 			data->player->y_pos = tempy;
 	}
 }
@@ -92,12 +92,12 @@ void	ft_player_mov_l(t_data *data)
 	{
 		data->mov->mov = true;
 		tempx = data->player->x_pos - data->ray->planeX
-			* (0.003012 * data->frame_time);
+			* (0.003012 * data->frame_time) * data->scale;
 		tempy = data->player->y_pos - data->ray->planeY
-			* (0.003012 * data->frame_time);
-		if (ft_ver_col(data->map, tempx, data->player->y_pos, 'P') == 1)
+			* (0.003012 * data->frame_time) * data->scale;
+		if (ft_ver_col(tempx, data->player->y_pos, 'P', data) == 1)
 			data->player->x_pos = tempx;
-		if (ft_ver_col(data->map, data->player->x_pos, tempy, 'P') == 1)
+		if (ft_ver_col(data->player->x_pos, tempy, 'P', data) == 1)
 			data->player->y_pos = tempy;
 	}
 }

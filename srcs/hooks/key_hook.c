@@ -15,15 +15,9 @@
 int	key_hook_press(int key, t_data *data)
 {
 	if (key == 65307 && !data->mov->pause)
-	{
-		printf("wtf on\n");
 		data->mov->pause = true;
-	}
 	else if (key == 65307 && data->mov->pause)
-	{
-		printf("wtf off\n");
 		data->mov->pause = false;
-	}
 	if (key == 119)
 		data->mov->mov_f = true;
 	if (key == 97)
@@ -38,6 +32,8 @@ int	key_hook_press(int key, t_data *data)
 		data->mov->lookr = true;
 	if (key == 32 && !data->mov->shoot)
 		data->mov->shoot = true;
+	if (key == 101)
+		data->mov->open = true;
 	return (0);
 }
 
@@ -57,5 +53,7 @@ int	key_hook_relea(int key, t_data *data)
 		data->mov->lookl = false;
 	if (key == 65363)
 		data->mov->lookr = false;
+	if (key == 101)
+		data->mov->open = false;
 	return (0);
 }

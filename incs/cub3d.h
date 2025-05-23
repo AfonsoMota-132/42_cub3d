@@ -230,6 +230,21 @@ typedef	struct s_img_list {
 	struct s_img_list	*next;
 }	t_img_list;
 
+typedef	struct s_minimap {
+	double	cos_a;
+	double	sin_a;
+	double	rad;
+	int		height;
+	int		width;
+	int		angle;
+	int		cx;
+	int		cy;
+	int		dx;
+	int		dy;
+	int		src_x;
+	int		src_y;
+}	t_minimap;
+
 typedef struct s_data 
 {
 	t_img					*img;

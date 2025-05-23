@@ -189,6 +189,45 @@ void	ft_render_minimap_sq(t_data *data, int xs, int ys, int color)
 	(void) ys;
 }
 
+void	ft_pre_flip_minimap(t_minimap *mp, t_data *data)
+{
+	mp->angle = ft_add_angle(data->player->angle, 90);
+	mp->height = data->minimap_height;
+	mp->width = data->minimap_width;
+	mp->rad = mp->angle * M_PI / 180.0;
+	mp->cos_a = cos(mp->rad);
+	mp->sin_a = -sin(mp->rad);
+	mp->cx = mp->width / 2;
+	mp->cy = mp->height / 2;
+}
+
+void	ft_flip_minimap(t_data *data)
+{
+	t_minimap	mp;
+	int			y;
+	int			x;
+	
+	ft_pre_flip_minimap(&mp, data);
+	y = -1;
+	while (++y < mp.height)
+	{
+		x = -1;
+		while (++x < mp.width)
+		{
+			mp.dx = x - mp.cx;
+			mp.dy = y - mp.cy;
+			mp.src_x = (int)(mp.cos_a * mp.dx + mp.sin_a * mp.dy) + mp.cx;
+			mp.src_y = (int)(-mp.sin_a * mp.dx + mp.cos_a * mp.dy) + mp.cy;
+			if (mp.src_x >= 0 && mp.src_x < mp.width
+				&& mp.src_y >= 0 && mp.src_y < mp.height)
+				data->img->addr[y * (data->width) + x]
+					= data->img_minimap->addr[mp.src_y * mp.width + mp.src_x];
+			else
+			data->img->addr[y * (data->width) + x] = 0x00000000;
+		}
+	}
+}
+
 void	ft_render_minimap(t_data *data)
 {
 	int	pos_y = (data->player->y_pos) - 36;
@@ -224,32 +263,7 @@ void	ft_render_minimap(t_data *data)
 		}
 		pos_y++;
 	}
-	int angle = data->player->angle + 90;
-	int	height = data->minimap_height;
-	int	width = data->minimap_width;
-	double rad = angle * M_PI / 180.0;
-	   double cos_a = cos(rad);
-	   double sin_a = sin(rad);
-
-	   int cx = width / 2;
-	   int cy = height / 2;
-
-	   for (int y = 0; y < height; y++) {
-	       for (int x = 0; x < width; x++) {
-	           int dx = x - cx;
-	           int dy = y - cy;
-	           int src_x = (int)(cos_a * dx + sin_a * dy) + cx;
-	           int src_y = (int)(-sin_a * dx + cos_a * dy) + cy;
-	           if (src_x >= 0 && src_x < width && src_y >= 0 && src_y < height)
-	               data->img->addr[y * (data->width) + x]
-					= data->img_minimap->addr[src_y * width + src_x];
-	           else
-	               data->img->addr[y * (data->width) + x] = 0x00000000;
-	       }
-	   }
-
-	// mlx_put_image_to_window(data->mlx, data->win, data->img_minimap->img, 0, 0);
-	// printf("x %i\ty %i\n", pos_x, pos_y);
+	ft_flip_minimap(data);
 }
 
 int	ft_frame_render(t_data *data)

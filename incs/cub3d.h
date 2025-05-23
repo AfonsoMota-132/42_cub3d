@@ -225,11 +225,16 @@ typedef	struct s_enemy_improv_render {
 	int		color;
 }	t_enemy_improv_render;
 
+typedef	struct s_img_list {
+	t_img				*img;
+	struct s_img_list	*next;
+}	t_img_list;
+
 typedef struct s_data 
 {
 	t_img					*img;
 	t_img					*img_player;
-	t_img					*img_portal;
+	t_img					*img_minimap;
 	t_img					*img_pause;
 	t_img					*tex_pause;
 	t_img 					*texture_wall;
@@ -269,6 +274,9 @@ typedef struct s_data
 	double					fps_time;
 	double					total_fps;	
 	int						fps_count;
+	int						minimap_width;
+	int						minimap_height;
+	t_img_list				*_911;
 	struct s_thread_data	*tdata;
 } t_data;
 

@@ -165,13 +165,91 @@ void	ft_open_door(t_data *data, int x, int end)
 						data->ray->door->open = 2;
 					else if (data->ray->door->pos <= 0)
 						data->ray->door->open = 1;
-					printf("%i\t%f\n", data->ray->door->open, data->ray->door->pos);
 				}
 				data->ray->door->last_open = temp;
 			}
 			data->mov->open = false;
 		}
 	}
+}
+
+void	ft_render_minimap_sq(t_data *data, int xs, int ys, int color)
+{
+	int	y = -1;
+	while (++y <= (data->minimap_height) / 81)
+	{
+		int	x = -1;
+		while (++x <= (data->minimap_width) / 81)
+		{
+			data->img_minimap->addr[(int) ((y + (ys * data->minimap_height / 81))
+				* data->minimap_width + x + (xs * data->minimap_width / 81))] = color;
+		}
+	}
+	(void) xs;
+	(void) ys;
+}
+
+void	ft_render_minimap(t_data *data)
+{
+	int	pos_y = (data->player->y_pos) - 36;
+	int	pos_x;
+
+	int	y = 0;
+	while (++y <= 81)
+	{
+		int	x = 0;
+		pos_x = (data->player->x_pos) - 36;
+		while (++x <= 81)
+		{
+			if (pos_x >= 0 && pos_y >= 0
+				&& pos_y < data->map_width * data->scale
+				&& pos_x < data->map_height * data->scale)
+			{
+				if (data->bigmap[pos_x][pos_y] == '0'
+					|| data->bigmap[pos_x][pos_y] == 'P')
+					ft_render_minimap_sq(data, y, x, 0xFFFFFF);
+				else if (data->bigmap[pos_x][pos_y] == '1')
+					ft_render_minimap_sq(data, y, x, 0x000000);
+				else if (data->bigmap[pos_x][pos_y] == 'H')
+					ft_render_minimap_sq(data, y, x, 0x0000FF);
+				else if (data->bigmap[pos_x][pos_y] >= 'A'
+					&& data->bigmap[pos_x][pos_y] <= 'K')
+					ft_render_minimap_sq(data, y, x, 0xFFFF00);
+				if (pos_x == data->player->x_pos && pos_y == data->player->y_pos)
+					ft_render_minimap_sq(data, y, x, 0xFF0000);
+			}
+			else
+				ft_render_minimap_sq(data, y, x, 0x000000);
+			pos_x++;
+		}
+		pos_y++;
+	}
+	int angle = data->player->angle + 90;
+	int	height = data->minimap_height;
+	int	width = data->minimap_width;
+	double rad = angle * M_PI / 180.0;
+	   double cos_a = cos(rad);
+	   double sin_a = sin(rad);
+
+	   int cx = width / 2;
+	   int cy = height / 2;
+
+	   for (int y = 0; y < height; y++) {
+	       for (int x = 0; x < width; x++) {
+	           int dx = x - cx;
+	           int dy = y - cy;
+	           int src_x = (int)(cos_a * dx + sin_a * dy) + cx;
+	           int src_y = (int)(-sin_a * dx + cos_a * dy) + cy;
+	           if (src_x >= 0 && src_x < width && src_y >= 0 && src_y < height)
+	               data->img->addr[y * (data->width) + x]
+					= data->img_minimap->addr[src_y * width + src_x];
+	           else
+	               data->img->addr[y * (data->width) + x] = 0x00000000;
+	       }
+	   }
+
+	// mlx_put_image_to_window(data->mlx, data->win, data->img_minimap->img, 0, 0);
+	// printf("x %i\ty %i\n", pos_x, pos_y);
 }
 
 int	ft_frame_render(t_data *data)
@@ -202,6 +280,7 @@ int	ft_frame_render(t_data *data)
 		ft_player_mov(data);
 		ft_open_door(data, -1, data->width);
 		ft_render(data);
+		ft_render_minimap(data);
 		mlx_put_image_to_window(data->mlx, data->win, data->img->img, 0, 0);
 		data->mov->mov = false;
 		data->mov->look = false;

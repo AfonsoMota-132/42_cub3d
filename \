@@ -60,6 +60,25 @@ char	**ft_cp2bm(char **map, int height, int width, int scale)
 	return upscaled;
 }
 
+void	ft_load_911(t_data *data)
+{
+	char	*file;
+	char	*tmp;
+	int		file_nbr;
+
+	file_nbr = 1;
+	file = ft_itoa(file_nbr);
+	while (ft_strlen(file) < 5)
+	{
+		file = ft_strjoin("0", file);
+	}
+	printf("%s\n", file);
+
+	// data->_911 = malloc(sizeof(t_img_list));
+	exit(1);	
+	(void) data;
+}
+
 t_data	*ft_data_init(void)
 {
 	t_data *data;
@@ -290,7 +309,7 @@ t_data	*ft_data_init(void)
 	data->old_frame = ft_get_time_in_ms() + 5;
 	data->total_fps = 0;
 	data->fps_count = 0;
-	// ft_load_911(data);
+	ft_load_911(data);
 	return (data);
 }
 
@@ -345,18 +364,17 @@ void	ft_win_start(t_data *data)
 			&data->img_player->size_line, &data->img_player->endian);
 	data->img = data->img_player;
 
-	data->minimap_height = data->height * 0.2;
-	data->minimap_width = (data->minimap_height * data->width) / data->height;
-	data->img_minimap = malloc(sizeof(t_img));
-	if (!data->img_minimap)
+	data->img_portal = malloc(sizeof(t_img));
+	if (!data->img_portal)
 		ft_free(-1, data);
-	data->img_minimap->img = NULL;
-	data->img_minimap->img = mlx_new_image(data->mlx, data->minimap_width, data->minimap_height);
-	if (!data->img_minimap->img)
+	data->img_portal->img = NULL;
+	data->img_portal->img = mlx_new_image(data->mlx, data->width, data->height);
+	if (!data->img_portal->img)
 		ft_free(-1, data);
-	data->img_minimap->addr = (int *)mlx_get_data_addr(data->img_minimap->img,
-			&data->img_minimap->pixel_bits, &data->img_minimap->size_line,
-			&data->img_minimap->endian);
+	data->img_portal->addr = (int *)mlx_get_data_addr(data->img_portal->img, &data->img_portal->pixel_bits,
+			&data->img_portal->size_line, &data->img_portal->endian);
+	data->img_portal->x = data->width;
+	data->img_portal->y = data->height;
 
 	data->img_pause = malloc(sizeof(t_img));
 	if (!data->img_pause)

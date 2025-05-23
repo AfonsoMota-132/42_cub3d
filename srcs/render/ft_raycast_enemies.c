@@ -16,8 +16,8 @@ void	ft_raycasting_enemies_utils(t_data *data, t_enemy *enemy, \
 				int x, int first_x)
 {
 	double	dist_sq;
-	int		tempx;
-	int		tempy;
+	double	tempx;
+	double	tempy;
 
 	dist_sq = ft_calc_dist_sq(data, enemy);
 	if (first_x != -1
@@ -28,13 +28,12 @@ void	ft_raycasting_enemies_utils(t_data *data, t_enemy *enemy, \
 			|| (enemy->ray->sideDistX > 1 && enemy->ray->sideDistY > 1)
 			|| (dist_sq < 1 && dist_sq > 0.5))
 		{
-			tempx = enemy->data->x_pos + enemy->data->x_look * 0.01;
-			tempy = enemy->data->y_pos + enemy->data->y_look * 0.01;
-			if (ft_ver_col(tempx, tempy, enemy->map, data))
-			{
+			tempx = enemy->data->x_pos + enemy->data->x_look * 0.002 * data->frame_time;
+			tempy = enemy->data->y_pos + enemy->data->y_look * 0.002 * data->frame_time;
+			if (ft_ver_col((int) tempx, (int)enemy->data->y_pos, enemy->map, data))
 				enemy->data->x_pos = tempx;
+			if (ft_ver_col((int)enemy->data->x_pos, (int) tempy , enemy->map, data))
 				enemy->data->y_pos = tempy;
-			}
 		}
 		ft_raycasting_enemies_utils3(data, enemy);
 	}
@@ -49,9 +48,9 @@ void	ft_raycasting_enemies(t_data *data, t_enemy *enemy)
 	first_x = -1;
 	if (enemy->map == '0')
 		return ;
+	ft_pre_render_loop(enemy->ray, enemy->data, data);
 	while (++x < data->width)
 	{
-		ft_pre_render_loop(enemy->ray, enemy->data, data);
 		ft_set_ray_loop(enemy->ray, x, enemy->rdata);
 		ft_ray_dir(enemy->ray);
 		ft_dda_enemies(enemy->ray, data);
@@ -60,6 +59,8 @@ void	ft_raycasting_enemies(t_data *data, t_enemy *enemy)
 		else if (enemy->ray->hit == 1 && first_x != -1)
 			break ;
 	}
+	ft_raycasting_enemies_utils(data, enemy, x, first_x);
+	enemy->ray->hit = 0;
 }
 
 void	ft_select_enemy_sprite2(t_enemy *enemy)

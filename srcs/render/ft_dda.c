@@ -78,9 +78,9 @@ char	ft_dda_shoot(t_ray *ray, t_data *data)
 
 void	ft_dda_enemies_utils(t_ray *ray, t_data *data)
 {
-	if (data->map[ray->mapX][ray->mapY] == 'P')
+	if (data->bigmap[ray->mapX][ray->mapY] == 'P')
 		ray->hit = 3;
-	if (data->map[ray->mapX][ray->mapY] == '1')
+	if (data->bigmap[ray->mapX][ray->mapY] == '1')
 		ray->hit = 1;
 }
 

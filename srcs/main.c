@@ -3,27 +3,29 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: afogonca <afogonca@student.42porto.com>    +#+  +:+       +#+        */
+/*   By: palexand <palexand@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/01/22 08:48:16 by afogonca          #+#    #+#             */
-/*   Updated: 2025/05/06 09:34:33 by afogonca         ###   ########.fr       */
+/*   Created: 2025/06/09 17:48:19 by palexand          #+#    #+#             */
+/*   Updated: 2025/06/10 21:39:41 by palexand         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
-
 #include "../incs/cub3d.h"
 
 int	main(int ac, char **av)
 {
 	t_data	*data;
 
-	if (ac == 2)
-	{
-		data = ft_data_init(av[1]);
-		mlx_hook(data->win, 2, 1L << 0, &key_hook_press, data);
-		mlx_hook(data->win, 3, 1L << 1, &key_hook_relea, data);
-		mlx_loop_hook(data->mlx, &ft_frame_render, data);
-		mlx_loop(data->mlx);
-	}
-	else
-		return (ft_putstr_fd("Error: Wrong Number of Arguments\n", 1), 1);
+	data = (t_data *)malloc(sizeof(t_data));
+	if (!data || ac != 2)
+		return (write(1, "Error\n", 6), 1);
+	init_data(data, av[1]);
+	parse_cub_file(".cub", av[1]);
+	parse_textures(data);
+	trim_and_check(data);
+	rgb_int(data);
+	copy_map(data, av[1]);
+	if (parse_map(data->map.map) == FALSE)
+		return (write(1, "Error\n", 6), 1);
+	check_flood(data);
+	free_data(data);
 }

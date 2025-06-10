@@ -24,9 +24,10 @@ RENDER_SRCS =	srcs/render/ft_frame_render.c \
 				srcs/render/ft_render_line.c \
 				srcs/render/ft_render_utils.c \
 				srcs/render/ft_player_mov.c
-INIT = srcs/init/ft_init.c 
-SRCS = srcs/main.c srcs/ft_free.c \
-	   $(RENDER_SRCS) $(HOOKS) $(INIT)
+INIT =	srcs/init/ft_init.c 
+SRCS =	srcs/main.c srcs/ft_free.c \
+		srcs/parsing.c srcs/file_parsing.c \
+		$(RENDER_SRCS) $(HOOKS) $(INIT)
 LIBS = ./libs/mlx/libmlx.a ./libs/libft/libft.a
 
 all: deps $(NAME)

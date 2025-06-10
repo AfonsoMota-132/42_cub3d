@@ -12,13 +12,18 @@
 
 #include "../incs/cub3d.h"
 
-int	main(void)
+int	main(int ac, char **av)
 {
 	t_data	*data;
 
-	data = ft_data_init();
-	mlx_hook(data->win, 2, 1L << 0, &key_hook_press, data);
-	mlx_hook(data->win, 3, 1L << 1, &key_hook_relea, data);
-	mlx_loop_hook(data->mlx, &ft_frame_render, data);
-	mlx_loop(data->mlx);
+	if (ac == 2)
+	{
+		data = ft_data_init(av[1]);
+		mlx_hook(data->win, 2, 1L << 0, &key_hook_press, data);
+		mlx_hook(data->win, 3, 1L << 1, &key_hook_relea, data);
+		mlx_loop_hook(data->mlx, &ft_frame_render, data);
+		mlx_loop(data->mlx);
+	}
+	else
+		return (ft_putstr_fd("Error: Wrong Number of Arguments\n", 1), 1);
 }

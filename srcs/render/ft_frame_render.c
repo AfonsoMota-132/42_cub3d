@@ -43,7 +43,6 @@ int	ft_frame_render(t_data *data)
 	}
 	ft_pre_render_loop(data, data->ray, data->player);
 	x = -1;
-	printf("%f\n", ft_get_time_in_ms());
 	while (++x < WIN_WIDTH && data->mov->mov)
 	{
 		ft_set_ray_loop(data->ray, x);
@@ -73,7 +72,7 @@ void	ft_dda(t_data *data)
 			data->ray->mapY += data->ray->stepY;
 			data->ray->side = 1;
 		}
-		if (data->map[data->ray->mapX][data->ray->mapY] == '1')
+		if (data->map->map[data->ray->mapX][data->ray->mapY] == '1')
 			data->ray->hit = 1;
 	}
 }

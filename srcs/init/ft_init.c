@@ -19,59 +19,127 @@ double ft_get_time_in_ms()
     return (tv.tv_sec * 1000.0) + (tv.tv_usec / 1000.0);
 }
 
-t_data	*ft_data_init(void)
+void	ft_init_tex_wall(t_data *data)
+{
+	data->tex_north = malloc(sizeof(t_img));
+	if (!data->tex_north)
+		ft_free(-1, data);
+	ft_start_tex(data, data->tex_north, data->map_data->NO);
+	data->tex_south = malloc(sizeof(t_img));
+	if (!data->tex_south)
+		ft_free(-1, data);
+	ft_start_tex(data, data->tex_south, data->map_data->SO);
+	data->tex_east = malloc(sizeof(t_img));
+	if (!data->tex_east)
+		ft_free(-1, data);
+	ft_start_tex(data, data->tex_east, data->map_data->EA);
+	data->tex_west = malloc(sizeof(t_img));
+	if (!data->tex_west)
+		ft_free(-1, data);
+	ft_start_tex(data, data->tex_west, data->map_data->WE);
+	data->hex_ceiling = data->map_data->color_c;
+	data->hex_floor = data->map_data->color_f;
+}
+
+char	ft_player_look(char *line)
+{
+	if (ft_strchr(line, 'N'))
+		return ('N');
+	else if (ft_strchr(line, 'S'))
+		return ('S');
+	else if (ft_strchr(line, 'E'))
+		return ('E');
+	else if (ft_strchr(line, 'W'))
+		return ('W');
+	return ('\0');
+}
+
+void	ft_init_player(t_data *data)
+{
+	int		i;
+	char	tmp;
+
+	i = -1;
+	while (data->map->map[++i])
+	{
+		tmp = ft_player_look(data->map->map[i])	;
+		if (tmp)
+		{
+			data->player->x_pos = i + 0.5;
+			data->player->y_pos = ft_strchr_len(data->map->map[i], tmp) + 0.5;
+			data->player->angle = (tmp == 'N') * 270 + (tmp == 'S') * 90
+				+ (tmp == 'W') * 180;
+			break ;
+		}
+	}
+	data->player->y_look = cos(data->player->angle * M_PI / 180.0);
+	data->player->x_look = sin(data->player->angle * M_PI / 180.0);
+}
+
+void	ft_set_data_null(t_data *data)
+{
+	data->img = NULL;
+	data->tex_north = NULL;
+	data->tex_south = NULL;
+	data->tex_east = NULL;
+	data->tex_west = NULL;
+	data->mlx = NULL;
+	data->win = NULL;
+	data->player = NULL;
+	data->ray = NULL;
+	data->mov = NULL;
+	data->map = NULL;
+	data->file = NULL;
+	data->map_data = NULL;
+}
+
+t_data	*ft_data_init(char *file)
 {
 	t_data *data;
 
-	data = malloc(sizeof(t_data));
-	ft_data_set_def(data);
+	data = ft_calloc(sizeof(t_data), 1);
+	ft_set_data_null(data);
 	data->ray = malloc(sizeof(t_ray));
 	if (!data->ray)
 		ft_free(-1, data);
-	data->map = malloc(sizeof(char *) * 7);
+	data->map = malloc(sizeof(t_map));
 	if (!data->map)
 		ft_free(-1, data);
-	data->map[0] = ft_strdup("1111111");
-	data->map[1] = ft_strdup("1010101");
-	data->map[2] = ft_strdup("1000001");
-	data->map[3] = ft_strdup("1000001");
-	data->map[4] = ft_strdup("100N001");
-	data->map[5] = ft_strdup("1111111");
-	data->map[6] = NULL; //should put malloc protection here but gonna leave it because its gonna be joanas part
+	data->map_data = malloc(sizeof(t_map_data));
+	if (!data->map_data)
+		ft_free(-1, data);
+
+	data->map_data->line_position = 0;
+	data->map_data->NO = NULL;
+	data->map_data->SO = NULL;
+	data->map_data->WE = NULL;
+	data->map_data->EA = NULL;
+	data->map_data->F = NULL;
+	data->map_data->C = NULL;
+
+	data->file = ft_strdup(file);
+	if (!data->file)
+		ft_free(-1, data);
+
+	parse_cub_file(".cub", file);
+	parse_textures(data);
+	trim_and_check(data);
+	rgb_int(data);
+	copy_map(data, file);
+
 	data->mov = malloc(sizeof(t_mov));
 	if (!data->mov)
 		ft_free(-1, data);
+
 	ft_mov_set_def(data->mov);
 	data->player = malloc(sizeof(t_player));
 	if (!data->player)
 		ft_free(-1, data);
-	data->player->x_pos = 4.5;
-	data->player->y_pos = 3.5;
-	data->player->angle = 300;
-	data->player->y_look = cos(data->player->angle * M_PI / 180.0);
-	data->player->x_look = sin(data->player->angle * M_PI / 180.0);
+
 	data->time_frame = ft_get_time_in_ms() + 17;
+	ft_init_player(data);
 	ft_win_start(data);
-
-	data->tex_north = malloc(sizeof(t_img));
-	if (!data->tex_north)
-		ft_free(-1, data);
-	ft_start_tex(data, data->tex_north, "north.xpm");
-
-	data->tex_south = malloc(sizeof(t_img));
-	if (!data->tex_south)
-		ft_free(-1, data);
-	ft_start_tex(data, data->tex_south, "south.xpm");
-
-	data->tex_east = malloc(sizeof(t_img));
-	if (!data->tex_east)
-		ft_free(-1, data);
-	ft_start_tex(data, data->tex_east, "east.xpm");
-
-	data->tex_west = malloc(sizeof(t_img));
-	if (!data->tex_west)
-		ft_free(-1, data);
-	ft_start_tex(data, data->tex_west, "west.xpm");
+	ft_init_tex_wall(data);
 	return (data);
 }
 
@@ -109,33 +177,11 @@ void	ft_win_start(t_data *data)
 	if (!data->img)
 		ft_free(-1, data);
 	data->img->img = NULL;
-	data->img->img = mlx_new_image(data->mlx, 1280, 720);
+	data->img->img = mlx_new_image(data->mlx, WIN_WIDTH, WIN_HEIGHT);
 	if (!data->img->img)
 		ft_free(-1, data);
 	data->img->addr = (int *)mlx_get_data_addr(data->img->img, &data->img->pixel_bits,
 			&data->img->size_line, &data->img->endian);
-}
-
-void	ft_data_set_def(t_data *data)
-{
-	data->img = NULL;
-	data->texture_wall = NULL;
-	data->tex_north = NULL;
-	data->tex_south = NULL;
-	data->tex_east = NULL;
-	data->tex_west = NULL;
-	data->mlx = NULL;
-	data->win = NULL;
-	data->player = NULL;
-	data->ray = NULL;
-	data->mov = NULL;
-	data->map = NULL;
-	data->hex_ceiling = 0;
-	data->hex_floor = 0;
-	data->time_frame = 0;
-	data->old_frame = 0;
-	data->hex_ceiling = 0x0000FF; // change both for 0x000000 after parsing is done
-	data->hex_floor = 0xFF0000;
 }
 
 

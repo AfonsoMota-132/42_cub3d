@@ -12,14 +12,28 @@
 
 #include "../incs/cub3d.h"
 
-void	ft_free_map(char **map)
+void	ft_free_map(t_map *map)
 {
 	int	i;
 
 	i = -1;
-	while (map[++i])
-		free(map[i]);
-	free(map);
+	if (map)
+	{
+		if (map->map)
+		{
+			while (map->map[++i])
+				free(map->map[i]);
+			free(map->map);
+		}
+		i = -1;
+		if (map->matrix)
+		{
+			while (map->matrix[++i])
+				free(map->matrix[i]);
+			free(map->matrix);
+		}
+		free(map);
+	}
 }
 
 void	ft_free_tex(t_data *data)
@@ -50,6 +64,27 @@ void	ft_free_tex(t_data *data)
 	}
 }
 
+void	ft_free_map_data(t_data *data)
+{
+	if (data->map_data)
+	{
+		if (data->map_data->NO)
+			free(data->map_data->NO);
+		if (data->map_data->SO)
+			free(data->map_data->SO);
+		if (data->map_data->EA)
+			free(data->map_data->EA);
+		if (data->map_data->WE)
+			free(data->map_data->WE);
+		if (data->map_data->C)
+			free(data->map_data->C);
+		if (data->map_data->F)
+			free(data->map_data->F);
+		free(data->map_data);
+	}
+
+}
+
 void	ft_free_data(t_data *data)
 {
 	if (data->img)
@@ -65,8 +100,10 @@ void	ft_free_data(t_data *data)
 		free(data->ray);
 	if (data->mov)
 		free(data->mov);
-	if (data->map)
-		ft_free_map(data->map);
+	ft_free_map_data(data);
+	ft_free_map(data->map);
+	if (data->file)
+		free(data->file);
 	if (data->win && data->mlx)
 		mlx_destroy_window(data->mlx, data->win);
 	if (data->mlx)
@@ -83,6 +120,6 @@ void	ft_free(int exit_flag, t_data *data)
 		ft_free_data(data);
 	if (exit_flag != -1 && exit_flag >= 0)
 		exit (exit_flag);
-	ft_printf("Fatal error: failed to malloc\n");
+	printf("Fatal error: failed to malloc\n");
 	exit (1);
 }

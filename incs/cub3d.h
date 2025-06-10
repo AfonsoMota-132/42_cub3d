@@ -25,15 +25,18 @@
 # include <stdbool.h>
 # include <sys/time.h>
 
-# define WIN_WIDTH 1280
-# define WIN_HEIGHT 720
+# define WIN_WIDTH 1920
+# define WIN_HEIGHT 1080
 # define PI 3.14159265358979323846264338327950288419716939937510582097494459230781640628620899862803
 # define BLOCK 25
+# define TRUE 1
+# define FALSE 0
 
 # define NORTH 1
 # define SOUTH 2
 # define WEST 3
 # define EAST 4
+
 typedef struct s_img
 {
 	void	*img;
@@ -45,6 +48,7 @@ typedef struct s_img
 	int		endian;
 
 }			t_img;
+
 typedef struct s_player 
 {
 	float	x_pos;
@@ -53,6 +57,28 @@ typedef struct s_player
 	float	x_look;
 	float	angle;
 } t_player;
+
+typedef struct s_map
+
+{
+	int		max_width;
+	int		max_height;
+	char	**map;
+	char	**matrix;
+}	t_map;
+
+typedef struct s_map_data
+{
+	char	*NO;
+	char	*SO;
+	char	*WE;
+	char	*EA;
+	char	*F;
+	char	*C;
+	int		color_f;
+	int		color_c;
+	int		line_position;
+}	t_map_data;
 
 typedef struct s_ray
 {
@@ -127,14 +153,17 @@ typedef struct s_data
 	t_player	*player;
 	t_ray		*ray;
 	t_mov		*mov;
-	char		**map;
+	t_map		*map;
 	int			hex_ceiling;
 	int			hex_floor;
+	int			fd;
+	char		*file;
 	double		time_frame;
 	double		old_frame;
-} t_data;
+	t_map_data	*map_data;
+}	t_data;
 
-t_data	*ft_data_init(void);
+t_data	*ft_data_init(char *file);
 void	ft_set_img_def(t_img *img);
 void	ft_set_image_pixel(t_img *image, int x, int y, int color);
 int		get_wall_dir(int side, int stepX, int stepY);
@@ -147,5 +176,10 @@ void	ft_mov_set_def(t_mov *mov);
 void	ft_data_set_def(t_data *data);
 void	ft_win_start(t_data *data);
 void	ft_start_tex(t_data *data, t_img *img, char *file);
+void	parse_cub_file(char *extension, char *file);
+void	copy_map(t_data *data, char *file);
+bool	parse_textures(t_data *data);
+void	trim_and_check(t_data *data);
+void	rgb_int(t_data *data);
 
 #endif

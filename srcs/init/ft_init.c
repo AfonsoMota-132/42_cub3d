@@ -105,6 +105,8 @@ t_data	*ft_data_init(char *file)
 	data->map = malloc(sizeof(t_map));
 	if (!data->map)
 		ft_free(-1, data);
+	data->map->map = NULL;
+	data->map->matrix = NULL;
 	data->map_data = malloc(sizeof(t_map_data));
 	if (!data->map_data)
 		ft_free(-1, data);
@@ -120,8 +122,7 @@ t_data	*ft_data_init(char *file)
 	data->file = ft_strdup(file);
 	if (!data->file)
 		ft_free(-1, data);
-
-	parse_cub_file(".cub", file);
+	parse_cub_file(".cub", file, data);
 	parse_textures(data);
 	trim_and_check(data);
 	rgb_int(data);
@@ -148,7 +149,10 @@ void	ft_start_tex(t_data *data, t_img *img, char *file)
 	img->img = NULL;
 	img->img = mlx_xpm_file_to_image(data->mlx, file, &img->x, &img->y);
 	if (!img->img)
-		ft_free(-1, data);
+	{
+		ft_putstr_fd("Error\nInvalid Textures/Colors!\n", 1);
+		ft_free(1, data);
+	}
 	img->addr = (int *)mlx_get_data_addr(img->img, &img->pixel_bits, &img->size_line, &img->endian);
 }
 

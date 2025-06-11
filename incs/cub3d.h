@@ -176,7 +176,7 @@ void	ft_mov_set_def(t_mov *mov);
 void	ft_data_set_def(t_data *data);
 void	ft_win_start(t_data *data);
 void	ft_start_tex(t_data *data, t_img *img, char *file);
-void	parse_cub_file(char *extension, char *file);
+void	parse_cub_file(char *extension, char *file, t_data *data);
 void	copy_map(t_data *data, char *file);
 bool	parse_textures(t_data *data);
 void	trim_and_check(t_data *data);

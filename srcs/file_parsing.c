@@ -12,6 +12,24 @@
 
 #include "../incs/cub3d.h"
 
+static bool	check_textures(t_data *data, int exit)
+{
+	if (data->map_data->NO && data->map_data->EA
+		&& data->map_data->SO && data->map_data->WE
+		&& data->map_data->F && data->map_data->C
+		&& ft_strlen(data->map_data->NO) > 1
+		&& ft_strlen(data->map_data->SO) > 1
+		&& ft_strlen(data->map_data->EA) > 1
+		&& ft_strlen(data->map_data->WE) > 1)
+		return (TRUE);
+	else if (exit)
+	{
+		ft_putstr_fd("Error\nInvalid Textures/Colors!\n", 1);
+		ft_free(1, data);
+	}
+	return (FALSE);
+}
+
 bool	parse_textures(t_data *data)
 {
 	char	*line;
@@ -38,15 +56,18 @@ bool	parse_textures(t_data *data)
 			data->map_data->F = ft_strdup(line + 2 + i);
 		else if (ft_strnstr(line, "C", 1 + i))
 			data->map_data->C = ft_strdup(line + 2 + i);
-		else if (data->map_data->NO && data->map_data->EA 
-		&& data->map_data->SO && data->map_data->WE 
-				&& data->map_data->F && data->map_data->C)
+		else if (check_textures(data, 0) == TRUE)
 				break ;
 		data->map_data->line_position++;
 		free(line);
 		line = get_next_line(data->fd);
 	}
-	free(line);
+	while (line)
+	{
+		free(line);
+		line = get_next_line(data->fd);
+	}
+	check_textures(data, 1);
 	return (close(data->fd), true);
 }
 
@@ -54,10 +75,11 @@ char	*trim_and_check_utils(char *str)
 {
 	char	*tmp;
 
-	tmp = ft_strtrim(str, " \n");\
+	tmp = ft_strtrim(str, " \n");
 	free(str);
 	return (tmp);
 }
+
 void trim_and_check(t_data *data)
 {
 	if (data->map_data->NO == NULL || data->map_data->EA == NULL
@@ -67,15 +89,16 @@ void trim_and_check(t_data *data)
 		exit(-1);
 	}
 	data->map_data->NO = trim_and_check_utils(data->map_data->NO);
-	parse_cub_file(".xpm", data->map_data->NO);
+	parse_cub_file(".xpm", data->map_data->NO, data);
 	data->map_data->EA = trim_and_check_utils(data->map_data->EA);
-	parse_cub_file(".xpm", data->map_data->EA);
+	parse_cub_file(".xpm", data->map_data->EA, data);
 	data->map_data->SO = trim_and_check_utils(data->map_data->SO);
-	parse_cub_file(".xpm", data->map_data->SO);
+	parse_cub_file(".xpm", data->map_data->SO, data);
 	data->map_data->WE = trim_and_check_utils(data->map_data->WE);
-	parse_cub_file(".xpm", data->map_data->WE);
+	parse_cub_file(".xpm", data->map_data->WE, data);
 	data->map_data->F = trim_and_check_utils(data->map_data->F);
 	data->map_data->C = trim_and_check_utils(data->map_data->C);
+	check_textures(data, 1);
 }
 
 void	rgb_int(t_data *data)
@@ -104,15 +127,18 @@ void	rgb_int(t_data *data)
 	}
 }
 
-void parse_cub_file(char *extension, char *file)
+void	parse_cub_file(char *extension, char *file, t_data *data)
 {
 	int i;
 	i = 0;
-	while (file[i] != '.' || ft_strrchr(file, '.') != &file[i])
+	if (!file || !file[0])
+		return ;
+	while (file [i] && (file[i] != '.' || ft_strrchr(file, '.') != &file[i]))
 		i++;
-	if (ft_strncmp(&file[i], extension, 5) != 0 || i == 0)
+	if (ft_strlen(&file[i]) < 4 || ft_strncmp(&file[i], extension, 5) != 0 || i == 0)
 	{
 		printf("Error\nInvalid file extension\n");
-		exit(-1);
+		ft_free(1, data);
 	}
 }
+

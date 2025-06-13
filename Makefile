@@ -6,7 +6,7 @@
 #    By: afogonca <afogonca@student.42porto.com>    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/01/22 08:54:03 by afogonca          #+#    #+#              #
-#    Updated: 2025/06/12 12:07:02 by afogonca         ###   ########.fr        #
+#    Updated: 2025/06/13 09:56:29 by afogonca         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -23,7 +23,8 @@ HOOKS = srcs/hooks/key_hook.c
 RENDER_SRCS =	srcs/render/ft_frame_render.c \
 				srcs/render/ft_render_line.c \
 				srcs/render/ft_render_utils.c \
-				srcs/render/ft_player_mov.c
+				srcs/render/ft_player_mov.c \
+				srcs/render/ft_minimap.c
 
 INIT =	srcs/init/ft_init.c 
 SRCS =	srcs/main.c srcs/ft_free.c \

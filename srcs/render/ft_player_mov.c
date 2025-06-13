@@ -12,9 +12,32 @@
 
 #include "ft_render.h"
 
+void	ft_player_rotm(t_data *data)
+{
+	if (data->mov->mouse < 0)
+	{
+		data->mov->mouse *= -1;
+		data->mov->mov = true;
+		data->player->angle = ft_add_angle(data->player->angle, (int) (-0.05 * data->mov->mouse));
+		data->player->y_look = cos(data->player->angle * M_PI / 180.0);
+		data->player->x_look = sin(data->player->angle * M_PI / 180.0);
+	}
+	else
+	{
+		data->mov->mov = true;
+		data->player->angle = ft_add_angle(data->player->angle, (int) (0.045 * data->mov->mouse));
+		data->player->y_look = cos(data->player->angle * M_PI / 180.0);
+		data->player->x_look = sin(data->player->angle * M_PI / 180.0);
+	}
+}
+
 void	ft_player_mov(t_data *data)
 {
-	ft_player_rot(data);
+	if (!data->mov->mouse)
+		ft_player_rot(data);
+	else
+		ft_player_rotm(data);
+	
 	ft_player_mov_fb(data);
 	ft_player_mov_lr(data);
 }

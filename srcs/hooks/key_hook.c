@@ -28,6 +28,8 @@ int	key_hook_press(int key, t_data *data)
 		data->mov->lookl = true;
 	if (key == 65363)
 		data->mov->lookr = true;
+	if (key == 101)
+		data->mov->open = true;
 	return (0);
 }
 
@@ -47,5 +49,7 @@ int	key_hook_relea(int key, t_data *data)
 		data->mov->lookl = false;
 	if (key == 65363)
 		data->mov->lookr = false;
+	if (key == 101)
+		data->mov->open = false;
 	return (0);
 }

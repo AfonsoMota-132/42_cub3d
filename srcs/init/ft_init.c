@@ -6,7 +6,7 @@
 /*   By: afogonca <afogonca@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/25 13:40:02 by afogonca          #+#    #+#             */
-/*   Updated: 2025/05/01 16:27:11 by afogonca         ###   ########.fr       */
+/*   Updated: 2025/06/13 11:31:22 by afogonca         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,6 +79,7 @@ void	ft_init_player(t_data *data)
 void	ft_set_data_null(t_data *data)
 {
 	data->img = NULL;
+	data->img_minimap = NULL;
 	data->tex_north = NULL;
 	data->tex_south = NULL;
 	data->tex_east = NULL;
@@ -91,6 +92,48 @@ void	ft_set_data_null(t_data *data)
 	data->map = NULL;
 	data->file = NULL;
 	data->map_data = NULL;
+}
+
+t_door	*ft_new_door(int x, int y)
+{
+	t_door *new;
+
+	new = malloc(sizeof(t_door));
+	new->next = NULL;
+	new->open = 0;
+	new->pos = 0;
+	new->x_pos = x;
+	new->y_pos = y;
+	return (new);
+}
+
+void	ft_door_add_back(t_door **door, int x, int y)
+{
+	t_door	*tmp;
+
+	if (!*door)
+		*door = ft_new_door(x, y);
+	tmp = *door;
+	while (tmp->next)
+		tmp = tmp->next;
+	tmp->next = ft_new_door(x, y);
+}
+
+void	ft_init_doors(t_data *data)
+{
+	int	y;
+	int	x;
+
+	x = -1;
+	while (data->map->map[++x])
+	{
+		y = -1;
+		while (data->map->map[x][++y])
+		{
+			if (data->map->map[x][y] == 'H')
+				ft_door_add_back(&data->head_door, x, y);
+		}
+	}
 }
 
 t_data	*ft_data_init(char *file)
@@ -143,6 +186,10 @@ t_data	*ft_data_init(char *file)
 		ft_free(1, data);
 	ft_win_start(data);
 	ft_init_tex_wall(data);
+	data->map->map[(int)data->player->x_pos]\
+		[(int)data->player->y_pos] = 'P';
+	ft_init_doors(data);
+	data->frame_time = ft_get_time_in_ms();
 	return (data);
 }
 
@@ -169,6 +216,8 @@ void	ft_mov_set_def(t_mov *mov)
 	mov->mov = true;
 	mov->exit = false;
 	mov->exit_main = false;
+	mov->open = false;
+	mov->mouse = 0;
 }
 
 void	ft_win_start(t_data *data)
@@ -188,6 +237,18 @@ void	ft_win_start(t_data *data)
 		ft_free(-1, data);
 	data->img->addr = (int *)mlx_get_data_addr(data->img->img, &data->img->pixel_bits,
 			&data->img->size_line, &data->img->endian);
+	data->minimap_height = WIN_HEIGHT * 0.15;
+	data->minimap_width =  data->minimap_height;
+	data->img_minimap = malloc(sizeof(t_img));
+	if (!data->img_minimap)
+		ft_free(-1, data);
+	data->img_minimap->img = NULL;
+	data->img_minimap->img = mlx_new_image(data->mlx, data->minimap_width, data->minimap_height);
+	if (!data->img_minimap->img)
+		ft_free(-1, data);
+	data->img_minimap->addr = (int *)mlx_get_data_addr(data->img_minimap->img,
+			&data->img_minimap->pixel_bits, &data->img_minimap->size_line,
+			&data->img_minimap->endian);
 }
 
 

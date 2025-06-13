@@ -6,7 +6,7 @@
 /*   By: palexand <palexand@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/04 18:31:46 by palexand          #+#    #+#             */
-/*   Updated: 2025/06/12 12:29:44 by afogonca         ###   ########.fr       */
+/*   Updated: 2025/06/13 11:30:41 by afogonca         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,8 +62,20 @@ static bool	check_valid_flood_fill(t_data *data)
 
 bool	check_flood(t_data *data)
 {
+	int		i;
+	char	**tmp;
+
+	i = -1;
+	data->map->fmap = ft_calloc(sizeof(char *), data->map->max_height + 1);
+	while (data->map->map[++i])
+		data->map->fmap[i] = ft_strdup(data->map->map[i]);
+	data->map->fmap[i] = NULL;
+	tmp = data->map->map;
+	data->map->map = data->map->fmap;
 	if (!flood_fill(data, data->player->x_pos, data->player->y_pos)
 		|| !check_valid_flood_fill(data))
 		return (printf("Error\nMap is not closed\n"), FALSE);
+	data->map->map = tmp;
+	ft_matrix_free((void **) data->map->fmap);
 	return (TRUE);
 }

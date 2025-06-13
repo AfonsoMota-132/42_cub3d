@@ -22,9 +22,9 @@ double	ft_add_angle(double angle, double delta)
 	return (angle);
 }
 
-void	ft_render_line(int x, int y, t_line_improv_render line)
+void	ft_render_line(int x, int y, t_line_improv_render line, double door)
 {
-	while (++y <= WIN_HEIGHT)
+	while (++y <= WIN_HEIGHT * door)
 	{
 		if (y < line.drawStart)
 			line.addr[y * line.img_sl + x] = line.hex_ceil;
@@ -33,30 +33,14 @@ void	ft_render_line(int x, int y, t_line_improv_render line)
 		else
 		{
 			line.texPos += line.step;
-			if (line.hit != 2)
+			if (door == 1)
 				line.addr[y * line.img_sl + x] = line.tex_addr[((int)line.texPos
 					& (line.text_y)) * (line.tex_sl) + line.texX];
-		}
-	}
-}
-
-void	ft_render_line_door(int x, t_line_improv_render *line, \
-				int colorDodge)
-{
-	int	color;
-	int	y;
-
-	y = -1;
-	while (++y <= WIN_HEIGHT && ((int) line->texPos & line->text_y) + (int) (line->door * 64) < 64)
-	{
-		if (y >= line->drawStart && y <= line->drawEnd)
-		{
-			line->texPos += line->step;
-			color = line->tex_addr[(((((int)line->texPos
-					& (line->text_y)) + (int) (line->door * 64)) * (line->tex_sl)) + line->texX)];
-			if (color && (colorDodge < 0 || (
-				colorDodge >= 0 && color != colorDodge )))
-				line->addr[y * line->img_sl + x] = color;
+			else
+			{
+				line.addr[y * line.img_sl + x] = line.tex_addr[(((((int)line.texPos
+					& (line.text_y)) + (int) (door * line.text_y)) * (line.tex_sl)) + line.texX)];
+			}
 		}
 	}
 }
@@ -75,64 +59,23 @@ void	ft_ray_render_line(t_data *data)
 			- data->ray->texX - data->ray->texX - 1);
 }
 
-void	ft_door_handle_utils(t_door *door, t_data *data)
-{
-	if (!door->open && door->pos == 0)
-		door->open = 1;
-	else if(!door->open)
-		door->open = 2;
-	if (door->open == 1)
-		door->pos += 0.0000015 * data->frame_time;
-	else if (door->open == 2)
-		door->pos -= 0.0000015 * data->frame_time;
-	if (door->pos <= 0)
-	{
-		door->open = 0;
-		door->pos = 0;
-	}
-	if (door->pos >= 1)
-	{
-		door->open = 0;
-		door->pos = 1;
-	}
-}
-
-double	ft_door_state(t_data *data, int x, int y)
-{
-	t_door	*door;
-
-	door = data->head_door;
-	while (door)
-	{
-		if (door->y_pos == y
-			&& door->x_pos == x)
-			return (door->pos);
-		door = door->next;
-	}
-	return (1);
-}
-
 void	ft_init_line(t_data *data, t_line_improv_render *line)
 {
-	line->addr = data->img->addr;
-	line->step = 1.0 * data->texture_wall->y / data->ray->lineHeight;
-	line->texPos = (data->ray->drawStart - (WIN_HEIGHT >> 1)
-			+ (data->ray->lineHeight >> 1)) * line->step;
-	line->hex_ceil = data->hex_ceiling;
-	line->hex_floor = data->hex_floor;
-	line->img_sl = (data->img->size_line >> 2);
-	line->tex_sl = data->texture_wall->size_line >> 2;
-	line->text_y = data->texture_wall->y - 1;
-	line->tex_addr = data->texture_wall->addr;
-	line->drawEnd = data->ray->drawEnd;
-	line->drawStart = data->ray->drawStart;
-	line->texX = data->ray->texX;
-	line->door = 1;
-	line->hit = data->ray->hit;
-	if (data->ray->hit == 2)
-		line->door = ft_door_state(data, data->ray->mapX, data->ray->mapY);
-}
+	line.addr = data->img->addr;
+	line.step = 1.0 * data->texture_wall->y / data->ray->lineHeight;
+	line.texPos = (data->ray->drawStart - (WIN_HEIGHT >> 1)
+			+ (data->ray->lineHeight >> 1)) * line.step;
+	line.hex_ceil = data->hex_ceiling;
+	line.hex_floor = data->hex_floor;
+	line.img_sl = (data->img->size_line >> 2);
+	line.tex_sl = data->texture_wall->size_line >> 2;
+	line.text_y = data->texture_wall->y - 1;
+	line.tex_addr = data->texture_wall->addr;
+	line.drawEnd = data->ray->drawEnd;
+	line.drawStart = data->ray->drawStart;
+	line.texX = data->ray->texX;
 
+}
 void	ft_pre_render_line(t_data *data, int x, int y)
 {
 	t_line_improv_render	line;
@@ -149,7 +92,7 @@ void	ft_pre_render_line(t_data *data, int x, int y)
 	ft_ray_render_line(data);
 	ft_init_line(data, &line);
 	if (data->ray->hit == 2)
-		ft_render_line_door(x, &line, 0x000000);
+		ft_render_line(x, y, line, 0.5);
 	else
-		ft_render_line(x, y, line);
+		ft_render_line(x, y, line, 1);
 }

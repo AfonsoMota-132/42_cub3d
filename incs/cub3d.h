@@ -6,7 +6,7 @@
 /*   By: afogonca <afogonca@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/22 08:50:49 by afogonca          #+#    #+#             */
-/*   Updated: 2025/06/12 12:07:30 by afogonca         ###   ########.fr       */
+/*   Updated: 2025/06/13 10:09:38 by afogonca         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,8 +25,8 @@
 # include <stdbool.h>
 # include <sys/time.h>
 
-# define WIN_WIDTH 1920
-# define WIN_HEIGHT 1080
+# define WIN_WIDTH 1280
+# define WIN_HEIGHT 720
 # define PI 3.14159265358979323846264338327950288419716939937510582097494459230781640628620899862803
 # define BLOCK 25
 # define TRUE 1
@@ -64,6 +64,7 @@ typedef struct s_map
 	int		max_width;
 	int		max_height;
 	char	**map;
+	char	**fmap;
 	char	**matrix;
 }	t_map;
 
@@ -122,7 +123,24 @@ typedef struct s_mov {
 	bool	mov;
 	bool	exit;
 	bool	exit_main;
+	int		mouse;
+	bool	open;
 } t_mov;
+
+typedef	struct s_minimap {
+	double	cos_a;
+	double	sin_a;
+	double	rad;
+	int		height;
+	int		width;
+	int		angle;
+	int		cx;
+	int		cy;
+	int		dx;
+	int		dy;
+	int		src_x;
+	int		src_y;
+}	t_minimap;
 
 typedef	struct	s_line_improv_render {
 	int		*addr;
@@ -138,11 +156,24 @@ typedef	struct	s_line_improv_render {
 	int		drawStart;
 	int		texX;
 	t_img	*tex_wall;
+	double	door;
+	int		hit;
 } t_line_improv_render;
+
+
+typedef	struct s_door {
+	int				x_pos;
+	int				y_pos;
+	double			pos;
+	int				open;
+	int				last_open;
+	struct s_door	*next;
+}	t_door;
 
 typedef struct s_data 
 {
 	t_img		*img;
+	t_img		*img_minimap;
 	t_img 		*texture_wall;
 	t_img		*tex_north;
 	t_img		*tex_south;
@@ -156,11 +187,15 @@ typedef struct s_data
 	t_map		*map;
 	int			hex_ceiling;
 	int			hex_floor;
+	int			minimap_height;
+	int			minimap_width;
 	int			fd;
 	char		*file;
 	double		time_frame;
 	double		old_frame;
+	double		frame_time;
 	t_map_data	*map_data;
+	t_door		*head_door;
 }	t_data;
 
 t_data	*ft_data_init(char *file);

@@ -98,6 +98,8 @@ void	ft_pre_render_loop(t_data *data, t_ray *ray, t_player *player)
 	while (ft_get_time_in_ms() <= data->time_frame)
 		;
 	data->time_frame += 17;
+	data->frame_time = ft_get_time_in_ms() - data->old_frame;
+	data->old_frame = ft_get_time_in_ms();
 	ft_player_mov(data);
 	ray->dirX = player->x_look;
 	ray->dirY = player->y_look;

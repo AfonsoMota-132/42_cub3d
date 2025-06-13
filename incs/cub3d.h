@@ -6,7 +6,7 @@
 /*   By: afogonca <afogonca@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/22 08:50:49 by afogonca          #+#    #+#             */
-/*   Updated: 2025/05/06 09:33:51 by afogonca         ###   ########.fr       */
+/*   Updated: 2025/06/12 12:07:30 by afogonca         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -181,5 +181,9 @@ void	copy_map(t_data *data, char *file);
 bool	parse_textures(t_data *data);
 void	trim_and_check(t_data *data);
 void	rgb_int(t_data *data);
+bool	check_flood(t_data *data);
+char	*trim_and_check_utils(char *str);
+bool	parse_textures_utils(t_data *data, char *line, int i);
+bool	check_textures(t_data *data, int exit);
 
 #endif

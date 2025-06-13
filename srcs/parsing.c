@@ -1,10 +1,22 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   parsing.c                                          :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: afogonca <afogonca@student.42porto.com>    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/06/12 12:30:30 by afogonca          #+#    #+#             */
+/*   Updated: 2025/06/12 12:42:17 by afogonca         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../incs/cub3d.h"
 
 static bool	check_spaces(char **matrix)
 {
-	int i;
-	int j;
-	
+	int	i;
+	int	j;
+
 	i = -1;
 	while (matrix[++i])
 	{
@@ -14,111 +26,43 @@ static bool	check_spaces(char **matrix)
 		while (matrix[i][j])
 		{
 			if (matrix[i][j] == ' ')
-				if (matrix[i][j - 1] != '1' && matrix[i][j] - 1 != ' ' 
-			 	&& matrix[i][j + 1] && matrix[i][j + 1] != ' ' 
+				if (matrix[i][j - 1] != '1' && matrix[i][j] - 1 != ' '
+				&& matrix[i][j + 1] && matrix[i][j + 1] != ' '
 				&& matrix[i][j + 1] != '1'
-			 	&& matrix[i + 1][j] && matrix[i + 1][j] != ' ' 
+				&& matrix[i + 1][j] && matrix[i + 1][j] != ' '
 				&& matrix[i + 1][j] != '1'
-			 	&& matrix[i - 1] && matrix[i - 1][j] != ' ' 
+				&& matrix[i - 1] && matrix[i - 1][j] != ' '
 				&& matrix[i - 1][j] != '1')
-						return (printf("Error\n invalid map spaces"), FALSE);
+					return (printf("Error\n invalid map spaces"), FALSE);
 			j++;
 		}
 	}
 	return (TRUE);
 }
 
+void	free_map(char **line, int i, int fd)
+{
+	if (i)
+		free(*line);
+	*line = get_next_line(fd);
+}
+
 bool	parse_map(t_data *data)
 {
-	int row;
-	int col;
-	
+	int	row;
+	int	col;
+
 	row = -1;
 	col = -1;
-	
 	if (check_spaces(data->map->matrix) == FALSE)
 		return (FALSE);
-	// while (data->map.matrix[++row])
-	// {
-	// 	while (data->map.matrix[row][col])
-	// }
 	return (TRUE);
 }
 
-/*bool	parse_map(t_data *data)*/
-/*{*/
-/*	int		row;*/
-/*	int		col;*/
-/*	bool	is_valid;*/
-/**/
-/*	is_valid = FALSE;*/
-/*	row = 0;*/
-/*	col = 0;*/
-/*	while (data->map.matrix[row][col] == ' ')*/
-/*	{*/
-/*		if (data->map.matrix[row + 1][col] == '1')*/
-/*			row++;*/
-/*		else*/
-/*			col++;*/
-/*	}*/
-/*	int *start_pos = malloc(sizeof(int) * 2);*/
-/*	start_pos[0] = row;*/
-/*	start_pos[1] = col;*/
-/*	while (data->map.matrix[row][col] == '1')*/
-/*	{*/
-/*		while (data->map.matrix[row][col + 1] == '1')*/
-/*		{*/
-/*			data->map.matrix[row][col] = 2;*/
-/*			col++;*/
-/*		}*/
-/*		while (col > 0 && data->map.matrix[row][col - 1] == '1' )*/
-/*		{*/
-/*			data->map.matrix[row][col] = 2;*/
-/*			col--;*/
-/*		}*/
-/*		if (row + 1 < data->map.max_height && data->map.matrix[row + 1][col] == '1' )*/
-/*		{*/
-/*			data->map.matrix[row][col] = 2;*/
-/*			row++;*/
-/*			continue;*/
-/*		}*/
-/*		if (row > 0 && data->map.matrix[row - 1][col] == '1' )*/
-/*		{*/
-/*			data->map.matrix[row][col] = 2;*/
-/*			row--;*/
-/*			continue;*/
-/*		}*/
-/*		if (col > 0 && ((data->map.matrix[row][col -1] == 2 && data->map.matrix[row][col + 1] == '\0') */
-/*			|| (data->map.matrix[row][col - 1] == '1' && data->map.matrix[row][col + 1] == '\0')))*/
-/*		{*/
-/*		 data->map.matrix[row][col] = 2;*/
-/*		 col--;*/
-/*		 	continue;*/
-/*		 }*/
-/*		if (data->map.matrix[row][col + 1] == 2 && data->map.matrix[row][col - 1] == '\0') */
-/*			|| (data->map.matrix[row][col + 1] == '1' && data->map.matrix[row][col - 1] == '\0'))*/
-/*		{*/
-/*		 data->map.matrix[row][col] = 2;*/
-/*		 col++;*/
-/*		 continue;*/
-/*		}*/
-/*		else if ((data->map.matrix[row - 1][col] == 2 && row == start_pos[0] - 1 && col == start_pos[1]) */
-/*			|| (data->map.matrix[row][col] == 2 && row == start_pos[0] && col == start_pos[1]))*/
-/*			return (is_valid = TRUE);*/
-/*		else*/
-/*			break;*/
-/*	}*/
-/*	return (is_valid);*/
-/*}*/
-// @brief	Function to check if the map is valid
-// @param	data	Pointer to the data structure
-// @return	Returns true if the map is valid, false otherwise
-// @note i = -2 because of the first and last line
-
 static int	size_map(char *file)
 {
-	int fd;
-	int i;
+	int		fd;
+	int		i;
 	char	*line;
 
 	fd = open(file, O_RDONLY);
@@ -132,8 +76,7 @@ static int	size_map(char *file)
 	i++;
 	while (line)
 	{
-		free(line);
-		line = get_next_line(fd);
+		free_map(&line, 1, fd);
 		i++;
 	}
 	return (close(fd), i);
@@ -144,28 +87,38 @@ void	copy_map(t_data *data, char *file)
 	int		i;
 	int		fd;
 	char	*line;
-	
-	fd = open(file, O_RDONLY);
+
 	i = (size_map(file) - data->map_data->line_position);
 	data->map->max_height = i;
-	data->map->map = malloc(sizeof(t_map) * i);
-	data->map->matrix = malloc(sizeof(t_map) * i);
-	i = -1;
-	while (i++ <= data->map_data->line_position)
+	if (i > 0)
 	{
-		if (i)
-			free(line);
-		line = get_next_line(fd);
+		fd = open(file, O_RDONLY);
+		data->map->map = ft_calloc(sizeof(t_map), i);
+		data->map->matrix = ft_calloc(sizeof(t_map), i);
+		i = -1;
+		while (i++ <= data->map_data->line_position)
+			free_map(&line, i, fd);
+		while (line && !ft_strchr(line, '1'))
+			free_map(&line, 1, fd);
+		if (!line)
+		{
+			ft_putstr_fd("Error!\nNo valid Map!\n", 1);
+			ft_free(1, data);
+		}
+		i = -1;
+		while (line)
+		{
+			data->map->map[++i] = ft_strdup(line);
+			data->map->matrix[i] = ft_strdup(line);
+			free_map(&line, 1, fd);
+		}
+		data->map->map[++i] = NULL;
+		data->map->matrix[i] = NULL;
+		close(fd);
 	}
-	i = -1;
-	while (line)
+	else
 	{
-		data->map->map[++i] = ft_strdup(line);
-		data->map->matrix[i] = ft_strdup(line);
-		free(line);
-		line = get_next_line(fd);
+		ft_putstr_fd("Error!\nNo valid Map/map after textures/colors!\n", 1);
+		ft_free(1, data);
 	}
-	data->map->map[++i] = NULL;
-	data->map->matrix[i] = NULL;
-	close(fd);
 }

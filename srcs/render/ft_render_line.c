@@ -58,7 +58,6 @@ void	ft_pre_render_line(t_data *data, int x, int y)
 	t_line_improv_render	line;
 
 	data->texture_wall = data->tex_north;
-	// printf("wtf %i\n", data->ray->orien);
 	if (data->ray->orien == 1)
 		data->texture_wall = data->tex_south;
 	if (data->ray->orien == 2)

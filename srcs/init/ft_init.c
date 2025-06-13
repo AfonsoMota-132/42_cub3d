@@ -139,6 +139,8 @@ t_data	*ft_data_init(char *file)
 
 	data->time_frame = ft_get_time_in_ms() + 17;
 	ft_init_player(data);
+	if (!check_flood(data))
+		ft_free(1, data);
 	ft_win_start(data);
 	ft_init_tex_wall(data);
 	return (data);

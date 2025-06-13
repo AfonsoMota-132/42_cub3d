@@ -3,23 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   file_parsing_utils.c                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: afogonca <afogonca@student.42porto.com>    +#+  +:+       +#+        */
+/*   By: palexand <palexand@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/06/12 12:04:36 by afogonca          #+#    #+#             */
-/*   Updated: 2025/06/12 12:05:32 by afogonca         ###   ########.fr       */
+/*   Created: 2025/06/14 00:15:31 by palexand          #+#    #+#             */
+/*   Updated: 2025/06/14 00:15:35 by palexand         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../incs/cub3d.h"
-
-char	*trim_and_check_utils(char *str)
-{
-	char	*tmp;
-
-	tmp = ft_strtrim(str, " \n");
-	free(str);
-	return (tmp);
-}
 
 bool	parse_textures_utils(t_data *data, char *line, int i)
 {

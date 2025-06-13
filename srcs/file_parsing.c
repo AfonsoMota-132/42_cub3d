@@ -30,6 +30,7 @@ bool	check_textures(t_data *data, int exit)
 	return (FALSE);
 }
 
+
 bool	parse_textures(t_data *data)
 {
 	char		*line;
@@ -59,54 +60,73 @@ bool	parse_textures(t_data *data)
 	return (close(data->fd), true);
 }
 
+char *duptrim(char *str, bool check)
+{
+	char *temp;
+	temp = ft_strtrim(str, " \n");
+	free(str);
+	if (check)
+		parse_cub_file(".xpm", temp);
+	return (temp);
+}
+
 void	trim_and_check(t_data *data)
 {
-	if (data->map_data->NO == NULL || data->map_data->EA == NULL
-		|| data->map_data->SO == NULL || data->map_data->WE == NULL)
+	if (data->map_data.NO == NULL || data->map_data.EA == NULL
+		|| data->map_data.SO == NULL || data->map_data.WE == NULL)
 	{
 		write(1, "Error\nInvalid texture path\n", 27);
 		exit(-1);
 	}
-	data->map_data->NO = trim_and_check_utils(data->map_data->NO);
-	parse_cub_file(".xpm", data->map_data->NO, data);
-	data->map_data->EA = trim_and_check_utils(data->map_data->EA);
-	parse_cub_file(".xpm", data->map_data->EA, data);
-	data->map_data->SO = trim_and_check_utils(data->map_data->SO);
-	parse_cub_file(".xpm", data->map_data->SO, data);
-	data->map_data->WE = trim_and_check_utils(data->map_data->WE);
-	parse_cub_file(".xpm", data->map_data->WE, data);
-	data->map_data->F = trim_and_check_utils(data->map_data->F);
-	data->map_data->C = trim_and_check_utils(data->map_data->C);
-	check_textures(data, 1);
+	data->map_data.NO = duptrim(data->map_data.NO, TRUE);
+	data->map_data.EA = duptrim(data->map_data.EA, TRUE);
+	data->map_data.SO = duptrim(data->map_data.SO, TRUE); 
+	data->map_data.WE = duptrim(data->map_data.WE, TRUE);
+	data->map_data.F = duptrim(data->map_data.F, FALSE);
+	data->map_data.C = duptrim(data->map_data.C, FALSE);
 }
+
+static bool rgb_values(char **rgb)
+{
+	int	i;
+
+	i = 0;
+	while (rgb[i])
+	{
+		if (ft_atoi(rgb[i]) < 0 || ft_atoi(rgb[i]) > 255)
+			return(FALSE);
+		i++;
+	}
+	return (TRUE);
+}
+
 
 void	rgb_int(t_data *data)
 {
 	int		i;
-	int		j;
 	char	**rgb;
 
-	i = 0;
-	j = 0;
-	if (data->map_data->F)
+	i = -1;
+	rgb = NULL;
+	if (data->map_data.F)
 	{
-		rgb = ft_split(data->map_data->F, ',');
-		while (rgb[i])
-			i++;
-		data->map_data->color_f = ft_atoi(rgb[0]) << 16
-			| ft_atoi(rgb[1]) << 8 | ft_atoi(rgb[2]);
-		ft_matrix_free((void **) rgb);
+		rgb = ft_split(data->map_data.F, ',');
+		data->map_data.color_f = ft_atoi(rgb[0]) << 16 | ft_atoi(rgb[1]) << 8
+			| ft_atoi(rgb[2]);
 	}
-	if (data->map_data->C)
+  if (rgb)
+		free_rgb(rgb);
+	if (data->map_data.C)
 	{
-		rgb = ft_split(data->map_data->C, ',');
-		while (rgb[j])
-			j++;
-		data->map_data->color_c = ft_atoi(rgb[0]) << 16
-			| ft_atoi(rgb[1]) << 8 | ft_atoi(rgb[2]);
-		ft_matrix_free((void **) rgb);
+		rgb = ft_split(data->map_data.C, ',');
+		data->map_data.color_c = ft_atoi(rgb[0]) << 16 | ft_atoi(rgb[1]) << 8
+			| ft_atoi(rgb[2]);
 	}
+	if (!rgb || !rgb[0] || !rgb[1] || !rgb[2] || rgb_values(rgb) == FALSE)
+		return(free_rgb(rgb), printf("Error\nInvalid RGB values\n"), exit(-1));	
+	free_rgb(rgb);
 }
+
 
 void	parse_cub_file(char *extension, char *file, t_data *data)
 {

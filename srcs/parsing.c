@@ -83,10 +83,6 @@ static bool	check_elements(char *map)
 	{
 		if (map[i] == '\n' && map[i + 1] == '\0')
 			break ;
-		{
-			i++;
-			break ;
-		}
 		if (map[i] != ' ' && map[i] != '1' && map[i] != '0'
 			&& map[i] != 'N' && map[i] != 'S'
 			&& map[i] != 'E' && map[i] != 'W')
@@ -162,12 +158,13 @@ int	size_map(char *file, t_data *data)
 		free(line);
 		line = get_next_line(fd);
 	}
-			while (check_line(line) == TRUE)
-			{		
-				i++;
-				free(line);
-				line = get_next_line(fd);	
-			}
+	while (check_line(line) == TRUE)
+	{		
+		i++;
+		free(line);
+		line = get_next_line(fd);	
+	}
+	free(line);
 	data->map.map = malloc(sizeof(t_map) * i);
 	data->map.matrix = malloc(sizeof(t_map) * i);
 	return (close(fd), i);
@@ -218,5 +215,7 @@ bool	copy_map(t_data *data, char *file)
 		line = get_next_line(fd);
 		i++;
 	}
+	if (i == 0)
+		return (printf("Error\nEmpty map\n"), free(line), close(fd), FALSE);
 	return (free(line),data->map.map[i] = NULL, data->map.matrix[i] = NULL, close(fd), TRUE);
 }

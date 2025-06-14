@@ -80,7 +80,7 @@ bool	copy_map(t_data *data, char *file);
 bool	parse_textures(t_data *data);
 void	rgb_int(t_data *data);
 void	parse_cub_file(char *extension, char *file);
-void	trim_and_check(t_data *data);
+bool	trim_and_check(t_data *data);
 void	flood_fill(t_data *data, int x, int y);
 void	find_player(t_data *data);
 bool	check_flood(t_data *data);

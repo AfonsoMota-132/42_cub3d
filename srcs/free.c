@@ -15,36 +15,21 @@
 void	free_data(t_data *data)
 {
 	int	i;
-
-	if (!data)
-		return ;
-	if (data->map.map)
-	{
-		i = 0;
-		while (data->map.map[i])
-		{
-			free(data->map.map[i]);
-			i++;
-		}
-		free(data->map.map);
-	}
-	if (data->map.matrix)
-	{
-		i = 0;
-		while (data->map.matrix[i])
-		{
-			free(data->map.matrix[i]);
-			i++;
-		}
-		free(data->map.matrix);
-	}
-	free(data->file);
-	free(data->map_data.NO);
-	free(data->map_data.EA);
-	free(data->map_data.SO);
-	free(data->map_data.WE);
-	free(data->map_data.F);
-	free(data->map_data.C);
+  free(data->map_data.NO);
+  free(data->map_data.SO);
+  free(data->map_data.EA);
+  free(data->map_data.WE);
+  free(data->map_data.F);
+  free(data->map_data.C);
+  free(data->file);
+	 i = 0;
+	 while (data->map.map && data->map.map[i] && data->map.matrix){
+		free(data->map.map[i]);
+		free(data->map.matrix[i]);
+		i++;
+	 }
+	free(data->map.map);
+	free(data->map.matrix);
 	free(data);
 }
 

@@ -49,11 +49,15 @@ void	find_player(t_data *data)
 			{
 				data->player.x = i;
 				data->player.y = j;
-				return ;
+				data->player_count++;
 			}
 			j++;
 		}
 	}
+	if (data->player_count == 1)
+		return ;
+	else
+		printf("Error\nMultiple players found\n"), exit(-1);
 }
 
 static bool	check_valid_flood_fill(t_data *data)

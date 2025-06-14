@@ -16,10 +16,33 @@ static bool	check_textures(t_data *data)
 {
 	if (data->map_data.NO && data->map_data.EA
 		&& data->map_data.SO && data->map_data.WE
-		&& data->map_data.F && data->map_data.C)
+		&& data->map_data.F && data->map_data.C
+		&& ft_strlen(data->map_data.NO) > 1
+		&& ft_strlen(data->map_data.SO) > 1
+		&& ft_strlen(data->map_data.EA) > 1
+		&& ft_strlen(data->map_data.WE) > 1)
 		return (TRUE);
-	else
-		return (data->map_data.line_position++, FALSE);
+	return (FALSE);
+}
+
+
+static bool util_texture(t_data *data, char *line, int i)
+{
+	if (ft_strnstr(line, "NO", 2 + i))
+			data->map_data.NO = ft_strdup(line + (3 + i));
+	else if (ft_strnstr(line, "SO", 2 + i))
+		data->map_data.SO = ft_strdup(line + 3 + i);
+	else if (ft_strnstr(line, "WE", 2 + i))
+		data->map_data.WE = ft_strdup(line + 3 + i);
+	else if (ft_strnstr(line, "EA", 2 + i))
+		data->map_data.EA = ft_strdup(line + 3 + i);
+	else if (ft_strnstr(line, "F", 1 + i))
+		data->map_data.F = ft_strdup(line + 2 + i);
+	else if (ft_strnstr(line, "C", 1 + i))
+		data->map_data.C = ft_strdup(line + 2 + i);
+	else if (check_textures(data) == TRUE)
+			return (TRUE);
+	return (FALSE);
 }
 
 bool	parse_textures(t_data *data)
@@ -34,20 +57,9 @@ bool	parse_textures(t_data *data)
 		i = 0;
 		while (line[i] == ' ' || line[i] == '\t' || line[i] == '\n')
 			i++;
-		if (ft_strnstr(line, "NO", 2 + i))
-			data->map_data.NO = ft_strdup(line + (3 + i));
-		else if (ft_strnstr(line, "SO", 2 + i))
-			data->map_data.SO = ft_strdup(line + 3 + i);
-		else if (ft_strnstr(line, "WE", 2 + i))
-			data->map_data.WE = ft_strdup(line + 3 + i);
-		else if (ft_strnstr(line, "EA", 2 + i))
-			data->map_data.EA = ft_strdup(line + 3 + i);
-		else if (ft_strnstr(line, "F", 1 + i))
-			data->map_data.F = ft_strdup(line + 2 + i);
-		else if (ft_strnstr(line, "C", 1 + i))
-			data->map_data.C = ft_strdup(line + 2 + i);
-		else if (check_textures(data) == TRUE)
+		if (util_texture(data, line, i) == TRUE)
 			break ;
+		data->map_data.line_position++;
 		free(line);
 		line = get_next_line(data->fd);
 	}
@@ -64,20 +76,18 @@ char *duptrim(char *str, bool check)
 	return (temp);
 }
 
-void	trim_and_check(t_data *data)
+bool	trim_and_check(t_data *data)
 {
 	if (data->map_data.NO == NULL || data->map_data.EA == NULL
 		|| data->map_data.SO == NULL || data->map_data.WE == NULL)
-	{
-		write(1, "Error\nInvalid texture path\n", 27);
-		exit(-1);
-	}
+		return(printf("Error\nInvalid texture path"), FALSE);
 	data->map_data.NO = duptrim(data->map_data.NO, TRUE);
 	data->map_data.EA = duptrim(data->map_data.EA, TRUE);
 	data->map_data.SO = duptrim(data->map_data.SO, TRUE); 
 	data->map_data.WE = duptrim(data->map_data.WE, TRUE);
 	data->map_data.F = duptrim(data->map_data.F, FALSE);
 	data->map_data.C = duptrim(data->map_data.C, FALSE);
+	return (TRUE);
 }
 static bool rgb_values(char **rgb)
 {
@@ -124,6 +134,11 @@ void	parse_cub_file(char *extension, char *file)
 	int	i;
 
 	i = 0;
+	if (!file || !ft_strchr(file, '.'))
+	{
+		printf("Error\nInvalid texture");
+		exit(-1);
+	}
 	while (file[i] != '.' || ft_strrchr(file, '.') != &file[i])
 		i++;
 	if (ft_strncmp(&file[i], extension, 5) != 0 || i == 0)

@@ -110,7 +110,6 @@ t_data	*ft_data_init(char *file)
 	data->map_data = malloc(sizeof(t_map_data));
 	if (!data->map_data)
 		ft_free(-1, data);
-
 	data->map_data->line_position = 0;
 	data->map_data->NO = NULL;
 	data->map_data->SO = NULL;
@@ -122,7 +121,7 @@ t_data	*ft_data_init(char *file)
 	data->file = ft_strdup(file);
 	if (!data->file)
 		ft_free(-1, data);
-	parse_cub_file(".cub", file, data);
+	parse_cub_file(".cub", file, data, false);
 	parse_textures(data);
 	trim_and_check(data);
 	rgb_int(data);
@@ -142,7 +141,6 @@ t_data	*ft_data_init(char *file)
 	if (!check_flood(data))
 		ft_free(1, data);
 	ft_win_start(data);
-	ft_init_tex_wall(data);
 	return (data);
 }
 
@@ -176,6 +174,7 @@ void	ft_win_start(t_data *data)
 	data->mlx = mlx_init();
 	if (!data->mlx)
 		ft_free(-1, data);
+	ft_init_tex_wall(data);
 	data->win = mlx_new_window(data->mlx, WIN_WIDTH, WIN_HEIGHT, "cub3d");
 	if (!data->win)
 		ft_free(-1, data);

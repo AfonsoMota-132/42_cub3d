@@ -6,11 +6,11 @@
 #    By: afogonca <afogonca@student.42porto.com>    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/01/22 08:54:03 by afogonca          #+#    #+#              #
-#    Updated: 2025/06/12 12:07:02 by afogonca         ###   ########.fr        #
+#    Updated: 2025/06/14 15:07:02 by afogonca         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
-NAME = cub3d
+NAME = cub3D
 CFLAGS = -g -O3 -Wall -Wextra -Werror
 MLXFLAGS = -L ./libs/minilibx-linux -lm -Ilmlx -lXext -lX11
 CC = cc
@@ -25,10 +25,14 @@ RENDER_SRCS =	srcs/render/ft_frame_render.c \
 				srcs/render/ft_render_utils.c \
 				srcs/render/ft_player_mov.c
 
+PARSE_SRCS =	srcs/parsing/parsing.c \
+				srcs/parsing/file_parsing.c \
+				srcs/parsing/flood_fill.c \
+				srcs/parsing/rgb.c
+
 INIT =	srcs/init/ft_init.c 
 SRCS =	srcs/main.c srcs/ft_free.c \
-		srcs/parsing.c srcs/file_parsing.c \
-		srcs/flood_fill.c srcs/file_parsing_utils.c \
+		$(PARSE_SRCS) \
 		$(RENDER_SRCS) $(HOOKS) $(INIT)
 
 LIBS = ./libs/mlx/libmlx.a ./libs/libft/libft.a

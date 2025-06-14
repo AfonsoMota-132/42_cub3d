@@ -6,11 +6,23 @@
 /*   By: afogonca <afogonca@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/06 09:34:57 by afogonca          #+#    #+#             */
-/*   Updated: 2025/05/06 09:36:36 by afogonca         ###   ########.fr       */
+/*   Updated: 2025/06/14 11:16:15 by afogonca         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../incs/cub3d.h"
+
+void free_rgb(char **rgb)
+{
+	int i;
+
+	if (!rgb)
+		return ;
+	i = -1;
+	while (rgb[++i])
+		free(rgb[i]);
+	free(rgb);
+}
 
 void	ft_free_map(t_map *map)
 {

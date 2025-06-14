@@ -6,7 +6,7 @@
 /*   By: afogonca <afogonca@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/22 08:50:49 by afogonca          #+#    #+#             */
-/*   Updated: 2025/06/12 12:07:30 by afogonca         ###   ########.fr       */
+/*   Updated: 2025/06/14 11:16:30 by afogonca         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -163,6 +163,9 @@ typedef struct s_data
 	t_map_data	*map_data;
 }	t_data;
 
+
+# include "../srcs/parsing/parsing.h"
+
 t_data	*ft_data_init(char *file);
 void	ft_set_img_def(t_img *img);
 void	ft_set_image_pixel(t_img *image, int x, int y, int color);
@@ -176,14 +179,6 @@ void	ft_mov_set_def(t_mov *mov);
 void	ft_data_set_def(t_data *data);
 void	ft_win_start(t_data *data);
 void	ft_start_tex(t_data *data, t_img *img, char *file);
-void	parse_cub_file(char *extension, char *file, t_data *data);
-void	copy_map(t_data *data, char *file);
-bool	parse_textures(t_data *data);
-void	trim_and_check(t_data *data);
-void	rgb_int(t_data *data);
-bool	check_flood(t_data *data);
-char	*trim_and_check_utils(char *str);
-bool	parse_textures_utils(t_data *data, char *line, int i);
-bool	check_textures(t_data *data, int exit);
+void	free_rgb(char **rgb);
 
 #endif

@@ -6,7 +6,7 @@
 /*   By: afogonca <afogonca@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/06 09:29:55 by afogonca          #+#    #+#             */
-/*   Updated: 2025/06/16 13:39:26 by afogonca         ###   ########.fr       */
+/*   Updated: 2025/06/16 14:13:15 by afogonca         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,9 +44,10 @@ void	ft_render_line_door(int x, t_line_improv_render *line, \
 		{
 			line->texpos += line->step;
 			color = line->tex_addr[(((((int)line->texpos
-					& (line->text_y)) + (int) (line->door * 64)) * (line->tex_sl)) + line->texx)];
-			if (color && (colorDodge < 0 || (
-				colorDodge >= 0 && color != colorDodge )))
+								& (line->text_y)) + (int)(line->door * 64))
+						* (line->tex_sl)) + line->texx)];
+			if (color && (colorDodge < 0
+					|| (colorDodge >= 0 && color != colorDodge)))
 				line->addr[y * line->img_sl + x] = color;
 		}
 	}

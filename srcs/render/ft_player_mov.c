@@ -6,7 +6,7 @@
 /*   By: afogonca <afogonca@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/06 09:27:42 by afogonca          #+#    #+#             */
-/*   Updated: 2025/06/16 14:04:28 by afogonca         ###   ########.fr       */
+/*   Updated: 2025/06/16 14:11:52 by afogonca         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -113,7 +113,7 @@ bool	ft_ver_col(char **map, double tempx, double tempy, t_data *data)
 		while (tmp)
 		{
 			if ((tmp->x_pos == (int)(tempx + 0.2)
-					&& tmp->y_pos == (int)(tempy + 0.2))
+				&& tmp->y_pos == (int)(tempy + 0.2))
 				|| (tmp->x_pos == (int)(tempx + 0.2)
 					&& tmp->y_pos == (int)(tempy + 0.2))
 				|| (tmp->x_pos == (int)(tempx)

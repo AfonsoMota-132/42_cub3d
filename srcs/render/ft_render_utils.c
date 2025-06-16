@@ -6,7 +6,7 @@
 /*   By: afogonca <afogonca@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/06 09:30:03 by afogonca          #+#    #+#             */
-/*   Updated: 2025/05/06 09:32:34 by afogonca         ###   ########.fr       */
+/*   Updated: 2025/06/16 12:56:56 by afogonca         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,47 +50,47 @@ void	ft_player_rot(t_data *data)
 
 void	ft_ray_dir(t_ray *ray)
 {
-	if (ray->rayDirX < 0)
+	if (ray->raydirx < 0)
 	{
-		ray->stepX = -1;
-		ray->sideDistX = (ray->posX - ray->mapX)
-			* ray->deltaDistX;
+		ray->stepx = -1;
+		ray->sidedistx = (ray->posx - ray->mapx)
+			* ray->deltadistx;
 	}
 	else
 	{
-		ray->stepX = 1;
-		ray->sideDistX = (ray->mapX + 1.0 - ray->posX)
-			* ray->deltaDistX;
+		ray->stepx = 1;
+		ray->sidedistx = (ray->mapx + 1.0 - ray->posx)
+			* ray->deltadistx;
 	}
-	if (ray->rayDirY < 0)
+	if (ray->raydiry < 0)
 	{
-		ray->stepY = -1;
-		ray->sideDistY = (ray->posY - ray->mapY)
-			* ray->deltaDistY;
+		ray->stepy = -1;
+		ray->sidedisty = (ray->posy - ray->mapy)
+			* ray->deltadisty;
 	}
 	else
 	{
-		ray->stepY = 1;
-		ray->sideDistY = (ray->mapY + 1.0 - ray->posY)
-			* ray->deltaDistY;
+		ray->stepy = 1;
+		ray->sidedisty = (ray->mapy + 1.0 - ray->posy)
+			* ray->deltadisty;
 	}
 }
 
 void	ft_set_ray_loop(t_ray *ray, int x)
 {
-	ray->cameraX = (2 * x / (double)WIN_WIDTH - 1)
+	ray->camerax = (2 * x / (double)WIN_WIDTH - 1)
 		* ((double)WIN_WIDTH / WIN_HEIGHT);
-	ray->rayDirX = ray->dirX + ray->planeX
-		* ray->cameraX;
-	ray->rayDirY = ray->dirY + ray->planeY
-		* ray->cameraX;
-	ray->mapX = (int) ray->posX;
-	ray->mapY = (int) ray->posY;
+	ray->raydirx = ray->dirx + ray->planex
+		* ray->camerax;
+	ray->raydiry = ray->diry + ray->planey
+		* ray->camerax;
+	ray->mapx = (int) ray->posx;
+	ray->mapy = (int) ray->posy;
 	ray->hit = 0;
-	ray->deltaDistX = fabs(1 / (ray->rayDirX
-				+ (ray->rayDirX == 0) * 1e-30));
-	ray->deltaDistY = fabs(1 / (ray->rayDirY
-				+ (ray->rayDirY == 0) * 1e-30));
+	ray->deltadistx = fabs(1 / (ray->raydirx
+				+ (ray->raydirx == 0) * 1e-30));
+	ray->deltadisty = fabs(1 / (ray->raydiry
+				+ (ray->raydiry == 0) * 1e-30));
 }
 
 void	ft_pre_render_loop(t_data *data, t_ray *ray, t_player *player)
@@ -98,11 +98,12 @@ void	ft_pre_render_loop(t_data *data, t_ray *ray, t_player *player)
 	while (ft_get_time_in_ms() <= data->time_frame)
 		;
 	data->time_frame += 17;
+	data->frame_time = ft_get_time_in_ms() - data->old_frame;
 	ft_player_mov(data);
-	ray->dirX = player->x_look;
-	ray->dirY = player->y_look;
-	ray->posX = player->x_pos;
-	ray->posY = player->y_pos;
-	ray->planeX = ray->dirY * 0.66;
-	ray->planeY = -ray->dirX * 0.66;
+	ray->dirx = player->x_look;
+	ray->diry = player->y_look;
+	ray->posx = player->x_pos;
+	ray->posy = player->y_pos;
+	ray->planex = ray->diry * 0.66;
+	ray->planey = -ray->dirx * 0.66;
 }

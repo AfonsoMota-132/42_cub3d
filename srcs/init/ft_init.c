@@ -6,7 +6,7 @@
 /*   By: afogonca <afogonca@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/25 13:40:02 by afogonca          #+#    #+#             */
-/*   Updated: 2025/06/16 09:53:44 by afogonca         ###   ########.fr       */
+/*   Updated: 2025/06/16 12:36:45 by afogonca         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,12 +43,12 @@ void	ft_init_ray_map(t_data *data, char *file)
 	if (!data->map_data)
 		ft_free(-1, data);
 	data->map_data->line_position = 0;
-	data->map_data->NO = NULL;
-	data->map_data->SO = NULL;
-	data->map_data->WE = NULL;
-	data->map_data->EA = NULL;
-	data->map_data->F = NULL;
-	data->map_data->C = NULL;
+	data->map_data->no = NULL;
+	data->map_data->so = NULL;
+	data->map_data->we = NULL;
+	data->map_data->ea = NULL;
+	data->map_data->f = NULL;
+	data->map_data->c = NULL;
 	data->file = ft_strdup(file);
 	if (!data->file)
 		ft_free(-1, data);
@@ -75,6 +75,7 @@ t_data	*ft_data_init(char *file)
 	if (!check_flood(data))
 		ft_free(1, data);
 	ft_win_start(data);
+	ft_init_doors(data);
 	return (data);
 }
 
@@ -92,6 +93,8 @@ void	ft_init_mov(t_data *data)
 	data->mov->mov = true;
 	data->mov->exit = false;
 	data->mov->exit_main = false;
+	data->mov->mouse = 0;
+	data->mov->open = false;
 }
 
 void	ft_win_start(t_data *data)
@@ -112,4 +115,7 @@ void	ft_win_start(t_data *data)
 		ft_free(-1, data);
 	data->img->addr = (int *)mlx_get_data_addr(data->img->img,
 			&data->img->pixel_bits, &data->img->size_line, &data->img->endian);
+	data->minimap_height = WIN_HEIGHT * 0.15;
+	data->minimap_width = data->minimap_height;
+	ft_init_minimap(data);
 }

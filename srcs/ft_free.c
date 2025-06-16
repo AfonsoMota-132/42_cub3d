@@ -6,7 +6,7 @@
 /*   By: afogonca <afogonca@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/06 09:34:57 by afogonca          #+#    #+#             */
-/*   Updated: 2025/06/16 09:38:31 by afogonca         ###   ########.fr       */
+/*   Updated: 2025/06/16 13:02:56 by afogonca         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,13 +54,9 @@ void	ft_free_tex(t_data *data)
 
 void	ft_free_data(t_data *data)
 {
-	if (data->img)
-	{
-		if (data->img->img)
-			mlx_destroy_image(data->mlx, data->img->img);
-		free(data->img);
-	}
+	ft_free_img(data);
 	ft_free_tex(data);
+	ft_free_doors(data);
 	if (data->player)
 		free(data->player);
 	if (data->ray)
@@ -75,6 +71,7 @@ void	ft_free_data(t_data *data)
 		mlx_destroy_window(data->mlx, data->win);
 	if (data->mlx)
 	{
+		mlx_do_key_autorepeaton(data->mlx);
 		mlx_destroy_display(data->mlx);
 		free(data->mlx);
 	}

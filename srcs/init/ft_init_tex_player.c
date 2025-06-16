@@ -1,16 +1,31 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_init_tex.c                                      :+:      :+:    :+:   */
+/*   ft_init_tex_player.c                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: afogonca <afogonca@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/16 09:48:39 by afogonca          #+#    #+#             */
-/*   Updated: 2025/06/16 09:49:08 by afogonca         ###   ########.fr       */
+/*   Updated: 2025/06/16 12:37:17 by afogonca         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../incs/cub3d.h"
+
+void	ft_init_minimap(t_data *data)
+{
+	data->img_minimap = malloc(sizeof(t_img));
+	if (!data->img_minimap)
+		ft_free(-1, data);
+	data->img_minimap->img = NULL;
+	data->img_minimap->img = mlx_new_image(data->mlx, data->minimap_width,
+			data->minimap_height);
+	if (!data->img_minimap->img)
+		ft_free(-1, data);
+	data->img_minimap->addr = (int *)mlx_get_data_addr(data->img_minimap->img,
+			&data->img_minimap->pixel_bits, &data->img_minimap->size_line,
+			&data->img_minimap->endian);
+}
 
 char	ft_player_look(char *line)
 {
@@ -52,19 +67,19 @@ void	ft_init_tex_wall(t_data *data)
 	data->tex_north = malloc(sizeof(t_img));
 	if (!data->tex_north)
 		ft_free(-1, data);
-	ft_start_tex(data, data->tex_north, data->map_data->NO);
+	ft_start_tex(data, data->tex_north, data->map_data->no);
 	data->tex_south = malloc(sizeof(t_img));
 	if (!data->tex_south)
 		ft_free(-1, data);
-	ft_start_tex(data, data->tex_south, data->map_data->SO);
+	ft_start_tex(data, data->tex_south, data->map_data->so);
 	data->tex_east = malloc(sizeof(t_img));
 	if (!data->tex_east)
 		ft_free(-1, data);
-	ft_start_tex(data, data->tex_east, data->map_data->EA);
+	ft_start_tex(data, data->tex_east, data->map_data->ea);
 	data->tex_west = malloc(sizeof(t_img));
 	if (!data->tex_west)
 		ft_free(-1, data);
-	ft_start_tex(data, data->tex_west, data->map_data->WE);
+	ft_start_tex(data, data->tex_west, data->map_data->we);
 	data->hex_ceiling = data->map_data->color_c;
 	data->hex_floor = data->map_data->color_f;
 }

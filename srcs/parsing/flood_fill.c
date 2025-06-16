@@ -6,7 +6,7 @@
 /*   By: palexand <palexand@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/04 18:31:46 by palexand          #+#    #+#             */
-/*   Updated: 2025/06/14 15:20:36 by afogonca         ###   ########.fr       */
+/*   Updated: 2025/06/16 13:13:34 by afogonca         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,8 +19,8 @@ bool	flood_fill(t_data *data, int x, int y)
 	line = 0;
 	while (data->map->map[line])
 		line++;
-	if (x < 0 || x >= line || y < 0 || x > data->map->max_height
-		|| y >= (int)(ft_strlen(data->map->map[x])))
+	if (x < 0 || x >= line || y < 0 || x >= data->map->max_height - 1
+		|| y > (int)(ft_strlen(data->map->map[x])))
 		return (x < data->map->max_height
 			&& y < (int)(ft_strlen(data->map->map[x]) - 1)
 			&& data->map->map[x][y] == '1');
@@ -84,17 +84,32 @@ static bool	check_valid_flood_fill(t_data *data)
 		return (FALSE);
 	while (data->map->map[i++][0] && i <= data->map->max_height - 1)
 		if (data->map->map[i][0] == 'X'
-			|| data->map->map[i][ft_strlen(data->map->map[i]) - 1] == 'X')
+			|| (ft_strlen(data->map->map[i]) > 0
+			&& data->map->map[i][ft_strlen(data->map->map[i]) - 1] == 'X'))
 			return (FALSE);
 	return (TRUE);
 }
 
 bool	check_flood(t_data *data)
 {
-	find_player(data);
+	int		i;
+	char	**tmp;
+
+	i = -1;
+	data->map->fmap = ft_calloc(sizeof(char *), data->map->max_height + 1);
+	while (data->map->map[++i])
+		data->map->fmap[i] = ft_strdup(data->map->map[i]);
+	data->map->fmap[i] = NULL;
+	tmp = data->map->map;
+	data->map->map = data->map->fmap;
 	if (!flood_fill(data, data->player->x_pos, data->player->y_pos)
 		|| !check_valid_flood_fill(data))
-		return (ft_putstr_fd("Error\nMap is not closed\n", 2),
-			ft_free(1, data), FALSE);
+	{
+		data->map->map = tmp;
+		ft_matrix_free((void **) data->map->fmap);
+		return (printf("Error\nMap is not closed\n"), FALSE);
+	}
+	data->map->map = tmp;
+	ft_matrix_free((void **) data->map->fmap);
 	return (TRUE);
 }

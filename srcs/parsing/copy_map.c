@@ -6,7 +6,7 @@
 /*   By: afogonca <afogonca@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/16 09:29:37 by afogonca          #+#    #+#             */
-/*   Updated: 2025/06/16 09:36:11 by afogonca         ###   ########.fr       */
+/*   Updated: 2025/06/16 13:17:26 by afogonca         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,7 @@ bool	check_line(char *line)
 	{
 		if (line[i] != '1' && line[i] != '0' && line[i] != ' '
 			&& line[i] != '\n' && line[i] != 'N' && line[i] != 'S'
-			&& line[i] != 'E' && line[i] != 'W')
+			&& line[i] != 'E' && line[i] != 'W' && line[i] != 'H')
 			return (FALSE);
 	}
 	return (TRUE);
@@ -69,7 +69,7 @@ char	*string_copy(char *line)
 		return (NULL);
 	i = 0;
 	j = ft_strlen(line);
-	copy = (char *)malloc(sizeof(char) * (j));
+	copy = (char *)malloc(sizeof(char) * (j + 1));
 	while (line[j] == ' ' || line[j] == '\t' || line[j] == '\n')
 		j--;
 	while (line[i] && line[i] != '\n' && i < j)
@@ -107,7 +107,7 @@ void	copy_map(t_data *data, char *file)
 	}
 	else
 	{
-		ft_putstr_fd("Error!\nNo valid Map/map after textures/colors!\n", 2);
+		ft_putstr_fd("Error!\nNo valid Map after textures/colors!\n", 2);
 		ft_free(1, data);
 	}
 }

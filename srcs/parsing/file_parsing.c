@@ -6,7 +6,7 @@
 /*   By: palexand <palexand@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/19 19:07:43 by palexand          #+#    #+#             */
-/*   Updated: 2025/06/14 15:03:29 by afogonca         ###   ########.fr       */
+/*   Updated: 2025/06/16 13:03:59 by afogonca         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,13 +14,13 @@
 
 static bool	check_textures(t_data *data)
 {
-	if (data->map_data->NO && data->map_data->EA
-		&& data->map_data->SO && data->map_data->WE
-		&& data->map_data->F && data->map_data->C
-		&& ft_strlen(data->map_data->NO) > 1
-		&& ft_strlen(data->map_data->SO) > 1
-		&& ft_strlen(data->map_data->EA) > 1
-		&& ft_strlen(data->map_data->WE) > 1)
+	if (data->map_data->no && data->map_data->ea
+		&& data->map_data->so && data->map_data->we
+		&& data->map_data->f && data->map_data->c
+		&& ft_strlen(data->map_data->no) > 1
+		&& ft_strlen(data->map_data->so) > 1
+		&& ft_strlen(data->map_data->ea) > 1
+		&& ft_strlen(data->map_data->we) > 1)
 		return (TRUE);
 	return (FALSE);
 }
@@ -28,17 +28,17 @@ static bool	check_textures(t_data *data)
 static bool	util_texture(t_data *data, char *line, int i)
 {
 	if (ft_strnstr(line, "NO", 2 + i))
-		data->map_data->NO = ft_strdup(line + (3 + i));
+		data->map_data->no = ft_strdup(line + (3 + i));
 	else if (ft_strnstr(line, "SO", 2 + i))
-		data->map_data->SO = ft_strdup(line + 3 + i);
+		data->map_data->so = ft_strdup(line + 3 + i);
 	else if (ft_strnstr(line, "WE", 2 + i))
-		data->map_data->WE = ft_strdup(line + 3 + i);
+		data->map_data->we = ft_strdup(line + 3 + i);
 	else if (ft_strnstr(line, "EA", 2 + i))
-		data->map_data->EA = ft_strdup(line + 3 + i);
+		data->map_data->ea = ft_strdup(line + 3 + i);
 	else if (ft_strnstr(line, "F", 1 + i))
-		data->map_data->F = ft_strdup(line + 2 + i);
+		data->map_data->f = ft_strdup(line + 2 + i);
 	else if (ft_strnstr(line, "C", 1 + i))
-		data->map_data->C = ft_strdup(line + 2 + i);
+		data->map_data->c = ft_strdup(line + 2 + i);
 	else if (check_textures(data) == TRUE)
 		return (TRUE);
 	return (FALSE);
@@ -72,16 +72,16 @@ bool	parse_textures(t_data *data)
 
 bool	trim_and_check(t_data *data)
 {
-	if (data->map_data->NO == NULL || data->map_data->EA == NULL
-		|| data->map_data->SO == NULL || data->map_data->WE == NULL)
+	if (data->map_data->no == NULL || data->map_data->ea == NULL
+		|| data->map_data->so == NULL || data->map_data->we == NULL)
 		return (ft_putstr_fd("Error\nInvalid texture path\n", 2)
 			, ft_free(1, data), FALSE);
-	data->map_data->NO = duptrim(&data->map_data->NO, TRUE, data);
-	data->map_data->EA = duptrim(&data->map_data->EA, TRUE, data);
-	data->map_data->SO = duptrim(&data->map_data->SO, TRUE, data);
-	data->map_data->WE = duptrim(&data->map_data->WE, TRUE, data);
-	data->map_data->F = duptrim(&data->map_data->F, FALSE, data);
-	data->map_data->C = duptrim(&data->map_data->C, FALSE, data);
+	data->map_data->no = duptrim(&data->map_data->no, TRUE, data);
+	data->map_data->ea = duptrim(&data->map_data->ea, TRUE, data);
+	data->map_data->so = duptrim(&data->map_data->so, TRUE, data);
+	data->map_data->we = duptrim(&data->map_data->we, TRUE, data);
+	data->map_data->f = duptrim(&data->map_data->f, FALSE, data);
+	data->map_data->c = duptrim(&data->map_data->c, FALSE, data);
 	return (TRUE);
 }
 
@@ -101,7 +101,7 @@ void	parse_cub_file(char *extension, char *file, t_data *data, bool ffree)
 		i++;
 	if (ft_strncmp(&file[i], extension, 5) != 0 || i == 0)
 	{
-		ft_putstr_fd("Error\nInvalid texture\n", 2);
+		ft_putstr_fd("Error\nInvalid file extension\n", 2);
 		if (file && ffree)
 			free(file);
 		ft_free(1, data);

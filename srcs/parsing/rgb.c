@@ -6,7 +6,7 @@
 /*   By: afogonca <afogonca@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/14 15:02:12 by afogonca          #+#    #+#             */
-/*   Updated: 2025/06/14 15:03:34 by afogonca         ###   ########.fr       */
+/*   Updated: 2025/06/16 12:36:13 by afogonca         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,9 +39,9 @@ void	rgb_int(t_data *data)
 	char	**rgb;
 
 	rgb = NULL;
-	if (data->map_data->F)
+	if (data->map_data->f)
 	{
-		rgb = ft_split(data->map_data->F, ',');
+		rgb = ft_split(data->map_data->f, ',');
 		data->map_data->color_f = ft_atoi(rgb[0]) << 16 | ft_atoi(rgb[1]) << 8
 			| ft_atoi(rgb[2]);
 	}
@@ -50,9 +50,9 @@ void	rgb_int(t_data *data)
 			, ft_free(1, data));
 	if (rgb)
 		free_rgb(rgb);
-	if (data->map_data->C)
+	if (data->map_data->c)
 	{
-		rgb = ft_split(data->map_data->C, ',');
+		rgb = ft_split(data->map_data->c, ',');
 		data->map_data->color_c = ft_atoi(rgb[0]) << 16 | ft_atoi(rgb[1]) << 8
 			| ft_atoi(rgb[2]);
 	}

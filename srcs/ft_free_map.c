@@ -6,7 +6,7 @@
 /*   By: afogonca <afogonca@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/16 09:37:58 by afogonca          #+#    #+#             */
-/*   Updated: 2025/06/16 12:34:09 by afogonca         ###   ########.fr       */
+/*   Updated: 2025/06/16 13:23:10 by afogonca         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,11 +26,11 @@ void	ft_free_img(t_data *data)
 			mlx_destroy_image(data->mlx, data->img_minimap->img);
 		free(data->img_minimap);
 	}
-
 }
+
 void	ft_free_doors(t_data *data)
 {
-	t_door *tmp;
+	t_door	*tmp;
 
 	while (data->head_door)
 	{
@@ -39,6 +39,7 @@ void	ft_free_doors(t_data *data)
 		data->head_door = tmp;
 	}
 }
+
 void	ft_free_map_data(t_data *data)
 {
 	if (data->map_data)

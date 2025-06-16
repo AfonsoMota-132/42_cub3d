@@ -6,7 +6,7 @@
 /*   By: afogonca <afogonca@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/06 09:27:42 by afogonca          #+#    #+#             */
-/*   Updated: 2025/06/16 12:51:53 by afogonca         ###   ########.fr       */
+/*   Updated: 2025/06/16 13:23:51 by afogonca         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,8 @@ void	ft_player_rotm(t_data *data)
 	else
 	{
 		data->mov->mov = true;
-		data->player->angle = ft_add_angle(data->player->angle, (int) (0.045 * data->mov->mouse));
+		data->player->angle = ft_add_angle(data->player->angle,
+				(int)(0.045 * data->mov->mouse));
 		data->player->y_look = cos(data->player->angle * M_PI / 180.0);
 		data->player->x_look = sin(data->player->angle * M_PI / 180.0);
 	}

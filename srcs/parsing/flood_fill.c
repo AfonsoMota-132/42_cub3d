@@ -6,7 +6,7 @@
 /*   By: palexand <palexand@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/04 18:31:46 by palexand          #+#    #+#             */
-/*   Updated: 2025/06/16 13:13:34 by afogonca         ###   ########.fr       */
+/*   Updated: 2025/06/16 14:06:33 by afogonca         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,8 +19,8 @@ bool	flood_fill(t_data *data, int x, int y)
 	line = 0;
 	while (data->map->map[line])
 		line++;
-	if (x < 0 || x >= line || y < 0 || x >= data->map->max_height - 1
-		|| y > (int)(ft_strlen(data->map->map[x])))
+	if (x < 0 || x >= line || y < 0 || x > data->map->max_height - 1
+		|| y > (int)(ft_strlen(data->map->map[x]) - 1))
 		return (x < data->map->max_height
 			&& y < (int)(ft_strlen(data->map->map[x]) - 1)
 			&& data->map->map[x][y] == '1');

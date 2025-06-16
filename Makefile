@@ -6,7 +6,7 @@
 #    By: afogonca <afogonca@student.42porto.com>    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/01/22 08:54:03 by afogonca          #+#    #+#              #
-#    Updated: 2025/06/14 15:07:02 by afogonca         ###   ########.fr        #
+#    Updated: 2025/06/16 09:53:31 by afogonca         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -28,10 +28,15 @@ RENDER_SRCS =	srcs/render/ft_frame_render.c \
 PARSE_SRCS =	srcs/parsing/parsing.c \
 				srcs/parsing/file_parsing.c \
 				srcs/parsing/flood_fill.c \
-				srcs/parsing/rgb.c
+				srcs/parsing/rgb.c \
+				srcs/parsing/copy_maps_utils.c \
+				srcs/parsing/copy_map.c
 
-INIT =	srcs/init/ft_init.c 
+INIT =	srcs/init/ft_init.c \
+		srcs/init/ft_init_tex_player.c
+
 SRCS =	srcs/main.c srcs/ft_free.c \
+		srcs/ft_free_map.c \
 		$(PARSE_SRCS) \
 		$(RENDER_SRCS) $(HOOKS) $(INIT)
 

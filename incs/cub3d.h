@@ -6,7 +6,7 @@
 /*   By: afogonca <afogonca@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/22 08:50:49 by afogonca          #+#    #+#             */
-/*   Updated: 2025/06/14 11:16:30 by afogonca         ###   ########.fr       */
+/*   Updated: 2025/06/16 09:51:03 by afogonca         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -175,10 +175,14 @@ int		key_hook_relea(int key, t_data *data);
 double	ft_get_time_in_ms();
 void    ft_free(int exit_flag, t_data *data);
 int		ft_frame_render(t_data *data);
-void	ft_mov_set_def(t_mov *mov);
+void	ft_init_mov(t_data *data);
 void	ft_data_set_def(t_data *data);
 void	ft_win_start(t_data *data);
 void	ft_start_tex(t_data *data, t_img *img, char *file);
 void	free_rgb(char **rgb);
+void	ft_free_map(t_map *map);
+void	ft_free_map_data(t_data *data);
+void	ft_init_player(t_data *data);
+void	ft_init_tex_wall(t_data *data);
 
 #endif

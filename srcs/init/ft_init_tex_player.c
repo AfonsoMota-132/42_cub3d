@@ -1,0 +1,83 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   ft_init_tex.c                                      :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: afogonca <afogonca@student.42porto.com>    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/06/16 09:48:39 by afogonca          #+#    #+#             */
+/*   Updated: 2025/06/16 09:49:08 by afogonca         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
+#include "../../incs/cub3d.h"
+
+char	ft_player_look(char *line)
+{
+	if (ft_strchr(line, 'N'))
+		return ('N');
+	else if (ft_strchr(line, 'S'))
+		return ('S');
+	else if (ft_strchr(line, 'E'))
+		return ('E');
+	else if (ft_strchr(line, 'W'))
+		return ('W');
+	return ('\0');
+}
+
+void	ft_init_player(t_data *data)
+{
+	int		i;
+	char	tmp;
+
+	i = -1;
+	while (data->map->map[++i])
+	{
+		tmp = ft_player_look(data->map->map[i]);
+		if (tmp)
+		{
+			data->player->x_pos = i + 0.5;
+			data->player->y_pos = ft_strchr_len(data->map->map[i], tmp) + 0.5;
+			data->player->angle = (tmp == 'N') * 270 + (tmp == 'S') * 90
+				+ (tmp == 'W') * 180;
+			break ;
+		}
+	}
+	data->player->y_look = cos(data->player->angle * M_PI / 180.0);
+	data->player->x_look = sin(data->player->angle * M_PI / 180.0);
+}
+
+void	ft_init_tex_wall(t_data *data)
+{
+	data->tex_north = malloc(sizeof(t_img));
+	if (!data->tex_north)
+		ft_free(-1, data);
+	ft_start_tex(data, data->tex_north, data->map_data->NO);
+	data->tex_south = malloc(sizeof(t_img));
+	if (!data->tex_south)
+		ft_free(-1, data);
+	ft_start_tex(data, data->tex_south, data->map_data->SO);
+	data->tex_east = malloc(sizeof(t_img));
+	if (!data->tex_east)
+		ft_free(-1, data);
+	ft_start_tex(data, data->tex_east, data->map_data->EA);
+	data->tex_west = malloc(sizeof(t_img));
+	if (!data->tex_west)
+		ft_free(-1, data);
+	ft_start_tex(data, data->tex_west, data->map_data->WE);
+	data->hex_ceiling = data->map_data->color_c;
+	data->hex_floor = data->map_data->color_f;
+}
+
+void	ft_start_tex(t_data *data, t_img *img, char *file)
+{
+	img->img = NULL;
+	img->img = mlx_xpm_file_to_image(data->mlx, file, &img->x, &img->y);
+	if (!img->img)
+	{
+		ft_putstr_fd("Error\nInvalid Textures/Colors!\n", 2);
+		ft_free(1, data);
+	}
+	img->addr = (int *)mlx_get_data_addr(img->img,
+			&img->pixel_bits, &img->size_line, &img->endian);
+}

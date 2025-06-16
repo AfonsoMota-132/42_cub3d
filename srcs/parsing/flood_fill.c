@@ -19,9 +19,11 @@ bool	flood_fill(t_data *data, int x, int y)
 	line = 0;
 	while (data->map->map[line])
 		line++;
-	if (x < 0 || y < 0 || x >= data->map->max_height
-		|| y >= (int)(ft_strlen(data->map->map[x]) - 1))
-		return (FALSE);
+	if (x < 0 || x >= line || y < 0 || x > data->map->max_height
+		|| y >= (int)(ft_strlen(data->map->map[x])))
+		return (x < data->map->max_height
+			&& y < (int)(ft_strlen(data->map->map[x]) - 1)
+			&& data->map->map[x][y] == '1');
 	if (data->map->map[x][y] == '1' || data->map->map[x][y] == 'X')
 		return (TRUE);
 	data->map->map[x][y] = 'X';
@@ -36,7 +38,7 @@ bool	flood_fill(t_data *data, int x, int y)
 	return (TRUE);
 }
 
-int		ft_strchr_player(char *line)
+int	ft_strchr_player(char *line)
 {
 	if (ft_strchr(line, 'S'))
 		return (ft_strchr_len(line, 'S'));
@@ -44,17 +46,18 @@ int		ft_strchr_player(char *line)
 		return (ft_strchr_len(line, 'N'));
 	if (ft_strchr(line, 'E'))
 		return (ft_strchr_len(line, 'E'));
-	if (ft_strchr(line, 'A'))
-		return (ft_strchr_len(line, 'A'));
+	if (ft_strchr(line, 'W'))
+		return (ft_strchr_len(line, 'W'));
 	return (0);
 }
 
 void	find_player(t_data *data)
 {
-	int			i;
-	static int	player;
+	int	i;
+	int	player;
 
 	i = -1;
+	player = 0;
 	while (data->map->map[++i])
 	{
 		if (ft_strchr_player(data->map->map[i]))
@@ -91,6 +94,7 @@ bool	check_flood(t_data *data)
 	find_player(data);
 	if (!flood_fill(data, data->player->x_pos, data->player->y_pos)
 		|| !check_valid_flood_fill(data))
-		return (ft_putstr_fd("Error\nMap is not closed\n", 2), FALSE);
+		return (ft_putstr_fd("Error\nMap is not closed\n", 2),
+			ft_free(1, data), FALSE);
 	return (TRUE);
 }

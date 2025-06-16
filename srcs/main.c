@@ -6,7 +6,7 @@
 /*   By: afogonca <afogonca@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/22 08:48:16 by afogonca          #+#    #+#             */
-/*   Updated: 2025/05/06 09:34:33 by afogonca         ###   ########.fr       */
+/*   Updated: 2025/06/16 09:45:12 by afogonca         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,5 +25,13 @@ int	main(int ac, char **av)
 		mlx_loop(data->mlx);
 	}
 	else
-		return (ft_putstr_fd("Error: Wrong Number of Arguments\n", 1), 1);
+		return (ft_putstr_fd("Error: Wrong Number of Arguments\n", 2), 1);
+}
+
+double	ft_get_time_in_ms(void)
+{
+	struct timeval	tv;
+
+	gettimeofday(&tv, NULL);
+	return ((tv.tv_sec * 1000.0) + (tv.tv_usec / 1000.0));
 }

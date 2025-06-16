@@ -46,7 +46,7 @@ void	rgb_int(t_data *data)
 			| ft_atoi(rgb[2]);
 	}
 	if (!rgb || !rgb[0] || !rgb[1] || !rgb[2] || rgb_values(rgb) == FALSE)
-		return (free_rgb(rgb), printf("Error\nInvalid RGB values\n")
+		return (free_rgb(rgb), ft_putstr_fd("Error\nInvalid RGB values\n", 2)
 			, ft_free(1, data));
 	if (rgb)
 		free_rgb(rgb);
@@ -57,7 +57,7 @@ void	rgb_int(t_data *data)
 			| ft_atoi(rgb[2]);
 	}
 	if (!rgb || !rgb[0] || !rgb[1] || !rgb[2] || rgb_values(rgb) == FALSE)
-		return (free_rgb(rgb), printf("Error\nInvalid RGB values\n")
+		return (free_rgb(rgb), ft_putstr_fd("Error\nInvalid RGB values\n", 2)
 			, ft_free(1, data));
 	free_rgb(rgb);
 }

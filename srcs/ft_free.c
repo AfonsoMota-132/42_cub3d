@@ -6,15 +6,15 @@
 /*   By: afogonca <afogonca@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/06 09:34:57 by afogonca          #+#    #+#             */
-/*   Updated: 2025/06/14 11:16:15 by afogonca         ###   ########.fr       */
+/*   Updated: 2025/06/16 09:38:31 by afogonca         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../incs/cub3d.h"
 
-void free_rgb(char **rgb)
+void	free_rgb(char **rgb)
 {
-	int i;
+	int	i;
 
 	if (!rgb)
 		return ;
@@ -22,30 +22,6 @@ void free_rgb(char **rgb)
 	while (rgb[++i])
 		free(rgb[i]);
 	free(rgb);
-}
-
-void	ft_free_map(t_map *map)
-{
-	int	i;
-
-	i = -1;
-	if (map)
-	{
-		if (map->map)
-		{
-			while (map->map[++i])
-				free(map->map[i]);
-			free(map->map);
-		}
-		i = -1;
-		if (map->matrix)
-		{
-			while (map->matrix[++i])
-				free(map->matrix[i]);
-			free(map->matrix);
-		}
-		free(map);
-	}
 }
 
 void	ft_free_tex(t_data *data)
@@ -74,27 +50,6 @@ void	ft_free_tex(t_data *data)
 			mlx_destroy_image(data->mlx, data->tex_west->img);
 		free(data->tex_west);
 	}
-}
-
-void	ft_free_map_data(t_data *data)
-{
-	if (data->map_data)
-	{
-		if (data->map_data->NO)
-			free(data->map_data->NO);
-		if (data->map_data->SO)
-			free(data->map_data->SO);
-		if (data->map_data->EA)
-			free(data->map_data->EA);
-		if (data->map_data->WE)
-			free(data->map_data->WE);
-		if (data->map_data->C)
-			free(data->map_data->C);
-		if (data->map_data->F)
-			free(data->map_data->F);
-		free(data->map_data);
-	}
-
 }
 
 void	ft_free_data(t_data *data)
@@ -132,6 +87,6 @@ void	ft_free(int exit_flag, t_data *data)
 		ft_free_data(data);
 	if (exit_flag != -1 && exit_flag >= 0)
 		exit (exit_flag);
-	printf("Fatal error: failed to malloc\n");
+	ft_putstr_fd("Fatal error: failed to malloc\n", 2);
 	exit (1);
 }

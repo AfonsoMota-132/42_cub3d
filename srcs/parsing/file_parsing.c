@@ -74,7 +74,7 @@ bool	trim_and_check(t_data *data)
 {
 	if (data->map_data->NO == NULL || data->map_data->EA == NULL
 		|| data->map_data->SO == NULL || data->map_data->WE == NULL)
-		return (printf("Error\nInvalid texture path\n")
+		return (ft_putstr_fd("Error\nInvalid texture path\n", 2)
 			, ft_free(1, data), FALSE);
 	data->map_data->NO = duptrim(&data->map_data->NO, TRUE, data);
 	data->map_data->EA = duptrim(&data->map_data->EA, TRUE, data);
@@ -92,7 +92,7 @@ void	parse_cub_file(char *extension, char *file, t_data *data, bool ffree)
 	i = 0;
 	if (!file || !ft_strchr(file, '.'))
 	{
-		printf("Error\nInvalid texture\n");
+		ft_putstr_fd("Error\nInvalid texture\n", 2);
 		if (file && ffree)
 			free(file);
 		ft_free(1, data);
@@ -101,7 +101,7 @@ void	parse_cub_file(char *extension, char *file, t_data *data, bool ffree)
 		i++;
 	if (ft_strncmp(&file[i], extension, 5) != 0 || i == 0)
 	{
-		printf("Error\nInvalid file extension\n");
+		ft_putstr_fd("Error\nInvalid texture\n", 2);
 		if (file && ffree)
 			free(file);
 		ft_free(1, data);

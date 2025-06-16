@@ -6,7 +6,7 @@
 /*   By: afogonca <afogonca@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/16 11:40:24 by afogonca          #+#    #+#             */
-/*   Updated: 2025/06/16 11:40:54 by afogonca         ###   ########.fr       */
+/*   Updated: 2025/06/16 13:53:08 by afogonca         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,8 @@ void	ft_door_handle_utils(t_door *door, t_data *data, bool def)
 			door->open = 1;
 		else if (data->mov->open && !door->open)
 			door->open = 2;
+		if (data->mov->open)
+			data->mov->open = false;
 	}
 	if (door->open == 1)
 		door->pos += 0.0000015 * data->frame_time;

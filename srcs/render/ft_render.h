@@ -6,7 +6,7 @@
 /*   By: afogonca <afogonca@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/04 13:18:17 by afogonca          #+#    #+#             */
-/*   Updated: 2025/06/16 11:41:18 by afogonca         ###   ########.fr       */
+/*   Updated: 2025/06/16 13:47:12 by afogonca         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,7 @@ void	ft_ray_dir(t_ray *ray);
 double	ft_add_angle(double angle, double delta);
 void	ft_player_mov_fb(t_data *data);
 void	ft_player_mov_lr(t_data *data);
-bool	ft_ver_col(char **map, double tempx, double tempy);
+bool	ft_ver_col(char **map, double tempx, double tempy, t_data *data);
 void	ft_render_minimap(t_data *data);
 double	ft_door_state(t_data *data, int x, int y);
 double	ft_add_angle(double angle, double delta);

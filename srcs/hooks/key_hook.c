@@ -14,13 +14,23 @@
 
 int	mouse_move(int x, int y, t_data *data)
 {
+	int	new_pos;
+
 	data->mov->mouse = 0;
-	if (x < (WIN_WIDTH >> 1) - 10)
-		data->mov->mouse = x - (WIN_WIDTH >> 1);
-	if (x > (WIN_WIDTH >> 1) + 10)
-		data->mov->mouse = x - (WIN_WIDTH >> 1);
+	if (x > WIN_WIDTH - 100 || x < 100)
+	{
+		mlx_mouse_move(data->mlx, data->win,
+			WIN_WIDTH >> 1, WIN_HEIGHT >> 1);
+		new_pos = WIN_WIDTH >> 1;
+		data->mov->mouse_pos = new_pos;
+	}
+	else
+	{
+		new_pos = x - (WIN_WIDTH >> 1);
+		data->mov->mouse = (new_pos - data->mov->mouse_pos) * 16;
+		data->mov->mouse_pos = new_pos;
+	}
 	(void) y;
-	mlx_mouse_move(data->mlx, data->win, WIN_WIDTH >> 1, WIN_HEIGHT >> 1);
 	return (1);
 }
 

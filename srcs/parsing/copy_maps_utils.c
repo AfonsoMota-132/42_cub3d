@@ -30,6 +30,7 @@ void	copy_map_utils(t_data *data, int fd, char *line)
 		data->map->matrix[i] = string_copy(line);
 		if (!check_line(line))
 		{
+			printf("line %s\n", line);
 			while (line)
 				free_map(&line, 1, fd);
 			data->map->map[++i] = NULL;

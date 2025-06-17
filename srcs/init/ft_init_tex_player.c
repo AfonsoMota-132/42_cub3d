@@ -49,17 +49,14 @@ void	ft_init_player(t_data *data)
 	while (data->map->map[++i])
 	{
 		tmp = ft_player_look(data->map->map[i]);
-		if (tmp)
-		{
-			data->player->x_pos = i + 0.5;
-			data->player->y_pos = ft_strchr_len(data->map->map[i], tmp) + 0.5;
-			data->player->angle = (tmp == 'N') * 270 + (tmp == 'S') * 90
-				+ (tmp == 'W') * 180;
-			break ;
-		}
+		ft_init_player_utils(data, tmp, i);
 	}
-	data->player->y_look = cos(data->player->angle * M_PI / 180.0);
-	data->player->x_look = sin(data->player->angle * M_PI / 180.0);
+	if (tmp && data->player->x_pos == -1
+		&& data->player->y_pos == -1)
+	{
+		ft_putstr_fd("Error\nPlayer not found\n", 2);
+		ft_free(1, data);
+	}
 }
 
 void	ft_init_tex_wall(t_data *data)
@@ -80,6 +77,10 @@ void	ft_init_tex_wall(t_data *data)
 	if (!data->tex_west)
 		ft_free(-1, data);
 	ft_start_tex(data, data->tex_west, data->map_data->we);
+	data->tex_door = malloc(sizeof(t_img));
+	if (!data->tex_door)
+		ft_free(-1, data);
+	ft_start_tex(data, data->tex_door, "textures/door.xpm");
 	data->hex_ceiling = data->map_data->color_c;
 	data->hex_floor = data->map_data->color_f;
 }

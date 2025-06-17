@@ -26,6 +26,12 @@ void	ft_free_img(t_data *data)
 			mlx_destroy_image(data->mlx, data->img_minimap->img);
 		free(data->img_minimap);
 	}
+	if (data->tex_door)
+	{
+		if (data->tex_door->img)
+			mlx_destroy_image(data->mlx, data->tex_door->img);
+		free(data->tex_door);
+	}
 }
 
 void	ft_free_doors(t_data *data)

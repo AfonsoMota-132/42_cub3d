@@ -38,13 +38,13 @@ void	ft_render_line_door(int x, t_line_improv_render *line, \
 
 	y = -1;
 	while (++y <= WIN_HEIGHT
-		&& ((int) line->texpos & line->text_y) + (int)(line->door * 64) < 64)
+		&& ((int) line->texpos & line->text_y) + (int)(line->door * 128) < 128)
 	{
 		if (y >= line->drawstart && y <= line->drawend)
 		{
 			line->texpos += line->step;
 			color = line->tex_addr[(((((int)line->texpos
-								& (line->text_y)) + (int)(line->door * 64))
+								& (line->text_y)) + (int)(line->door * 128))
 						* (line->tex_sl)) + line->texx)];
 			if (color && (colorDodge < 0
 					|| (colorDodge >= 0 && color != colorDodge)))
@@ -100,7 +100,7 @@ void	ft_pre_render_line(t_data *data, int x, int y)
 	if (data->ray->orien == 3)
 		data->texture_wall = data->tex_east;
 	if (data->ray->hit == 2)
-		data->texture_wall = data->tex_east;
+		data->texture_wall = data->tex_door;
 	ft_ray_render_line(data);
 	ft_init_line(data, &line);
 	if (data->ray->hit == 2)

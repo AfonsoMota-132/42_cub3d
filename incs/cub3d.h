@@ -25,8 +25,8 @@
 # include <stdbool.h>
 # include <sys/time.h>
 
-# define WIN_WIDTH 1920
-# define WIN_HEIGHT 1080
+# define WIN_WIDTH 1280
+# define WIN_HEIGHT 720
 # define PI 3.141592653589793238462643
 # define BLOCK 25
 # define TRUE 1
@@ -123,6 +123,7 @@ typedef struct s_mov
 	bool	exit;
 	bool	exit_main;
 	int		mouse;
+	int		mouse_pos;
 	bool	open;
 }	t_mov;
 
@@ -185,6 +186,7 @@ typedef struct s_data
 	t_img		*img;
 	t_img		*img_minimap;
 	t_img		*texture_wall;
+	t_img		*tex_door;
 	t_img		*tex_north;
 	t_img		*tex_south;
 	t_img		*tex_east;
@@ -242,5 +244,6 @@ char	*string_copy(char *line);
 bool	check_line(char *line);
 void	copy_map_utils(t_data *data, int fd, char *line);
 void	free_map(char **line, int i, int fd);
+void	ft_init_player_utils(t_data *data, char tmp, int i);
 
 #endif

@@ -25,19 +25,23 @@ static bool	check_textures(t_data *data)
 	return (FALSE);
 }
 
+// static void	util_texture_utils(t_data *data, char *line, int i)
+// {
+//
+// }
 static bool	util_texture(t_data *data, char *line, int i)
 {
-	if (ft_strnstr(line, "NO", 2 + i))
+	if (!data->map_data->no && ft_strnstr(line, "NO", 2 + i))
 		data->map_data->no = ft_strdup(line + (3 + i));
-	else if (ft_strnstr(line, "SO", 2 + i))
+	else if (!data->map_data->so && ft_strnstr(line, "SO", 2 + i))
 		data->map_data->so = ft_strdup(line + 3 + i);
-	else if (ft_strnstr(line, "WE", 2 + i))
+	else if (!data->map_data->we && ft_strnstr(line, "WE", 2 + i))
 		data->map_data->we = ft_strdup(line + 3 + i);
-	else if (ft_strnstr(line, "EA", 2 + i))
+	else if (!data->map_data->ea && ft_strnstr(line, "EA", 2 + i))
 		data->map_data->ea = ft_strdup(line + 3 + i);
-	else if (ft_strnstr(line, "F", 1 + i))
+	else if (!data->map_data->f && ft_strnstr(line, "F", 1 + i))
 		data->map_data->f = ft_strdup(line + 2 + i);
-	else if (ft_strnstr(line, "C", 1 + i))
+	else if (!data->map_data->c && ft_strnstr(line, "C", 1 + i))
 		data->map_data->c = ft_strdup(line + 2 + i);
 	else if (check_textures(data) == TRUE)
 		return (TRUE);
@@ -92,14 +96,14 @@ void	parse_cub_file(char *extension, char *file, t_data *data, bool ffree)
 	i = 0;
 	if (!file || !ft_strchr(file, '.'))
 	{
-		ft_putstr_fd("Error\nInvalid texture\n", 2);
+		ft_putstr_fd("Error\nInvalid file\n", 2);
 		if (file && ffree)
 			free(file);
 		ft_free(1, data);
 	}
 	while (file[i] != '.' || ft_strrchr(file, '.') != &file[i])
 		i++;
-	if (ft_strncmp(&file[i], extension, 5) != 0 || i == 0)
+	if (ft_strncmp(&file[i], extension, 5) != 0 || i == 0 || (ft_strlen(&file[i]) == 4 && file[i - 1] == '/'))
 	{
 		ft_putstr_fd("Error\nInvalid file extension\n", 2);
 		if (file && ffree)

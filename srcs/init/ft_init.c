@@ -15,6 +15,7 @@
 void	ft_set_data_null(t_data *data)
 {
 	data->img = NULL;
+	data->tex_door = NULL;
 	data->tex_north = NULL;
 	data->tex_south = NULL;
 	data->tex_east = NULL;
@@ -70,10 +71,10 @@ t_data	*ft_data_init(char *file)
 	data->player = malloc(sizeof(t_player));
 	if (!data->player)
 		ft_free(-1, data);
+	data->player->x_pos = -1;
+	data->player->y_pos = -1;
 	data->time_frame = ft_get_time_in_ms() + 17;
 	ft_init_player(data);
-	if (!check_flood(data))
-		ft_free(1, data);
 	ft_win_start(data);
 	ft_init_doors(data);
 	return (data);
@@ -95,6 +96,7 @@ void	ft_init_mov(t_data *data)
 	data->mov->exit_main = false;
 	data->mov->mouse = 0;
 	data->mov->open = false;
+	data->mov->mouse_pos = 0;
 }
 
 void	ft_win_start(t_data *data)

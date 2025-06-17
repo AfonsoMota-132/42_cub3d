@@ -74,6 +74,7 @@ void	ft_render_minimap_utils(t_data *data, t_minimap_utils mp)
 {
 	if (data->map->map[mp.pos_x][mp.pos_y] == '0'
 		|| data->map->map[mp.pos_x][mp.pos_y] == 'X'
+		|| data->map->map[mp.pos_x][mp.pos_y] == ' '
 		|| data->map->map[mp.pos_x][mp.pos_y] == 'P')
 		ft_render_minimap_sq(data, mp.y, mp.x, 0xFFFFFF);
 	else if (data->map->map[mp.pos_x][mp.pos_y] == '1')

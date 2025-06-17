@@ -94,7 +94,7 @@ void	copy_map(t_data *data, char *file)
 		fd = open(file, O_RDONLY);
 		i = -1;
 		line = NULL;
-		while (i++ <= data->map_data->line_position)
+		while (++i <= data->map_data->line_position)
 			free_map(&line, i, fd);
 		while (line && !ft_strchr(line, '1'))
 			free_map(&line, 1, fd);
